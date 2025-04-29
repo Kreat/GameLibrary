@@ -2,9 +2,13 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import { setupAuth } from "./auth";
 import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
+  
   // Add a health check route for debugging
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
