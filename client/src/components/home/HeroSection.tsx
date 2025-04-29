@@ -19,16 +19,16 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-4">
             <Button
               size="lg"
-              variant="secondary"
-              className="bg-white text-primary hover:bg-gray-100 shadow-lg font-semibold"
+              variant="default"
+              className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg font-bold"
               asChild
             >
               <Link href="/sessions">Find Players</Link>
             </Button>
             <Button
               size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-primary-foreground/10 shadow-lg font-semibold"
+              variant="default"
+              className="bg-accent text-black hover:bg-accent/90 shadow-lg font-bold border-2 border-white"
               asChild
             >
               <Link href={user ? "/create-session" : "/profile"}>Host a Game</Link>
