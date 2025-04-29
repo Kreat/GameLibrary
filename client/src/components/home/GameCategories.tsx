@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowRight, GamepadIcon, FileText, Swords, ChevronRight } from "lucide-react";
+import { ArrowRight, Dices, FileText, Swords, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const categories = [
@@ -9,10 +9,12 @@ const categories = [
     activeSessions: "230+",
     description: "Strategy, resource management, and tile placement games",
     imageSrc: "https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    icon: <GamepadIcon className="h-6 w-6" />,
+    icon: <Dices className="h-6 w-6" />,
     iconBgClass: "bg-amber-500",
-    bgColor: "bg-amber-50",
-    borderColor: "border-amber-200",
+    bgColor: "bg-amber-50 dark:bg-amber-950/40",
+    borderColor: "border-amber-200 dark:border-amber-700/50",
+    textColor: "text-slate-800 dark:text-amber-100",
+    descriptionColor: "text-slate-600 dark:text-amber-200/70",
   },
   {
     id: "card",
@@ -22,8 +24,10 @@ const categories = [
     imageSrc: "https://images.unsplash.com/photo-1564149504298-00f45c77d3e5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     icon: <FileText className="h-6 w-6" />,
     iconBgClass: "bg-emerald-500",
-    bgColor: "bg-emerald-50",
-    borderColor: "border-emerald-200",
+    bgColor: "bg-emerald-50 dark:bg-emerald-950/40",
+    borderColor: "border-emerald-200 dark:border-emerald-700/50",
+    textColor: "text-slate-800 dark:text-emerald-100",
+    descriptionColor: "text-slate-600 dark:text-emerald-200/70",
   },
   {
     id: "rpg",
@@ -33,21 +37,23 @@ const categories = [
     imageSrc: "https://images.unsplash.com/photo-1605870445919-838d190e8e1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
     icon: <Swords className="h-6 w-6" />,
     iconBgClass: "bg-indigo-500",
-    bgColor: "bg-indigo-50",
-    borderColor: "border-indigo-200",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950/40",
+    borderColor: "border-indigo-200 dark:border-indigo-700/50",
+    textColor: "text-slate-800 dark:text-indigo-100",
+    descriptionColor: "text-slate-600 dark:text-indigo-200/70",
   }
 ];
 
 const GameCategories = () => {
   return (
-    <section className="py-16 bg-slate-50">
+    <section className="py-16 bg-slate-50 dark:bg-slateNight/60">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <Badge className="mb-3 bg-emerald-100 text-emerald-800 hover:bg-emerald-100 px-3 py-1">Browse Categories</Badge>
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-800 mb-4">
+          <Badge className="mb-3 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 px-3 py-1">Browse Categories</Badge>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-slate-800 dark:text-white mb-4">
             Find Your Game Style
           </h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
             Explore different types of tabletop games and discover new experiences to share with friends
           </p>
         </div>
@@ -60,13 +66,13 @@ const GameCategories = () => {
                   <div className={`${category.iconBgClass} text-white rounded-lg w-12 h-12 flex items-center justify-center mb-4`}>
                     {category.icon}
                   </div>
-                  <h3 className="text-xl font-display font-bold text-slate-800 mb-2">{category.title}</h3>
-                  <p className="text-slate-600 text-sm mb-3">{category.description}</p>
+                  <h3 className={`text-xl font-display font-bold ${category.textColor} mb-2`}>{category.title}</h3>
+                  <p className={`${category.descriptionColor} text-sm mb-3`}>{category.description}</p>
                   
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-emerald-600">{category.activeSessions} active sessions</span>
-                    <div className="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:bg-emerald-500 transition-colors duration-300">
-                      <ChevronRight className="h-4 w-4 text-slate-500 group-hover:text-white transition-colors duration-300" />
+                    <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">{category.activeSessions} active sessions</span>
+                    <div className="w-8 h-8 rounded-full bg-white dark:bg-slateNight/80 shadow-sm flex items-center justify-center group-hover:bg-emerald-500 dark:group-hover:bg-emerald-600 transition-colors duration-300">
+                      <ChevronRight className="h-4 w-4 text-slate-500 dark:text-emerald-300 group-hover:text-white transition-colors duration-300" />
                     </div>
                   </div>
                 </div>
@@ -78,7 +84,7 @@ const GameCategories = () => {
         <div className="mt-10 text-center">
           <Link
             href="/games"
-            className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium"
+            className="inline-flex items-center gap-2 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium"
           >
             Explore all game categories
             <ArrowRight className="h-4 w-4" />
