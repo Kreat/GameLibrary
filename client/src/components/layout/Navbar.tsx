@@ -133,7 +133,7 @@ const Navbar = () => {
               <Button
                 variant="default"
                 size="sm"
-                className="hidden md:inline-flex"
+                className="hidden md:inline-flex gradient-bg-primary text-slateNight font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all animate-fade-in delay-500"
                 asChild
               >
                 <Link href="/auth">Sign In</Link>
@@ -146,33 +146,44 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden"
+                  className="md:hidden hover:bg-meeple/10 dark:hover:bg-meeple/20 animate-fade-in delay-500"
                   aria-label="Open mobile menu"
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className="h-5 w-5 text-meeple" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <div className="mt-6 flex flex-col space-y-4">
-                  {navLinks.map((link) => (
+              <SheetContent side="right" className="bg-background/95 dark:bg-slateNight/95 backdrop-blur-md border-l border-meeple/20">
+                <div className="mt-8 flex flex-col space-y-5">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md">
+                      <Gamepad className="h-6 w-6 text-slateNight" />
+                    </div>
+                    <span className="text-2xl font-display font-bold gradient-text">
+                      GameHub
+                    </span>
+                  </div>
+                  
+                  {navLinks.map((link, index) => (
                     <Link
                       key={link.href}
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`${
                         isActive(link.href)
-                          ? "text-primary dark:text-primary-foreground"
-                          : "text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80"
-                      } px-3 py-2 text-base font-medium transition-colors`}
+                          ? "text-meeple dark:text-meeple font-semibold"
+                          : "text-foreground dark:text-white/80 hover:text-meeple dark:hover:text-meeple"
+                      } px-4 py-3 text-lg font-medium transition-colors rounded-lg ${isActive(link.href) ? "bg-meeple/10 dark:bg-meeple/20" : "hover:bg-meeple/5 dark:hover:bg-meeple/10"}`}
+                      style={{ animationDelay: `${100 + (index * 100)}ms` }}
                     >
                       {link.label}
                     </Link>
                   ))}
+                  
                   {!user && (
                     <Button
                       variant="default"
                       asChild
-                      className="mt-4"
+                      className="mt-6 gradient-bg-primary text-slateNight font-semibold px-5 py-6 h-auto rounded-xl shadow-md hover:shadow-lg transition-all"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Link href="/auth">Sign In</Link>

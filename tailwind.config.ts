@@ -16,11 +16,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        // GameHub custom colors from design brief
-        meeple: "#FFD45C",     // "Meeple Gold"
-        slateNight: "#2B2D42", // Slate Night
-        boardRed: "#EF476F",   // Boardwalk Red
-        mintToken: "#06D6A0",  // Mint Token
+        // GameHub custom colors from design brief - updated
+        meeple: "#FFD45C",     // "Meeple Gold" 
+        slateNight: "#262D40", // Slate Night
+        boardRed: "#FF4560",   // Boardwalk Red 
+        mintToken: "#00E396",  // Mint Token
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
