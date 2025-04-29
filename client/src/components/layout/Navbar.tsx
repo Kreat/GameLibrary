@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Gamepad, Bell, Menu } from "lucide-react";
-import { logOut } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
@@ -20,9 +19,11 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
 
+  const { logoutMutation } = useAuth();
+  
   const handleSignOut = async () => {
     try {
-      await logOut();
+      logoutMutation.mutate();
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account",
@@ -99,7 +100,7 @@ const Navbar = () => {
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={user.photoURL || undefined}
+                        src={user.photoUrl || undefined}
                         alt={user.displayName || "User"}
                       />
                       <AvatarFallback>
@@ -124,7 +125,7 @@ const Navbar = () => {
                 className="hidden md:inline-flex"
                 asChild
               >
-                <Link href="/profile">Sign In</Link>
+                <Link href="/auth">Sign In</Link>
               </Button>
             )}
 
@@ -163,7 +164,7 @@ const Navbar = () => {
                       className="mt-4"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <Link href="/profile">Sign In</Link>
+                      <Link href="/auth">Sign In</Link>
                     </Button>
                   )}
                 </div>
