@@ -6,7 +6,7 @@ export default {
   theme: {
     fontFamily: {
       sans: ["Inter", "sans-serif"],
-      display: ["Montserrat", "sans-serif"],
+      display: ["Poppins", "sans-serif"],
       mono: ["Menlo", "Monaco", "Courier New", "monospace"],
     },
     extend: {
@@ -16,6 +16,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // GameHub custom colors from design brief
+        meeple: "#FFD45C",     // "Meeple Gold"
+        slateNight: "#2B2D42", // Slate Night
+        boardRed: "#EF476F",   // Boardwalk Red
+        mintToken: "#06D6A0",  // Mint Token
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -84,10 +89,32 @@ export default {
             height: "0",
           },
         },
+        "bounce-in": {
+          "0%": { transform: "scale(0.8)", opacity: "0" },
+          "70%": { transform: "scale(1.05)", opacity: "1" },
+          "100%": { transform: "scale(1)", opacity: "1" }
+        },
+        "slide-in-right": {
+          "0%": { transform: "translateX(20px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" }
+        },
+        "pulse-glow": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(6, 214, 160, 0)" },
+          "50%": { boxShadow: "0 0 10px 3px rgba(6, 214, 160, 0.5)" }
+        },
+        "gradient-shift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "bounce-in": "bounce-in 0.5s ease-out",
+        "slide-in": "slide-in-right 0.3s ease-out",
+        "pulse-glow": "pulse-glow 2s infinite",
+        "gradient-shift": "gradient-shift 3s ease infinite"
       },
     },
   },
