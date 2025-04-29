@@ -20,15 +20,15 @@ const HeroSection = () => {
             <Button
               size="lg"
               variant="secondary"
-              className="bg-white text-primary font-semibold hover:bg-gray-100 shadow-lg"
+              className="bg-white text-primary hover:bg-gray-100 shadow-lg font-semibold"
               asChild
             >
               <Link href="/sessions">Find Players</Link>
             </Button>
             <Button
               size="lg"
-              variant="default"
-              className="bg-accent text-white font-semibold hover:bg-accent/90 shadow-lg"
+              variant="outline"
+              className="border-white text-white hover:bg-primary-foreground/10 shadow-lg font-semibold"
               asChild
             >
               <Link href={user ? "/create-session" : "/profile"}>Host a Game</Link>

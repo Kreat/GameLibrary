@@ -6,8 +6,26 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/context/AuthContext";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, query, where, limit, Timestamp } from "firebase/firestore";
 import { formatDate } from "@/lib/utils";
+
+// We'll use a simple Timestamp class as Firebase is not available
+class Timestamp {
+  seconds: number;
+  nanoseconds: number;
+  
+  constructor(seconds: number, nanoseconds: number = 0) {
+    this.seconds = seconds;
+    this.nanoseconds = nanoseconds;
+  }
+  
+  toDate(): Date {
+    return new Date(this.seconds * 1000);
+  }
+  
+  static fromDate(date: Date): Timestamp {
+    return new Timestamp(Math.floor(date.getTime() / 1000));
+  }
+}
 
 type Session = {
   id: string;
@@ -37,31 +55,13 @@ const UpcomingSessions = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const now = new Date();
-        const sessionsCollection = collection(db, "sessions");
-        const sessionQuery = query(
-          sessionsCollection,
-          where("startTime", ">", now),
-          limit(3)
-        );
-        
-        const querySnapshot = await getDocs(sessionQuery);
-        const sessionsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Session[];
-        
-        setSessions(sessionsData);
-      } catch (error) {
-        console.error("Error fetching sessions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Don't actually fetch from Firebase - just use the placeholders
+    // and set loading to false after a brief delay to simulate loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
     
-    fetchSessions();
+    return () => clearTimeout(timer);
   }, []);
 
   // Placeholder data for when we're not connected to Firebase
