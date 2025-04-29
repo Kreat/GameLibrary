@@ -49,34 +49,38 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm">
+    <header className="sticky top-0 z-50 bg-background dark:bg-slateNight backdrop-blur-sm shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Gamepad className="h-5 w-5 text-white" />
+              <div className="flex items-center space-x-2 animate-fade-in">
+                <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md">
+                  <Gamepad className="h-6 w-6 text-slateNight" />
                 </div>
-                <span className="text-xl font-display font-bold text-primary dark:text-white">
+                <span className="text-2xl font-display font-bold gradient-text">
                   GameHub
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex ml-10 space-x-8">
-              {navLinks.map((link) => (
+            <nav className="hidden md:flex ml-10 space-x-6">
+              {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={`${
                     isActive(link.href)
-                      ? "text-primary dark:text-primary-foreground"
-                      : "text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80"
-                  } px-3 py-2 text-sm font-medium transition-colors`}
+                      ? "text-meeple dark:text-meeple font-semibold"
+                      : "text-foreground dark:text-white/80 hover:text-meeple dark:hover:text-meeple"
+                  } px-3 py-2 text-sm font-medium transition-colors relative animate-fade-in`}
+                  style={{ animationDelay: `${100 + (index * 100)}ms` }}
                 >
                   {link.label}
+                  {isActive(link.href) && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-meeple rounded-full"></span>
+                  )}
                 </Link>
               ))}
             </nav>
@@ -86,7 +90,7 @@ const Navbar = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="hidden md:flex text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-foreground/80"
+              className="hidden md:flex text-foreground dark:text-white/80 hover:text-mintToken dark:hover:text-mintToken animate-fade-in delay-400"
             >
               <Bell className="h-5 w-5" />
             </Button>
@@ -96,24 +100,31 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative h-10 w-10 rounded-full animate-fade-in delay-500 overflow-hidden border-2 border-meeple hover:border-mintToken transition-colors duration-300"
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-9 w-9">
                       <AvatarImage
                         src={user.photoUrl || undefined}
                         alt={user.displayName || "User"}
                       />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-br from-meeple to-boardRed text-white font-semibold">
                         {user.displayName?.[0] || user.email?.[0] || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
+                <DropdownMenuContent align="end" className="bg-background/90 dark:bg-slateNight/90 backdrop-blur-lg border border-meeple/20">
+                  <DropdownMenuItem asChild className="hover:bg-meeple/10 dark:hover:bg-meeple/20">
+                    <Link href="/profile" className="cursor-pointer flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-mintToken"></span>
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem 
+                    onClick={handleSignOut} 
+                    className="hover:bg-boardRed/10 dark:hover:bg-boardRed/20 cursor-pointer flex items-center gap-2"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-boardRed"></span>
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
