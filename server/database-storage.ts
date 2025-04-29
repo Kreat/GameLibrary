@@ -36,7 +36,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
+    // Ensure null values are properly set for optional fields
+    const userWithNulls = {
+      ...insertUser,
+      displayName: insertUser.displayName ?? null,
+      bio: insertUser.bio ?? null,
+      location: insertUser.location ?? null,
+      favoriteGames: insertUser.favoriteGames ?? null,
+      photoUrl: insertUser.photoUrl ?? null,
+      firebaseUid: insertUser.firebaseUid ?? null
+    };
+    
+    const [user] = await db.insert(users).values(userWithNulls).returning();
     return user;
   }
 
@@ -55,7 +66,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createGame(insertGame: InsertGame): Promise<Game> {
-    const [game] = await db.insert(games).values(insertGame).returning();
+    // Ensure null values are properly set for optional fields
+    const gameWithNulls = {
+      ...insertGame,
+      description: insertGame.description ?? null,
+      minPlayers: insertGame.minPlayers ?? null,
+      maxPlayers: insertGame.maxPlayers ?? null,
+      complexity: insertGame.complexity ?? null,
+      playTime: insertGame.playTime ?? null,
+      imageUrl: insertGame.imageUrl ?? null
+    };
+    
+    const [game] = await db.insert(games).values(gameWithNulls).returning();
     return game;
   }
 
@@ -104,7 +126,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createSession(insertSession: InsertSession): Promise<Session> {
-    const [session] = await db.insert(sessions).values(insertSession).returning();
+    // Ensure null values are properly set for optional fields
+    const sessionWithNulls = {
+      ...insertSession,
+      description: insertSession.description ?? null,
+      address: insertSession.address ?? null,
+      locationNotes: insertSession.locationNotes ?? null,
+      duration: insertSession.duration ?? null,
+      recurring: insertSession.recurring ?? "once",
+      gameId: insertSession.gameId ?? null,
+      hostData: insertSession.hostData ?? null,
+      participantsData: insertSession.participantsData ?? null
+    };
+    
+    const [session] = await db.insert(sessions).values(sessionWithNulls).returning();
     
     // Automatically add the host as a participant
     await this.addSessionParticipant({
@@ -138,11 +173,16 @@ export class DatabaseStorage implements IStorage {
       return existing[0];
     }
     
+    // Ensure null values are properly set for optional fields
+    const participantWithNulls = {
+      sessionId: insertParticipant.sessionId,
+      userId: insertParticipant.userId,
+      isHost: insertParticipant.isHost ?? null,
+      joinedAt: new Date()
+    };
+    
     const [participant] = await db.insert(sessionParticipants)
-      .values({
-        ...insertParticipant,
-        joinedAt: new Date()
-      })
+      .values(participantWithNulls)
       .returning();
     
     // Update current players count
@@ -210,13 +250,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserAvailability(insertAvailability: InsertUserAvailability): Promise<UserAvailability> {
+    // Ensure null values are properly set for optional fields
+    const availabilityWithNulls = {
+      ...insertAvailability,
+      weekdayMorning: insertAvailability.weekdayMorning ?? false,
+      weekdayAfternoon: insertAvailability.weekdayAfternoon ?? false,
+      weekdayEvening: insertAvailability.weekdayEvening ?? false,
+      weekendMorning: insertAvailability.weekendMorning ?? false,
+      weekendAfternoon: insertAvailability.weekendAfternoon ?? false,
+      weekendEvening: insertAvailability.weekendEvening ?? false,
+      notes: insertAvailability.notes ?? null
+    };
+    
     const existingAvailability = await this.getUserAvailability(insertAvailability.userId);
     
     if (existingAvailability) {
       // Update existing
       const [updated] = await db.update(userAvailability)
         .set({
-          ...insertAvailability,
+          ...availabilityWithNulls,
           updatedAt: new Date()
         })
         .where(eq(userAvailability.id, existingAvailability.id))
@@ -226,7 +278,7 @@ export class DatabaseStorage implements IStorage {
     } else {
       // Create new
       const [availability] = await db.insert(userAvailability)
-        .values(insertAvailability)
+        .values(availabilityWithNulls)
         .returning();
       
       return availability;
@@ -247,8 +299,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createForumCategory(insertCategory: InsertForumCategory): Promise<ForumCategory> {
+    // Ensure null values are properly set for optional fields
+    const categoryWithNulls = {
+      ...insertCategory,
+      description: insertCategory.description ?? null,
+      iconName: insertCategory.iconName ?? null,
+      color: insertCategory.color ?? null
+    };
+    
     const [category] = await db.insert(forumCategories)
-      .values(insertCategory)
+      .values(categoryWithNulls)
       .returning();
     
     return category;
@@ -274,12 +334,17 @@ export class DatabaseStorage implements IStorage {
 
   async createForumThread(insertThread: InsertForumThread): Promise<ForumThread> {
     const now = new Date();
+    const threadWithNulls = {
+      ...insertThread,
+      isPinned: insertThread.isPinned ?? false,
+      isLocked: insertThread.isLocked ?? false,
+      tags: insertThread.tags ?? null,
+      views: 0,
+      lastPostAt: now
+    };
+    
     const [thread] = await db.insert(forumThreads)
-      .values({
-        ...insertThread,
-        views: 0,
-        lastPostAt: now
-      })
+      .values(threadWithNulls)
       .returning();
     
     return thread;
