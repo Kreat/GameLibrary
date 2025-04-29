@@ -12,9 +12,9 @@ import SessionsPage from "@/pages/SessionsPage";
 import CommunityPage from "@/pages/CommunityPage";
 import ProfilePage from "@/pages/ProfilePage";
 import CreateSessionPage from "@/pages/CreateSessionPage";
-import { useEffect } from "react";
-import { auth } from "./lib/firebase"; // Import our mock auth
-import { useAuth } from "./context/AuthContext";
+import AuthPage from "@/pages/AuthPage";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 function Router() {
   return (
@@ -22,12 +22,13 @@ function Router() {
       <Navbar />
       <main className="flex-1">
         <Switch>
-          <Route path="/" component={HomePage} />
-          <Route path="/games" component={GamesPage} />
-          <Route path="/sessions" component={SessionsPage} />
-          <Route path="/community" component={CommunityPage} />
-          <Route path="/profile" component={ProfilePage} />
-          <Route path="/create-session" component={CreateSessionPage} />
+          <Route path="/auth" component={AuthPage} />
+          <ProtectedRoute path="/" component={HomePage} />
+          <ProtectedRoute path="/games" component={GamesPage} />
+          <ProtectedRoute path="/sessions" component={SessionsPage} />
+          <ProtectedRoute path="/community" component={CommunityPage} />
+          <ProtectedRoute path="/profile" component={ProfilePage} />
+          <ProtectedRoute path="/create-session" component={CreateSessionPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -37,24 +38,14 @@ function Router() {
 }
 
 function App() {
-  const { setUser, setLoading } = useAuth();
-
-  useEffect(() => {
-    // Use our mock auth's onAuthStateChanged method
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [setUser, setLoading]);
-
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

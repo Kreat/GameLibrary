@@ -2,7 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -36,7 +36,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   // Login Form
   const loginForm = useForm<LoginFormValues>({
@@ -75,7 +75,7 @@ export default function AuthPage() {
         title: "Login successful",
         description: `Welcome back, ${data.username}!`,
       });
-      navigate("/");
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({
@@ -102,7 +102,7 @@ export default function AuthPage() {
         title: "Registration successful",
         description: `Welcome to GameHub, ${data.username}!`,
       });
-      navigate("/");
+      setLocation("/");
     },
     onError: (error: Error) => {
       toast({
