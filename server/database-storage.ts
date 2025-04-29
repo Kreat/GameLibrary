@@ -1,0 +1,350 @@
+import { eq, and, or, gt, desc, sql } from "drizzle-orm";
+import { db } from "./db";
+import {
+  users, games, sessions, sessionParticipants, userAvailability,
+  forumCategories, forumThreads, forumPosts,
+  type User, type InsertUser,
+  type Game, type InsertGame,
+  type Session, type InsertSession,
+  type SessionParticipant, type InsertSessionParticipant,
+  type UserAvailability, type InsertUserAvailability,
+  type ForumCategory, type InsertForumCategory,
+  type ForumThread, type InsertForumThread,
+  type ForumPost, type InsertForumPost
+} from "@shared/schema";
+import { IStorage } from "./storage";
+
+export class DatabaseStorage implements IStorage {
+  // User methods
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.firebaseUid, firebaseUid));
+    return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  // Game methods
+  async getAllGames(): Promise<Game[]> {
+    return await db.select().from(games);
+  }
+
+  async getGame(id: number): Promise<Game | undefined> {
+    const [game] = await db.select().from(games).where(eq(games.id, id));
+    return game;
+  }
+
+  async getGamesByType(type: string): Promise<Game[]> {
+    return await db.select().from(games).where(eq(games.type, type));
+  }
+
+  async createGame(insertGame: InsertGame): Promise<Game> {
+    const [game] = await db.insert(games).values(insertGame).returning();
+    return game;
+  }
+
+  // Session methods
+  async getAllSessions(): Promise<Session[]> {
+    return await db.select().from(sessions);
+  }
+
+  async getSession(id: number): Promise<Session | undefined> {
+    const [session] = await db.select().from(sessions).where(eq(sessions.id, id));
+    return session;
+  }
+
+  async getUpcomingSessions(): Promise<Session[]> {
+    const now = new Date();
+    return await db.select()
+      .from(sessions)
+      .where(gt(sessions.startTime, now))
+      .orderBy(sessions.startTime);
+  }
+
+  async getSessionsByHost(hostId: number): Promise<Session[]> {
+    return await db.select()
+      .from(sessions)
+      .where(eq(sessions.hostId, hostId));
+  }
+
+  async getSessionsByParticipant(userId: number): Promise<Session[]> {
+    // Get sessions where the user is a participant
+    const participantSessions = await db.select({
+      sessionId: sessionParticipants.sessionId
+    })
+    .from(sessionParticipants)
+    .where(eq(sessionParticipants.userId, userId));
+    
+    const participantSessionIds = participantSessions.map(p => p.sessionId);
+    
+    if (participantSessionIds.length === 0) {
+      // If user not a participant in any sessions, return empty array
+      return [];
+    }
+    
+    return await db.select()
+      .from(sessions)
+      .where(sql`${sessions.id} IN (${participantSessionIds.join(',')})`);
+  }
+
+  async createSession(insertSession: InsertSession): Promise<Session> {
+    const [session] = await db.insert(sessions).values(insertSession).returning();
+    
+    // Automatically add the host as a participant
+    await this.addSessionParticipant({
+      sessionId: session.id,
+      userId: session.hostId,
+      isHost: true
+    });
+    
+    return session;
+  }
+
+  // Session Participants methods
+  async getSessionParticipants(sessionId: number): Promise<SessionParticipant[]> {
+    return await db.select()
+      .from(sessionParticipants)
+      .where(eq(sessionParticipants.sessionId, sessionId));
+  }
+
+  async addSessionParticipant(insertParticipant: InsertSessionParticipant): Promise<SessionParticipant> {
+    // Check if user is already a participant
+    const existing = await db.select()
+      .from(sessionParticipants)
+      .where(
+        and(
+          eq(sessionParticipants.sessionId, insertParticipant.sessionId),
+          eq(sessionParticipants.userId, insertParticipant.userId)
+        )
+      );
+      
+    if (existing.length > 0) {
+      return existing[0];
+    }
+    
+    const [participant] = await db.insert(sessionParticipants)
+      .values({
+        ...insertParticipant,
+        joinedAt: new Date()
+      })
+      .returning();
+    
+    // Update current players count
+    const session = await this.getSession(insertParticipant.sessionId);
+    if (session) {
+      await db.update(sessions)
+        .set({ 
+          currentPlayers: session.currentPlayers + 1,
+          updatedAt: new Date()
+        })
+        .where(eq(sessions.id, session.id));
+    }
+    
+    return participant;
+  }
+
+  async removeSessionParticipant(sessionId: number, userId: number): Promise<void> {
+    // Find the participant to check if they're a host
+    const [participant] = await db.select()
+      .from(sessionParticipants)
+      .where(
+        and(
+          eq(sessionParticipants.sessionId, sessionId),
+          eq(sessionParticipants.userId, userId)
+        )
+      );
+    
+    if (!participant) {
+      throw new Error("Participant not found");
+    }
+    
+    // Cannot remove the host
+    if (participant.isHost) {
+      throw new Error("Cannot remove the host from a session");
+    }
+    
+    // Remove the participant
+    await db.delete(sessionParticipants)
+      .where(
+        and(
+          eq(sessionParticipants.sessionId, sessionId),
+          eq(sessionParticipants.userId, userId)
+        )
+      );
+    
+    // Update player count
+    const session = await this.getSession(sessionId);
+    if (session) {
+      await db.update(sessions)
+        .set({ 
+          currentPlayers: Math.max(1, session.currentPlayers - 1),
+          updatedAt: new Date()
+        })
+        .where(eq(sessions.id, session.id));
+    }
+  }
+
+  // User Availability methods
+  async getUserAvailability(userId: number): Promise<UserAvailability | undefined> {
+    const [availability] = await db.select()
+      .from(userAvailability)
+      .where(eq(userAvailability.userId, userId));
+    
+    return availability;
+  }
+
+  async updateUserAvailability(insertAvailability: InsertUserAvailability): Promise<UserAvailability> {
+    const existingAvailability = await this.getUserAvailability(insertAvailability.userId);
+    
+    if (existingAvailability) {
+      // Update existing
+      const [updated] = await db.update(userAvailability)
+        .set({
+          ...insertAvailability,
+          updatedAt: new Date()
+        })
+        .where(eq(userAvailability.id, existingAvailability.id))
+        .returning();
+      
+      return updated;
+    } else {
+      // Create new
+      const [availability] = await db.insert(userAvailability)
+        .values(insertAvailability)
+        .returning();
+      
+      return availability;
+    }
+  }
+
+  // Forum methods
+  async getAllForumCategories(): Promise<ForumCategory[]> {
+    return await db.select().from(forumCategories);
+  }
+
+  async getForumCategory(id: number): Promise<ForumCategory | undefined> {
+    const [category] = await db.select()
+      .from(forumCategories)
+      .where(eq(forumCategories.id, id));
+    
+    return category;
+  }
+
+  async createForumCategory(insertCategory: InsertForumCategory): Promise<ForumCategory> {
+    const [category] = await db.insert(forumCategories)
+      .values(insertCategory)
+      .returning();
+    
+    return category;
+  }
+
+  async getAllForumThreads(): Promise<ForumThread[]> {
+    return await db.select().from(forumThreads);
+  }
+
+  async getForumThreadsByCategory(categoryId: number): Promise<ForumThread[]> {
+    return await db.select()
+      .from(forumThreads)
+      .where(eq(forumThreads.categoryId, categoryId));
+  }
+
+  async getForumThread(id: number): Promise<ForumThread | undefined> {
+    const [thread] = await db.select()
+      .from(forumThreads)
+      .where(eq(forumThreads.id, id));
+    
+    return thread;
+  }
+
+  async createForumThread(insertThread: InsertForumThread): Promise<ForumThread> {
+    const now = new Date();
+    const [thread] = await db.insert(forumThreads)
+      .values({
+        ...insertThread,
+        views: 0,
+        lastPostAt: now
+      })
+      .returning();
+    
+    return thread;
+  }
+
+  async getForumPostsByThread(threadId: number): Promise<ForumPost[]> {
+    return await db.select()
+      .from(forumPosts)
+      .where(eq(forumPosts.threadId, threadId))
+      .orderBy(forumPosts.createdAt);
+  }
+
+  async createForumPost(insertPost: InsertForumPost): Promise<ForumPost> {
+    const [post] = await db.insert(forumPosts)
+      .values(insertPost)
+      .returning();
+    
+    // Update the thread's lastPostAt time
+    await db.update(forumThreads)
+      .set({ 
+        lastPostAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(forumThreads.id, insertPost.threadId));
+    
+    return post;
+  }
+
+  async findMatchingSessions(userId: number): Promise<Session[]> {
+    const userAvail = await this.getUserAvailability(userId);
+    if (!userAvail) {
+      // If no availability set, return upcoming sessions sorted by start time
+      return this.getUpcomingSessions();
+    }
+    
+    // Get all upcoming sessions
+    const upcomingSessions = await this.getUpcomingSessions();
+    
+    // Filter sessions based on user availability
+    const matchingSessions = upcomingSessions.filter(session => {
+      const startTime = new Date(session.startTime);
+      const day = startTime.getDay();
+      const hour = startTime.getHours();
+      
+      // Determine if it's a weekday or weekend
+      const isWeekend = day === 0 || day === 6; // Sunday or Saturday
+      
+      // Determine time of day: 0-11 morning, 12-16 afternoon, 17-23 evening
+      const isMorning = hour >= 0 && hour < 12;
+      const isAfternoon = hour >= 12 && hour < 17;
+      const isEvening = hour >= 17 && hour < 24;
+      
+      // Check if user is available during this time
+      if (isWeekend) {
+        return (isMorning && userAvail.weekendMorning) || 
+               (isAfternoon && userAvail.weekendAfternoon) || 
+               (isEvening && userAvail.weekendEvening);
+      } else {
+        return (isMorning && userAvail.weekdayMorning) || 
+               (isAfternoon && userAvail.weekdayAfternoon) || 
+               (isEvening && userAvail.weekdayEvening);
+      }
+    });
+    
+    // Return sessions sorted by start time (already sorted by getUpcomingSessions)
+    return matchingSessions;
+  }
+}
