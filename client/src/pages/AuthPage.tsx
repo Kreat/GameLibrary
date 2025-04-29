@@ -37,6 +37,13 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { user, isLoading } = useAuth();
+  
+  // Redirect to home if already logged in
+  if (user && !isLoading) {
+    setLocation("/");
+    return null;
+  }
 
   // Login Form
   const loginForm = useForm<LoginFormValues>({

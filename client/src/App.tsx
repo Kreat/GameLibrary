@@ -23,10 +23,10 @@ function Router() {
       <main className="flex-1">
         <Switch>
           <Route path="/auth" component={AuthPage} />
-          <ProtectedRoute path="/" component={HomePage} />
-          <ProtectedRoute path="/games" component={GamesPage} />
-          <ProtectedRoute path="/sessions" component={SessionsPage} />
-          <ProtectedRoute path="/community" component={CommunityPage} />
+          <Route path="/" component={HomePage} />
+          <Route path="/games" component={GamesPage} />
+          <Route path="/sessions" component={SessionsPage} />
+          <Route path="/community" component={CommunityPage} />
           <ProtectedRoute path="/profile" component={ProfilePage} />
           <ProtectedRoute path="/create-session" component={CreateSessionPage} />
           <Route component={NotFound} />
