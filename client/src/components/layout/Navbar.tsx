@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Gamepad, Bell, Menu } from "lucide-react";
+import { Dices, Bell, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
@@ -55,8 +55,8 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/">
               <div className="flex items-center space-x-2 animate-fade-in">
-                <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md">
-                  <Gamepad className="h-6 w-6 text-slateNight" />
+                <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+                  <Dices className="h-6 w-6 text-slateNight" />
                 </div>
                 <span className="text-2xl font-display font-bold gradient-text">
                   GameHub
@@ -155,8 +155,8 @@ const Navbar = () => {
               <SheetContent side="right" className="bg-background/95 dark:bg-slateNight/95 backdrop-blur-md border-l border-meeple/20">
                 <div className="mt-8 flex flex-col space-y-5">
                   <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md">
-                      <Gamepad className="h-6 w-6 text-slateNight" />
+                    <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+                      <Dices className="h-6 w-6 text-slateNight" />
                     </div>
                     <span className="text-2xl font-display font-bold gradient-text">
                       GameHub
