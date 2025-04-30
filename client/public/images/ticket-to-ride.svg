@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Game board map background -->
+  <rect width="800" height="600" fill="#ece6c2" />
+  
+  <!-- Map of North America with simplified routes -->
+  <g id="map" fill="none" stroke-width="4">
+    <!-- Outline of continent -->
+    <path d="M100,150 C150,120 200,100 250,130 C300,110 350,100 400,120 C470,100 520,90 580,100 C650,120 700,150 720,200 C730,250 720,300 700,350 C680,400 650,450 600,470 C550,490 500,500 450,490 C400,510 350,520 300,510 C250,520 200,530 150,520 C120,490 100,450 90,400 C80,350 80,300 85,250 C90,200 100,150 100,150 Z" fill="#d8d2b0" stroke="#b1a67d" />
+    
+    <!-- Lakes -->
+    <ellipse cx="360" cy="200" rx="70" ry="40" fill="#a4c8e1" stroke="#7caed3" />
+    <ellipse cx="250" cy="250" rx="50" ry="30" fill="#a4c8e1" stroke="#7caed3" />
+    
+    <!-- Game routes -->
+    <g id="routes" stroke-linecap="round">
+      <!-- Route 1 - Red -->
+      <line x1="150" y1="220" x2="250" y2="200" stroke="#e74c3c" stroke-width="8" />
+      <line x1="155" y1="230" x2="255" y2="210" stroke="#e74c3c" stroke-width="8" />
+      
+      <!-- Route 2 - Blue -->
+      <line x1="250" y1="200" x2="320" y2="180" stroke="#3498db" stroke-width="8" />
+      <line x1="255" y1="210" x2="325" y2="190" stroke="#3498db" stroke-width="8" />
+      
+      <!-- Route 3 - Green -->
+      <line x1="320" y1="180" x2="400" y2="200" stroke="#2ecc71" stroke-width="8" />
+      <line x1="325" y1="190" x2="405" y2="210" stroke="#2ecc71" stroke-width="8" />
+      
+      <!-- Route 4 - Yellow -->
+      <line x1="400" y1="200" x2="500" y2="190" stroke="#f1c40f" stroke-width="8" />
+      <line x1="405" y1="210" x2="505" y2="200" stroke="#f1c40f" stroke-width="8" />
+      
+      <!-- Route 5 - Black -->
+      <line x1="500" y1="190" x2="600" y2="220" stroke="#34495e" stroke-width="8" />
+      <line x1="505" y1="200" x2="605" y2="230" stroke="#34495e" stroke-width="8" />
+      
+      <!-- Route 6 - Orange -->
+      <line x1="150" y1="220" x2="180" y2="300" stroke="#e67e22" stroke-width="8" />
+      <line x1="160" y1="225" x2="190" y2="305" stroke="#e67e22" stroke-width="8" />
+      
+      <!-- Route 7 - Purple -->
+      <line x1="180" y1="300" x2="280" y2="350" stroke="#9b59b6" stroke-width="8" />
+      <line x1="190" y1="305" x2="290" y2="355" stroke="#9b59b6" stroke-width="8" />
+      
+      <!-- Route 8 - White -->
+      <line x1="280" y1="350" x2="380" y2="380" stroke="#ecf0f1" stroke-width="8" />
+      <line x1="290" y1="355" x2="390" y2="385" stroke="#ecf0f1" stroke-width="8" />
+      
+      <!-- Route 9 - Red -->
+      <line x1="380" y1="380" x2="480" y2="350" stroke="#e74c3c" stroke-width="8" />
+      <line x1="390" y1="385" x2="490" y2="355" stroke="#e74c3c" stroke-width="8" />
+      
+      <!-- Route 10 - Blue -->
+      <line x1="480" y1="350" x2="580" y2="330" stroke="#3498db" stroke-width="8" />
+      <line x1="490" y1="355" x2="590" y2="335" stroke="#3498db" stroke-width="8" />
+      
+      <!-- Route 11 - Green -->
+      <line x1="600" y1="220" x2="580" y2="330" stroke="#2ecc71" stroke-width="8" />
+      <line x1="610" y1="225" x2="590" y2="335" stroke="#2ecc71" stroke-width="8" />
+    </g>
+    
+    <!-- Cities -->
+    <g id="cities">
+      <circle cx="150" cy="220" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="250" cy="200" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="320" cy="180" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="400" cy="200" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="500" cy="190" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="600" cy="220" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="180" cy="300" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="280" cy="350" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="380" cy="380" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="480" cy="350" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+      <circle cx="580" cy="330" r="10" fill="#fff" stroke="#333" stroke-width="2" />
+    </g>
+  </g>
+  
+  <!-- Train cards -->
+  <g transform="translate(680, 100) rotate(10)">
+    <rect x="-40" y="-60" width="80" height="120" rx="5" fill="#e74c3c" stroke="#c0392b" stroke-width="3" />
+    <rect x="-30" y="-50" width="60" height="100" rx="3" fill="#fff" />
+    <path d="M-20,-20 L20,20 M-20,20 L20,-20" stroke="#e74c3c" stroke-width="10" stroke-linecap="round" />
+  </g>
+  
+  <g transform="translate(700, 250) rotate(-5)">
+    <rect x="-40" y="-60" width="80" height="120" rx="5" fill="#3498db" stroke="#2980b9" stroke-width="3" />
+    <rect x="-30" y="-50" width="60" height="100" rx="3" fill="#fff" />
+    <path d="M-20,-20 L20,20 M-20,20 L20,-20" stroke="#3498db" stroke-width="10" stroke-linecap="round" />
+  </g>
+  
+  <g transform="translate(670, 390) rotate(15)">
+    <rect x="-40" y="-60" width="80" height="120" rx="5" fill="#2ecc71" stroke="#27ae60" stroke-width="3" />
+    <rect x="-30" y="-50" width="60" height="100" rx="3" fill="#fff" />
+    <path d="M-20,-20 L20,20 M-20,20 L20,-20" stroke="#2ecc71" stroke-width="10" stroke-linecap="round" />
+  </g>
+  
+  <!-- Player pieces -->
+  <g id="trains">
+    <!-- Red player trains -->
+    <g transform="translate(120, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#e74c3c" stroke="#c0392b" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+    <g transform="translate(180, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#e74c3c" stroke="#c0392b" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+    
+    <!-- Blue player trains -->
+    <g transform="translate(300, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#3498db" stroke="#2980b9" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+    <g transform="translate(360, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#3498db" stroke="#2980b9" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+    
+    <!-- Green player trains -->
+    <g transform="translate(480, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#2ecc71" stroke="#27ae60" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+    <g transform="translate(540, 500)">
+      <rect x="-25" y="-10" width="50" height="20" rx="5" fill="#2ecc71" stroke="#27ae60" stroke-width="2" />
+      <circle cx="-15" cy="10" r="5" fill="#333" />
+      <circle cx="0" cy="10" r="5" fill="#333" />
+      <circle cx="15" cy="10" r="5" fill="#333" />
+    </g>
+  </g>
+  
+  <!-- Game logo -->
+  <g transform="translate(400, 50)">
+    <rect x="-250" y="-30" width="500" height="60" rx="10" fill="#c0392b" stroke="#7f2819" stroke-width="4" />
+    <text x="0" y="15" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#fff">TICKET TO RIDE</text>
+  </g>
+</svg>

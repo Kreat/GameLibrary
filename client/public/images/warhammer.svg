@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Dark background with grimdark feel -->
+  <rect width="800" height="600" fill="#1a1a2e" />
+  
+  <!-- Stylized imperial aquila -->
+  <g fill="#d4af37">
+    <path d="M400,100 L340,220 L280,180 L230,280 L180,220 L150,350 L250,320 L200,420 L300,400 L280,480 L400,450 L520,480 L500,400 L600,420 L550,320 L650,350 L620,220 L570,280 L520,180 L460,220 L400,100 Z" stroke="#000" stroke-width="3" />
+    <circle cx="400" cy="270" r="30" fill="#990000"/>
+    <path d="M370,270 L430,270" stroke="#d4af37" stroke-width="8" />
+    <path d="M400,240 L400,300" stroke="#d4af37" stroke-width="8" />
+  </g>
+  
+  <!-- Futuristic battle tanks -->
+  <g transform="translate(150, 450) scale(0.7)">
+    <rect x="0" y="0" width="180" height="70" rx="10" fill="#3e3e42" stroke="#000" stroke-width="3" />
+    <rect x="30" y="-30" width="120" height="40" rx="5" fill="#3e3e42" stroke="#000" stroke-width="3" />
+    <rect x="80" y="-50" width="20" height="60" rx="2" fill="#3e3e42" stroke="#000" stroke-width="2" />
+    <circle cx="40" cy="70" r="20" fill="#252525" stroke="#000" stroke-width="2" />
+    <circle cx="140" cy="70" r="20" fill="#252525" stroke="#000" stroke-width="2" />
+    <circle cx="90" cy="70" r="20" fill="#252525" stroke="#000" stroke-width="2" />
+  </g>
+  
+  <!-- Space marine stylized figure -->
+  <g transform="translate(550, 420) scale(0.8)">
+    <rect x="-50" y="-100" width="100" height="150" rx="20" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <circle cx="0" cy="-120" r="30" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <rect x="-60" y="-70" width="20" height="80" rx="10" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <rect x="40" y="-70" width="20" height="80" rx="10" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <rect x="-30" y="50" width="25" height="70" rx="5" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <rect x="5" y="50" width="25" height="70" rx="5" fill="#0047ab" stroke="#000" stroke-width="3" />
+    <rect x="-20" y="-140" width="40" height="15" fill="#990000" />
+  </g>
+  
+  <!-- Skulls and gothic elements -->
+  <g transform="translate(200, 220)">
+    <path d="M0,0 C-20,-20 -40,10 -20,30 C-10,40 10,40 20,30 C40,10 20,-20 0,0 Z" fill="#d4d4d4" stroke="#000" stroke-width="2" />
+    <circle cx="-10" cy="15" r="5" fill="#000" />
+    <circle cx="10" cy="15" r="5" fill="#000" />
+    <path d="M0,25 L0,35 M-15,35 L15,35" stroke="#000" stroke-width="2" />
+  </g>
+  
+  <g transform="translate(600, 220)">
+    <path d="M0,0 C-20,-20 -40,10 -20,30 C-10,40 10,40 20,30 C40,10 20,-20 0,0 Z" fill="#d4d4d4" stroke="#000" stroke-width="2" />
+    <circle cx="-10" cy="15" r="5" fill="#000" />
+    <circle cx="10" cy="15" r="5" fill="#000" />
+    <path d="M0,25 L0,35 M-15,35 L15,35" stroke="#000" stroke-width="2" />
+  </g>
+  
+  <!-- Text banner -->
+  <g transform="translate(400, 550)">
+    <rect x="-250" y="-40" width="500" height="60" rx="10" fill="#990000" stroke="#d4af37" stroke-width="4" />
+    <text x="0" y="15" font-family="serif" font-size="32" font-weight="bold" text-anchor="middle" fill="#d4af37">WARHAMMER 40,000</text>
+  </g>
+</svg>
