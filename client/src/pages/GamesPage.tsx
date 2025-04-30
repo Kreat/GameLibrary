@@ -29,16 +29,6 @@ const gamesData = [
   },
   {
     id: 2,
-    title: "Catan",
-    type: "board",
-    players: "3-4",
-    playTime: "60-120 min",
-    complexity: "Medium",
-    description: "Build settlements, cities, and roads as you compete for resources in this classic strategy game.",
-    image: "/images/catan.svg",
-  },
-  {
-    id: 3,
     title: "Magic: The Gathering",
     type: "card",
     players: "2+",
@@ -48,6 +38,16 @@ const gamesData = [
     image: "/images/mtg.svg",
   },
   {
+    id: 3,
+    title: "Catan",
+    type: "board",
+    players: "3-4",
+    playTime: "60-120 min",
+    complexity: "Medium",
+    description: "Build settlements, cities, and roads as you compete for resources in this classic strategy game.",
+    image: "/images/catan.svg",
+  },
+  {
     id: 4,
     title: "Dungeons & Dragons",
     type: "rpg",
@@ -55,7 +55,7 @@ const gamesData = [
     playTime: "2-4 hours",
     complexity: "High",
     description: "Create characters, embark on adventures, and tell collaborative stories in this iconic role-playing game.",
-    image: "/images/dnd.svg",
+    image: "/images/dnd-fixed.svg",
   },
   {
     id: 5,
