@@ -27,31 +27,37 @@ const HeroSection = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {/* Card 1 - animated and glowing on hover */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-meeple/30 card-hover animate-fade-in delay-200">
-              <div className="mb-4 w-16 h-16 bg-gradient-to-br from-meeple to-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                <Users className="h-8 w-8 text-slateNight" />
+            <Link href="/sessions" className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-meeple/30 card-hover animate-fade-in delay-200 cursor-pointer transition-all hover:shadow-lg hover:border-meeple/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-meeple to-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <Users className="h-8 w-8 text-slateNight" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-meeple">Find Players</h3>
+                <p className="text-white/80">Connect with players who share your gaming interests</p>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-meeple">Find Players</h3>
-              <p className="text-white/80">Connect with players who share your gaming interests</p>
-            </div>
+            </Link>
             
             {/* Card 2 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-mintToken/30 card-hover animate-fade-in delay-300">
-              <div className="mb-4 w-16 h-16 bg-gradient-to-br from-mintToken to-teal-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                <CalendarDays className="h-8 w-8 text-slateNight" />
+            <Link href={user ? "/create-session" : "/auth"} className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-mintToken/30 card-hover animate-fade-in delay-300 cursor-pointer transition-all hover:shadow-lg hover:border-mintToken/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-mintToken to-teal-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <CalendarDays className="h-8 w-8 text-slateNight" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-mintToken">Schedule Games</h3>
+                <p className="text-white/80">Plan and organize your next gaming session with ease</p>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-mintToken">Schedule Games</h3>
-              <p className="text-white/80">Plan and organize your next gaming session with ease</p>
-            </div>
+            </Link>
             
             {/* Card 3 */}
-            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-boardRed/30 card-hover animate-fade-in delay-400">
-              <div className="mb-4 w-16 h-16 bg-gradient-to-br from-boardRed to-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
-                <Dice5 className="h-8 w-8 text-white" />
+            <Link href="/games" className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-boardRed/30 card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-boardRed/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-boardRed to-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <Dice5 className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-boardRed">Discover Games</h3>
+                <p className="text-white/80">Explore new tabletop games and find local events</p>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-boardRed">Discover Games</h3>
-              <p className="text-white/80">Explore new tabletop games and find local events</p>
-            </div>
+            </Link>
           </div>
           
           {/* CTA Buttons */}

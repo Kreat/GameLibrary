@@ -25,7 +25,7 @@ const gamesData = [
     playTime: "60-120 min",
     complexity: "Medium",
     description: "Build settlements, cities, and roads as you compete for resources in this classic strategy game.",
-    image: "https://images.unsplash.com/photo-1606503153255-59d8b2e4739e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://www.boardgamesmaker.com/wp-content/uploads/2018/08/settlers-of-catan.jpeg",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const gamesData = [
     playTime: "20-60 min",
     complexity: "High",
     description: "Collect cards, build decks, and battle opponents in this strategic trading card game.",
-    image: "https://images.unsplash.com/photo-1595306407462-283c7898c3f0?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://www.hipstersofthecoast.com/wp-content/uploads/2020/12/mtg-cards-spread-out.jpg",
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const gamesData = [
     playTime: "2-4 hours",
     complexity: "High",
     description: "Create characters, embark on adventures, and tell collaborative stories in this iconic role-playing game.",
-    image: "https://images.unsplash.com/photo-1605870445919-838d190e8e1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://assets.dicebreaker.com/dungeons-and-dragons-5e-sixth-edition-art.jpg/BROK/resize/1200x1200%3E/format/jpg/quality/70/dungeons-and-dragons-5e-sixth-edition-art.jpg",
   },
   {
     id: 4,
@@ -55,7 +55,7 @@ const gamesData = [
     playTime: "2-3 hours",
     complexity: "High",
     description: "Command armies in tactical battle across a grim, dark future where there is only war.",
-    image: "https://images.unsplash.com/photo-1615371165649-d6875619fdf6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://spikeybits.com/wp-content/uploads/2018/04/astra-militarum-armies.jpg",
   },
   {
     id: 5,
@@ -65,7 +65,7 @@ const gamesData = [
     playTime: "15-30 min",
     complexity: "Low",
     description: "Give one-word clues to help your team identify your agents while avoiding the assassin.",
-    image: "https://images.unsplash.com/photo-1606503153255-59d8b2e4739e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://cdn.shopify.com/s/files/1/0740/4855/products/CODENAMES_PLAY_700x.jpg",
   },
   {
     id: 6,
@@ -75,7 +75,7 @@ const gamesData = [
     playTime: "30-60 min",
     complexity: "Medium",
     description: "Collect cards, claim railway routes, and connect cities across North America.",
-    image: "https://images.unsplash.com/photo-1606503153255-59d8b2e4739e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    image: "https://cf.geekdo-images.com/x3zxjr-Vw5iU4yDPg70Jgw__opengraph/img/ZzYfMIHrQkUZKrZBOn8HjbE8Aeg=/fit-in/1200x630/filters:strip_icc()/pic66668.jpg",
   },
 ];
 
