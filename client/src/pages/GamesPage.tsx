@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, Filter, Gamepad, FileText, Swords, Target, Users } from "lucide-react";
+import DndImage from "@/components/games/DndImage";
 
 const gameTypes = [
   { id: "all", label: "All Games", icon: <Gamepad className="h-4 w-4" /> },
@@ -165,11 +166,15 @@ const GamesPage = () => {
                 {filteredGames.map(game => (
                   <Card key={game.id} className="overflow-hidden">
                     <div className="h-48 overflow-hidden relative">
-                      <img 
-                        src={game.image} 
-                        alt={game.title} 
-                        className="w-full h-full object-cover"
-                      />
+                      {game.title === "Dungeons & Dragons" ? (
+                        <DndImage />
+                      ) : (
+                        <img 
+                          src={game.image} 
+                          alt={game.title} 
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                       <div className="absolute top-2 right-2 bg-primary text-white text-xs px-2 py-1 rounded">
                         {gameTypes.find(t => t.id === game.type)?.label.replace(" Games", "")}
                       </div>
