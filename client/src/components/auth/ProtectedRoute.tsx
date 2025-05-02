@@ -1,7 +1,6 @@
 import { Redirect, Route } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { PageTransition } from "@/components/ui/page-transition";
 
 type ProtectedRouteProps = {
   path: string;
@@ -14,15 +13,11 @@ export function ProtectedRoute({ path, component: Component }: ProtectedRoutePro
   return (
     <Route path={path}>
       {isLoading ? (
-        <PageTransition>
-          <div className="flex items-center justify-center min-h-screen">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        </PageTransition>
+        <div className="flex items-center justify-center min-h-screen">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
       ) : user ? (
-        <PageTransition>
-          <Component />
-        </PageTransition>
+        <Component />
       ) : (
         <Redirect to="/auth" />
       )}
