@@ -16,9 +16,12 @@ import { useToast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const { user } = useAuth();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
+  
+  // Use our custom navigation hook to add the transition class
+  useNavigation();
 
   const { logoutMutation } = useAuth();
   
@@ -58,7 +61,7 @@ const Navbar = () => {
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 if (location !== '/') {
-                  window.location.href = '/';
+                  setLocation('/');
                 }
               }}
               className="flex items-center space-x-2 animate-fade-in cursor-pointer"
@@ -79,7 +82,7 @@ const Navbar = () => {
                   onClick={() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     if (location !== link.href) {
-                      window.location.href = link.href;
+                      setLocation(link.href);
                     }
                   }}
                   className={`${
@@ -129,7 +132,7 @@ const Navbar = () => {
                   <DropdownMenuItem 
                     onClick={() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                      window.location.href = '/profile';
+                      setLocation('/profile');
                     }}
                     className="hover:bg-meeple/10 dark:hover:bg-meeple/20 cursor-pointer flex items-center gap-2"
                   >
@@ -152,7 +155,7 @@ const Navbar = () => {
                 className="hidden md:inline-flex gradient-bg-primary text-slateNight font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all animate-fade-in delay-500"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
-                  window.location.href = '/auth';
+                  setLocation('/auth');
                 }}
               >
                 Sign In
@@ -178,7 +181,7 @@ const Navbar = () => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                       setMobileMenuOpen(false);
                       if (location !== '/') {
-                        window.location.href = '/';
+                        setLocation('/');
                       }
                     }}
                     className="flex items-center space-x-3 mb-6 cursor-pointer"
@@ -198,7 +201,7 @@ const Navbar = () => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         setMobileMenuOpen(false);
                         if (location !== link.href) {
-                          window.location.href = link.href;
+                          setLocation(link.href);
                         }
                       }}
                       className={`${
@@ -219,7 +222,7 @@ const Navbar = () => {
                       onClick={() => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         setMobileMenuOpen(false);
-                        window.location.href = '/auth';
+                        setLocation('/auth');
                       }}
                     >
                       Sign In

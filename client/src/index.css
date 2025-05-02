@@ -128,13 +128,15 @@
   
   /* Page transitions */
   main {
-    @apply transition-all duration-500 ease-in-out;
-    will-change: opacity, background-color;
+    @apply transition-all duration-300 ease-in-out;
+    will-change: opacity, transform;
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
   
   html.navigating main {
-    opacity: 0.7;
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
   }
   
   /* Fade-in animations for content */
