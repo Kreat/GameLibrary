@@ -500,8 +500,16 @@ export default function AuthPage() {
                       <Button 
                         type="submit" 
                         className="w-full"
+                        disabled={isRequestingReset}
                       >
-                        Send Reset Link
+                        {isRequestingReset ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          "Send Reset Link"
+                        )}
                       </Button>
                     </form>
                   </Form>
@@ -510,6 +518,8 @@ export default function AuthPage() {
                     <form 
                       onSubmit={resetPasswordForm.handleSubmit(async (data) => {
                         try {
+                          setIsResettingPassword(true);
+                          
                           // Reset password via the API
                           const response = await fetch("/api/reset-password", {
                             method: "POST",
@@ -540,6 +550,8 @@ export default function AuthPage() {
                             description: "There was a problem resetting your password. Please try again.",
                             variant: "destructive"
                           });
+                        } finally {
+                          setIsResettingPassword(false);
                         }
                       })} 
                       className="space-y-4"
@@ -576,8 +588,16 @@ export default function AuthPage() {
                       <Button 
                         type="submit" 
                         className="w-full"
+                        disabled={isResettingPassword}
                       >
-                        Reset Password
+                        {isResettingPassword ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Resetting...
+                          </>
+                        ) : (
+                          "Reset Password"
+                        )}
                       </Button>
                     </form>
                   </Form>
