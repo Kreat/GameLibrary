@@ -273,4 +273,71 @@
   .animate-slide-in {
     animation: slide-in 0.5s ease-out;
   }
+  
+  /* Calendar session dots */
+  .sessions-dot-1 {
+    position: relative;
+  }
+
+  .sessions-dot-1::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: hsl(var(--primary));
+  }
+
+  .sessions-dot-2 {
+    position: relative;
+  }
+
+  .sessions-dot-2::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 6px;
+    background: linear-gradient(to right,
+      hsl(var(--accent)) 0%,
+      hsl(var(--accent)) 45%,
+      transparent 45%,
+      transparent 55%,
+      hsl(var(--primary)) 55%,
+      hsl(var(--primary)) 100%
+    );
+    border-radius: 9999px;
+  }
+
+  .sessions-dot-3 {
+    position: relative;
+  }
+
+  .sessions-dot-3::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 6px;
+    background: linear-gradient(to right,
+      hsl(var(--primary)) 0%,
+      hsl(var(--primary)) 30%,
+      transparent 30%,
+      transparent 35%,
+      hsl(var(--accent)) 35%,
+      hsl(var(--accent)) 65%,
+      transparent 65%,
+      transparent 70%,
+      hsl(var(--primary)) 70%,
+      hsl(var(--primary)) 100%
+    );
+    border-radius: 9999px;
+  }
 }

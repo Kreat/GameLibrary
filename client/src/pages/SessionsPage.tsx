@@ -387,55 +387,15 @@ const SessionsPage = () => {
                     }
                   }}
                   className="border rounded-md p-2"
-                  classNames={{
-                    day_today: "bg-primary/10 font-bold text-primary",
-                    day: "relative h-9 w-9 p-0 focus-within:relative focus-within:z-20",
-                    day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground"
+                  modifiers={{
+                    hasSessions1: (date) => getSessionsForDate(date).length === 1,
+                    hasSessions2: (date) => getSessionsForDate(date).length === 2,
+                    hasSessions3: (date) => getSessionsForDate(date).length >= 3,
                   }}
-                  components={{
-                    Day: (props) => {
-                      const { date, disabled, isOutsideMonth } = props;
-                      const sessionsCount = getSessionsForDate(date).length;
-                      
-                      return (
-                        <button
-                          onClick={() => props.onClick(date)}
-                          disabled={disabled || isOutsideMonth}
-                          className={cn(
-                            "h-9 w-9 p-0 relative",
-                            "aria-selected:bg-primary aria-selected:text-primary-foreground",
-                            isOutsideMonth && "text-muted-foreground opacity-50",
-                            props.today && "bg-primary/10 text-primary font-medium",
-                            props.selected && "bg-primary text-primary-foreground",
-                            disabled && "text-muted-foreground opacity-50 cursor-not-allowed"
-                          )}
-                        >
-                          <time dateTime={date.toISOString()}>
-                            {date.getDate()}
-                          </time>
-                          
-                          {/* Multiple dots for multiple sessions */}
-                          {!disabled && !isOutsideMonth && sessionsCount > 0 && (
-                            <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 flex items-center gap-0.5">
-                              {sessionsCount >= 3 ? (
-                                <div className="flex items-center gap-0.5">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                </div>
-                              ) : sessionsCount === 2 ? (
-                                <div className="flex items-center gap-0.5">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                </div>
-                              ) : (
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                              )}
-                            </div>
-                          )}
-                        </button>
-                      );
-                    }
+                  modifiersClassNames={{
+                    hasSessions1: "sessions-dot-1",
+                    hasSessions2: "sessions-dot-2",
+                    hasSessions3: "sessions-dot-3",
                   }}
                 />
               </div>
@@ -645,31 +605,28 @@ const SessionsPage = () => {
                           }}
                           className="mx-auto border rounded-md p-4"
                           modifiers={{
-                            hasSession: (date) => hasSessionsOnDate(date),
+                            hasSessions1: (date) => getSessionsForDate(date).length === 1,
+                            hasSessions2: (date) => getSessionsForDate(date).length === 2,
+                            hasSessions3: (date) => getSessionsForDate(date).length >= 3,
                           }}
                           modifiersClassNames={{
-                            hasSession: "relative after:absolute after:content-[''] after:w-1.5 after:h-1.5 after:rounded-full after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:bg-primary",
+                            hasSessions1: "sessions-dot-1",
+                            hasSessions2: "sessions-dot-2",
+                            hasSessions3: "sessions-dot-3",
                           }}
                         />
                       </div>
                       <div className="flex flex-wrap items-center justify-center mt-2 text-sm text-gray-500 gap-3">
                         <div className="flex items-center">
-                          <div className="w-2 h-2 rounded-full bg-primary mr-1.5"></div>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-1"></div>
                           <span>1 Session</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="flex gap-0.5 mr-1.5">
-                            <div className="w-2 h-2 rounded-full bg-accent"></div>
-                            <div className="w-2 h-2 rounded-full bg-primary"></div>
-                          </div>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-2"></div>
                           <span>2 Sessions</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="flex gap-0.5 mr-1.5">
-                            <div className="w-2 h-2 rounded-full bg-primary"></div>
-                            <div className="w-2 h-2 rounded-full bg-accent"></div>
-                            <div className="w-2 h-2 rounded-full bg-primary"></div>
-                          </div>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-3"></div>
                           <span>3+ Sessions</span>
                         </div>
                       </div>
