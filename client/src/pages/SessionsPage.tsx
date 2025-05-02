@@ -542,38 +542,39 @@ const SessionsPage = () => {
               
               <div>
                 <label className="text-sm font-medium mb-1 block">
-                  Date
+                  Date Range
                 </label>
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => {
-                    setSelectedDate(date);
-                    
-                    if (date) {
-                      const sessionsOnDate = getSessionsForDate(date);
-                      if (sessionsOnDate.length > 0) {
-                        setSelectedDateSessions(sessionsOnDate);
-                        setShowSessionDetails(true);
-                      }
+                <Select
+                  defaultValue="all"
+                  onValueChange={(value) => {
+                    if (value === "all") {
+                      setSelectedDate(undefined);
+                    } else if (value === "today") {
+                      setSelectedDate(new Date());
+                    } else if (value === "tomorrow") {
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      setSelectedDate(tomorrow);
+                    } else if (value === "thisWeek") {
+                      setSelectedDate(new Date());
+                    } else if (value === "nextWeek") {
+                      const nextWeek = new Date();
+                      nextWeek.setDate(nextWeek.getDate() + 7);
+                      setSelectedDate(nextWeek);
                     }
                   }}
-                  className="border rounded-md p-2"
-                  modifiers={{
-                    sessionsCount1: (date) => getSessionsForDate(date).length === 1,
-                    sessionsCount2: (date) => getSessionsForDate(date).length === 2,
-                    sessionsCount3: (date) => getSessionsForDate(date).length === 3,
-                    sessionsCount4: (date) => getSessionsForDate(date).length === 4,
-                    sessionsCount5plus: (date) => getSessionsForDate(date).length >= 5,
-                  }}
-                  modifiersClassNames={{
-                    sessionsCount1: "sessions-count-1",
-                    sessionsCount2: "sessions-count-2",
-                    sessionsCount3: "sessions-count-3",
-                    sessionsCount4: "sessions-count-4",
-                    sessionsCount5plus: "sessions-count-5plus",
-                  }}
-                />
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select date range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Upcoming</SelectItem>
+                    <SelectItem value="today">Today</SelectItem>
+                    <SelectItem value="tomorrow">Tomorrow</SelectItem>
+                    <SelectItem value="thisWeek">This Week</SelectItem>
+                    <SelectItem value="nextWeek">Next Week</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div>
