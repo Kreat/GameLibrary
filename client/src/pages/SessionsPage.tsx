@@ -514,7 +514,7 @@ const SessionsPage = () => {
         
         <div className="flex flex-wrap gap-2">
           <Button asChild>
-            <Link href={user ? "/create-session" : "/profile"}>
+            <Link href={user ? "/create-session" : "/auth"}>
               <Plus className="mr-2 h-4 w-4" />
               Host Session
             </Link>
@@ -720,7 +720,7 @@ const SessionsPage = () => {
                               size="sm"
                               asChild
                             >
-                              <Link href={user ? `/sessions/${session.id}` : "/profile"}>
+                              <Link href={user ? `/sessions/${session.id}` : "/auth"}>
                                 Join Session
                               </Link>
                             </Button>
@@ -859,7 +859,7 @@ const SessionsPage = () => {
                                       size="sm"
                                       asChild
                                     >
-                                      <Link href={user ? `/sessions/${session.id}` : "/profile"}>
+                                      <Link href={user ? `/sessions/${session.id}` : "/auth"}>
                                         Join Session
                                       </Link>
                                     </Button>
