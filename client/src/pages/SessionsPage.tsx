@@ -515,12 +515,14 @@ const SessionsPage = () => {
         </div>
         
         <div className="flex flex-wrap gap-2">
-          <Button asChild>
-            <Link href={user ? "/create-session" : "/auth"}>
+          <CreateSessionDialog
+            buttonLabel="Host a Game"
+          >
+            <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Host Session
-            </Link>
-          </Button>
+              Host a Game
+            </Button>
+          </CreateSessionDialog>
         </div>
       </div>
       

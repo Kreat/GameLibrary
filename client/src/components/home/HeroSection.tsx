@@ -39,15 +39,15 @@ const HeroSection = () => {
             </Link>
             
             {/* Card 2 */}
-            <Link href={user ? "/create-session" : "/auth"} className="no-underline">
+            <div onClick={() => user ? document.getElementById('createSessionTrigger')?.click() : window.location.href = '/auth'} className="no-underline">
               <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-mintToken/30 card-hover animate-fade-in delay-300 cursor-pointer transition-all hover:shadow-lg hover:border-mintToken/50">
                 <div className="mb-4 w-16 h-16 bg-gradient-to-br from-mintToken to-teal-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                   <CalendarDays className="h-8 w-8 text-slateNight" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-mintToken">Schedule Games</h3>
+                <h3 className="text-xl font-bold mb-2 text-mintToken">Host a Game</h3>
                 <p className="text-white/80">Plan and organize your next gaming session with ease</p>
               </div>
-            </Link>
+            </div>
             
             {/* Card 3 */}
             <Link href="/games" className="no-underline">
@@ -75,6 +75,7 @@ const HeroSection = () => {
               buttonSize="lg"
               buttonLabel="Host a Game"
               buttonClassNames="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
+              id="createSessionTrigger"
             />
           </div>
         </div>

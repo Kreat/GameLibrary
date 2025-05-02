@@ -79,6 +79,7 @@ interface CreateSessionDialogProps {
   buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   buttonSize?: "default" | "sm" | "lg" | "icon";
   children?: React.ReactNode;
+  id?: string;
 }
 
 export function CreateSessionDialog({
