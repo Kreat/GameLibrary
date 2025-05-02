@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/use-auth";
 import { db, signInWithGoogle, logOut } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ type AvailabilityFormValues = z.infer<typeof availabilityFormSchema>;
 
 const ProfilePage = () => {
   const [_, navigate] = useLocation();
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   const [profileData, setProfileData] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("profile");
@@ -237,7 +237,7 @@ const ProfilePage = () => {
   }, []);
 
   // Show loading state while checking auth
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-16 flex items-center justify-center">
         <div className="text-center">

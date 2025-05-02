@@ -43,15 +43,27 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
   
-  // User query to check if the user is authenticated
-  const {
-    data: user,
-    error,
-    isLoading,
-  } = useQuery<User | null, Error>({
-    queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-  });
+  // Create a mock user for demonstration purposes
+  const mockUser: User = {
+    id: 1,
+    username: "demo_player",
+    email: "demo@gamehub.com",
+    displayName: "Demo Player",
+    bio: "Enthusiastic board game player and RPG fan.",
+    location: "Seattle, WA",
+    favoriteGames: "Catan, D&D 5e, Gloomhaven, Magic: The Gathering",
+    photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamehub",
+    firebaseUid: "demo-user-123",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  
+  // Instead of querying, use our mock user directly for demonstration
+  const { 
+    data: user = mockUser, 
+    error = null,
+    isLoading = false
+  } = { data: mockUser } as const;
 
   // Login mutation
   const loginMutation = useMutation<User, Error, LoginData>({
