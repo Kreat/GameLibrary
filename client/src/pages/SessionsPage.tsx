@@ -387,31 +387,53 @@ const SessionsPage = () => {
                     }
                   }}
                   className="border rounded-md p-2"
-                  modifiers={{
-                    hasSession: (date) => hasSessionsOnDate(date),
-                  }}
-                  modifiersClassNames={{
-                    hasSession: "relative after:absolute after:content-[''] after:w-1 after:h-1 after:rounded-full after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:bg-primary",
+                  classNames={{
+                    day_today: "bg-primary/10 font-bold text-primary",
+                    day: "relative h-9 w-9 p-0 focus-within:relative focus-within:z-20",
+                    day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground"
                   }}
                   components={{
-                    DayContent: (props) => {
-                      const sessionsCount = getSessionsForDate(props.date).length;
+                    Day: (props) => {
+                      const { date, disabled, isOutsideMonth } = props;
+                      const sessionsCount = getSessionsForDate(date).length;
+                      
                       return (
-                        <div className="relative flex items-center justify-center">
-                          {props.date.getDate()}
-                          {sessionsCount > 0 && (
-                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center justify-center gap-0.5">
-                              {/* Display multiple dots if there are more sessions */}
-                              {sessionsCount >= 3 && (
-                                <div className="w-1 h-1 rounded-full bg-primary" />
+                        <button
+                          onClick={() => props.onClick(date)}
+                          disabled={disabled || isOutsideMonth}
+                          className={cn(
+                            "h-9 w-9 p-0 relative",
+                            "aria-selected:bg-primary aria-selected:text-primary-foreground",
+                            isOutsideMonth && "text-muted-foreground opacity-50",
+                            props.today && "bg-primary/10 text-primary font-medium",
+                            props.selected && "bg-primary text-primary-foreground",
+                            disabled && "text-muted-foreground opacity-50 cursor-not-allowed"
+                          )}
+                        >
+                          <time dateTime={date.toISOString()}>
+                            {date.getDate()}
+                          </time>
+                          
+                          {/* Multiple dots for multiple sessions */}
+                          {!disabled && !isOutsideMonth && sessionsCount > 0 && (
+                            <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 flex items-center gap-0.5">
+                              {sessionsCount >= 3 ? (
+                                <div className="flex items-center gap-0.5">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                </div>
+                              ) : sessionsCount === 2 ? (
+                                <div className="flex items-center gap-0.5">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                </div>
+                              ) : (
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                               )}
-                              {sessionsCount >= 2 && (
-                                <div className="w-1 h-1 rounded-full bg-accent" />
-                              )}
-                              <div className="w-1 h-1 rounded-full bg-primary" />
                             </div>
                           )}
-                        </div>
+                        </button>
                       );
                     }
                   }}
