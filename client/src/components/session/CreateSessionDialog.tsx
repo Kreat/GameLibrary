@@ -20,10 +20,12 @@ import {
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogOverlay,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
@@ -180,6 +182,20 @@ export function CreateSessionDialog({
       toast({
         title: "Session created!",
         description: "Your game session has been scheduled.",
+      });
+      
+      // Reset form for next use
+      form.reset({
+        title: "",
+        description: "",
+        gameType: "",
+        date: new Date(),
+        time: "18:00",
+        duration: "2 hours",
+        location: "",
+        maxParticipants: "4",
+        experienceLevel: "Any",
+        isRecurring: "no",
       });
       
       setOpen(false);
@@ -518,6 +534,7 @@ export function CreateSessionDialog({
       </Dialog>
 
       <AlertDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
+        <AlertDialogOverlay className="cursor-pointer" />
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Game Session Created!</AlertDialogTitle>
@@ -535,8 +552,11 @@ export function CreateSessionDialog({
             </Button>
           </div>
           <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
+            <AlertDialogCancel asChild>
+              <Button variant="outline" className="sm:mr-auto">Close</Button>
+            </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={() => setLocation("/sessions")} className="w-full">
+              <Button onClick={() => setLocation("/sessions")} className="w-full sm:w-auto">
                 View All Sessions
               </Button>
             </AlertDialogAction>
