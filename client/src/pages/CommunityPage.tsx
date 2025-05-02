@@ -9,6 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { PostDiscussionDialog } from "@/components/community/PostDiscussionDialog";
+import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
 
 const categories = [
   {
@@ -181,10 +184,13 @@ const discussionPosts = [
 
 const CommunityPage = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("forums");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [selectedThread, setSelectedThread] = useState<number | null>(null);
+  const [threadDialogOpen, setThreadDialogOpen] = useState(false);
+  
   // Filter threads based on active category and search query
   const filteredThreads = forumThreads.filter(thread => {
     const categoryMatch = activeCategory === "all" || thread.category === activeCategory;
@@ -194,6 +200,15 @@ const CommunityPage = () => {
     
     return categoryMatch && searchMatch;
   });
+  
+  // Get the selected thread details
+  const selectedThreadDetails = forumThreads.find(thread => thread.id === selectedThread);
+  
+  // View thread handler
+  const handleViewThread = (threadId: number) => {
+    setSelectedThread(threadId);
+    setThreadDialogOpen(true);
+  };
 
   // SEO - Set document title
   useEffect(() => {
@@ -222,14 +237,18 @@ const CommunityPage = () => {
                   Browse Forums
                 </Link>
               </Button>
-              <Button
-                variant="outline"
-                className="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
-                size="lg"
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Join Discussion
-              </Button>
+              <PostDiscussionDialog
+                buttonVariant="outline"
+                buttonClassNames="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
+                buttonSize="lg"
+                refreshThreads={() => {
+                  // In a real app, this would fetch the latest threads
+                  toast({
+                    title: "Discussion posted",
+                    description: "Your thread is now visible to the community",
+                  });
+                }}
+              />
             </div>
           </div>
         </div>
