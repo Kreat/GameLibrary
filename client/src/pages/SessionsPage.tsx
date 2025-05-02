@@ -68,12 +68,20 @@ const SessionsPage = () => {
   const [_, setLocation] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState("list");
+  const [view, setView] = useState("calendar");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [gameTypeFilter, setGameTypeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showSessionDetails, setShowSessionDetails] = useState(false);
   const [selectedDateSessions, setSelectedDateSessions] = useState<Session[]>([]);
+  
+  // Reset selected sessions when switching views
+  useEffect(() => {
+    if (view !== 'calendar') {
+      setSelectedDateSessions([]);
+      setShowSessionDetails(false);
+    }
+  }, [view]);
 
   // Create sample sessions with multiple sessions on some days
   const createSampleSessions = () => {
@@ -755,8 +763,9 @@ const SessionsPage = () => {
             <TabsContent value="calendar" className="mt-6">
               <Card>
                 <CardContent className="p-6">
-                  <div className="grid gap-6 lg:grid-cols-2">
-                    <div>
+                  <div className="grid gap-8 lg:grid-cols-12">
+                    {/* Calendar section - 5 columns on large screens */}
+                    <div className="lg:col-span-5">
                       <h3 className="text-lg font-medium mb-4">Select a Date</h3>
                       <div className="mb-4">
                         <Calendar
@@ -820,7 +829,8 @@ const SessionsPage = () => {
                       </div>
                     </div>
                     
-                    <div>
+                    {/* Sessions list section - 7 columns on large screens */}
+                    <div className="lg:col-span-7">
                       <h3 className="text-lg font-medium mb-4">
                         {selectedDate && getSessionsForDate(selectedDate).length > 0 
                           ? `${getSessionsForDate(selectedDate).length} ${getSessionsForDate(selectedDate).length === 1 ? 'Session' : 'Sessions'} on ${formatDate(selectedDate)}` 
