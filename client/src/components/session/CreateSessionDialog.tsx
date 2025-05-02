@@ -88,6 +88,7 @@ export function CreateSessionDialog({
   buttonVariant = "default",
   buttonSize = "default",
   children,
+  id,
 }: CreateSessionDialogProps) {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
@@ -137,6 +138,7 @@ export function CreateSessionDialog({
             variant={buttonVariant} 
             size={buttonSize}
             className={buttonClassNames}
+            id={id}
           >
             {buttonLabel}
           </Button>
