@@ -59,6 +59,7 @@ const Navbar = () => {
               onClick={() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 if (location !== '/') {
+                  handleNavigationStart();
                   setLocation('/');
                 }
               }}
@@ -80,6 +81,7 @@ const Navbar = () => {
                   onClick={() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     if (location !== link.href) {
+                      handleNavigationStart();
                       setLocation(link.href);
                     }
                   }}
@@ -130,6 +132,7 @@ const Navbar = () => {
                   <DropdownMenuItem 
                     onClick={() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
+                      handleNavigationStart();
                       setLocation('/profile');
                     }}
                     className="hover:bg-meeple/10 dark:hover:bg-meeple/20 cursor-pointer flex items-center gap-2"
@@ -153,6 +156,7 @@ const Navbar = () => {
                 className="hidden md:inline-flex gradient-bg-primary text-slateNight font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all animate-fade-in delay-500"
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
+                  handleNavigationStart();
                   setLocation('/auth');
                 }}
               >
@@ -179,6 +183,7 @@ const Navbar = () => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                       setMobileMenuOpen(false);
                       if (location !== '/') {
+                        handleNavigationStart();
                         setLocation('/');
                       }
                     }}
@@ -199,6 +204,7 @@ const Navbar = () => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         setMobileMenuOpen(false);
                         if (location !== link.href) {
+                          handleNavigationStart();
                           setLocation(link.href);
                         }
                       }}
@@ -220,6 +226,7 @@ const Navbar = () => {
                       onClick={() => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                         setMobileMenuOpen(false);
+                        handleNavigationStart();
                         setLocation('/auth');
                       }}
                     >
