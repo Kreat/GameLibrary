@@ -17,32 +17,47 @@ const HeroSection = () => {
       
       <div className="container mx-auto px-4 py-24 relative">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Animated title with green gradient */}
-          <h1 className="text-6xl md:text-7xl font-display font-bold mb-8 animate-fade-in bg-gradient-to-r from-lime-300 to-emerald-400 bg-clip-text text-transparent">
-            Welcome to<br/>GameHub
+          {/* Animated title */}
+          <h1 className="text-6xl md:text-7xl font-display font-bold mb-8 animate-fade-in gradient-text">
+            GameHub
           </h1>
-          <p className="text-xl md:text-2xl mb-12 text-indigo-200 font-medium animate-fade-in delay-100">
-            Join our community of tabletop game enthusiasts. Find game sessions, connect with players, and discover new games.
+          <p className="text-xl md:text-2xl mb-12 text-white/90 font-medium animate-fade-in delay-100">
+            The ultimate platform for tabletop enthusiasts to connect and play
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            {/* Card 1 - Find Games */}
-            <div className="bg-white p-8 rounded-xl shadow-lg animate-fade-in delay-200">
-              <h3 className="text-2xl font-bold mb-2 text-amber-500">Find Games</h3>
-              <p className="text-slate-600">Discover new games and sessions near you</p>
-            </div>
+            {/* Card 1 - animated and glowing on hover */}
+            <Link href="/sessions" className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-meeple/30 card-hover animate-fade-in delay-200 cursor-pointer transition-all hover:shadow-lg hover:border-meeple/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-meeple to-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <Users className="h-8 w-8 text-slateNight" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-meeple">Find Players</h3>
+                <p className="text-white/80">Connect with players who share your gaming interests</p>
+              </div>
+            </Link>
             
-            {/* Card 2 - Connect */}
-            <div className="bg-white p-8 rounded-xl shadow-lg animate-fade-in delay-300">
-              <h3 className="text-2xl font-bold mb-2 text-violet-500">Connect</h3>
-              <p className="text-slate-600">Meet players with similar interests</p>
-            </div>
+            {/* Card 2 */}
+            <Link href={user ? "/create-session" : "/auth"} className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-mintToken/30 card-hover animate-fade-in delay-300 cursor-pointer transition-all hover:shadow-lg hover:border-mintToken/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-mintToken to-teal-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <CalendarDays className="h-8 w-8 text-slateNight" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-mintToken">Schedule Games</h3>
+                <p className="text-white/80">Plan and organize your next gaming session with ease</p>
+              </div>
+            </Link>
             
-            {/* Card 3 - Organize */}
-            <div className="bg-white p-8 rounded-xl shadow-lg animate-fade-in delay-400">
-              <h3 className="text-2xl font-bold mb-2 text-emerald-500">Organize</h3>
-              <p className="text-slate-600">Schedule and manage your gaming sessions</p>
-            </div>
+            {/* Card 3 */}
+            <Link href="/games" className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-boardRed/30 card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-boardRed/50">
+                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-boardRed to-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+                  <Dice5 className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-boardRed">Discover Games</h3>
+                <p className="text-white/80">Explore new tabletop games and find local events</p>
+              </div>
+            </Link>
           </div>
           
           {/* CTA Buttons */}
