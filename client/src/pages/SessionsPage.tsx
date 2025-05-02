@@ -273,9 +273,13 @@ const SessionsPage = () => {
       <Dialog open={showSessionDetails} onOpenChange={setShowSessionDetails}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
-            <DialogTitle>Sessions on {selectedDate ? formatDate(selectedDate) : ""}</DialogTitle>
+            <DialogTitle>
+              {selectedDateSessions.length} {selectedDateSessions.length === 1 ? "Session" : "Sessions"} on {selectedDate ? formatDate(selectedDate) : ""}
+            </DialogTitle>
             <DialogDescription>
-              Gaming sessions scheduled for this date
+              {selectedDateSessions.length > 1 
+                ? `Multiple gaming sessions are scheduled for this date` 
+                : `Gaming session scheduled for this date`}
             </DialogDescription>
           </DialogHeader>
           
@@ -388,6 +392,28 @@ const SessionsPage = () => {
                   }}
                   modifiersClassNames={{
                     hasSession: "relative after:absolute after:content-[''] after:w-1 after:h-1 after:rounded-full after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:bg-primary",
+                  }}
+                  components={{
+                    DayContent: (props) => {
+                      const sessionsCount = getSessionsForDate(props.date).length;
+                      return (
+                        <div className="relative flex items-center justify-center">
+                          {props.date.getDate()}
+                          {sessionsCount > 0 && (
+                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex items-center justify-center gap-0.5">
+                              {/* Display multiple dots if there are more sessions */}
+                              {sessionsCount >= 3 && (
+                                <div className="w-1 h-1 rounded-full bg-primary" />
+                              )}
+                              {sessionsCount >= 2 && (
+                                <div className="w-1 h-1 rounded-full bg-accent" />
+                              )}
+                              <div className="w-1 h-1 rounded-full bg-primary" />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
                   }}
                 />
               </div>
@@ -604,10 +630,25 @@ const SessionsPage = () => {
                           }}
                         />
                       </div>
-                      <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
-                        <div className="flex items-center mr-4">
+                      <div className="flex flex-wrap items-center justify-center mt-2 text-sm text-gray-500 gap-3">
+                        <div className="flex items-center">
                           <div className="w-2 h-2 rounded-full bg-primary mr-1.5"></div>
-                          <span>Sessions Available</span>
+                          <span>1 Session</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="flex gap-0.5 mr-1.5">
+                            <div className="w-2 h-2 rounded-full bg-accent"></div>
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                          </div>
+                          <span>2 Sessions</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="flex gap-0.5 mr-1.5">
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                            <div className="w-2 h-2 rounded-full bg-accent"></div>
+                            <div className="w-2 h-2 rounded-full bg-primary"></div>
+                          </div>
+                          <span>3+ Sessions</span>
                         </div>
                       </div>
                     </div>
@@ -615,7 +656,7 @@ const SessionsPage = () => {
                     <div>
                       <h3 className="text-lg font-medium mb-4">
                         {selectedDate && getSessionsForDate(selectedDate).length > 0 
-                          ? `Sessions on ${formatDate(selectedDate)}` 
+                          ? `${getSessionsForDate(selectedDate).length} ${getSessionsForDate(selectedDate).length === 1 ? 'Session' : 'Sessions'} on ${formatDate(selectedDate)}` 
                           : 'No Sessions Selected'}
                       </h3>
                       
