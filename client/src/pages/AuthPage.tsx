@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
 // Form validation schemas
 const loginSchema = z.object({
@@ -31,14 +32,29 @@ const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+});
+
+const resetPasswordSchema = z.object({
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
 type LoginFormValues = z.infer<typeof loginSchema>;
 type RegisterFormValues = z.infer<typeof registerSchema>;
+type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { user, isLoading } = useAuth();
+  const [resetToken, setResetToken] = useState<string | null>(null);
   
   // Redirect to home if already logged in
   if (user && !isLoading) {
@@ -64,6 +80,23 @@ export default function AuthPage() {
       password: "",
       confirmPassword: "",
       displayName: "",
+    },
+  });
+  
+  // Forgot Password Form
+  const forgotPasswordForm = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+  
+  // Reset Password Form
+  const resetPasswordForm = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -332,26 +365,26 @@ export default function AuthPage() {
       </div>
 
       {/* Hero Section Column */}
-      <div className="hidden md:flex flex-col items-center justify-center p-8 bg-gradient-to-br from-primary-50 to-background rounded-lg shadow-lg">
+      <div className="hidden md:flex flex-col items-center justify-center p-8 bg-gradient-to-br from-meepleGold/10 to-slateNight/5 rounded-lg shadow-lg">
         <div className="text-center max-w-md">
-          <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-6 bg-gradient-to-r from-meepleGold to-boardRed bg-clip-text text-transparent">
             Welcome to GameHub
           </h1>
-          <p className="text-lg mb-8 text-gray-700">
+          <p className="text-lg mb-8 text-slateNight dark:text-white">
             Join our community of tabletop game enthusiasts. Find game sessions, connect with players, and discover new games.
           </p>
           <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h3 className="font-semibold text-primary mb-2">Find Games</h3>
-              <p className="text-sm text-gray-600">Discover new games and sessions near you</p>
+            <div className="bg-gradient-to-br from-slateNight to-slateNight/90 p-4 rounded-lg shadow-lg border border-meepleGold/20 hover:border-meepleGold/50 transition-all">
+              <h3 className="font-semibold text-meepleGold mb-2">Find Games</h3>
+              <p className="text-sm text-white/80">Discover new games and sessions near you</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h3 className="font-semibold text-primary mb-2">Connect</h3>
-              <p className="text-sm text-gray-600">Meet players with similar interests</p>
+            <div className="bg-gradient-to-br from-slateNight to-slateNight/90 p-4 rounded-lg shadow-lg border border-meepleGold/20 hover:border-meepleGold/50 transition-all">
+              <h3 className="font-semibold text-meepleGold mb-2">Connect</h3>
+              <p className="text-sm text-white/80">Meet players with similar interests</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-              <h3 className="font-semibold text-primary mb-2">Organize</h3>
-              <p className="text-sm text-gray-600">Schedule and manage your gaming sessions</p>
+            <div className="bg-gradient-to-br from-slateNight to-slateNight/90 p-4 rounded-lg shadow-lg border border-meepleGold/20 hover:border-meepleGold/50 transition-all">
+              <h3 className="font-semibold text-meepleGold mb-2">Organize</h3>
+              <p className="text-sm text-white/80">Schedule and manage your gaming sessions</p>
             </div>
           </div>
         </div>
