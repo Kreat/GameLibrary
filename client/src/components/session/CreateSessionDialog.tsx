@@ -206,8 +206,9 @@ export function CreateSessionDialog({
   const copyToClipboard = () => {
     navigator.clipboard.writeText(inviteLink);
     toast({
-      title: "Link copied!",
-      description: "Invitation link has been copied to clipboard.",
+      title: "Invitation link copied!",
+      description: "You can now share it with friends to invite them to your session.",
+      variant: "success",
     });
   };
 
@@ -519,21 +520,23 @@ export function CreateSessionDialog({
       <AlertDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Share Your Game Session</AlertDialogTitle>
+            <AlertDialogTitle>Game Session Created!</AlertDialogTitle>
             <AlertDialogDescription>
-              Your game has been created! Share this link with friends to invite them to join your session.
+              Your game session has been successfully created.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="flex items-center justify-between p-3 mt-2 bg-muted rounded-md">
-            <div className="truncate flex-1 mr-2 text-sm overflow-hidden text-ellipsis">{inviteLink}</div>
-            <Button size="sm" variant="outline" onClick={copyToClipboard}>
-              <Copy className="h-4 w-4 mr-1" />
-              Copy
+          <div className="flex flex-col gap-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              An invitation link has been generated for your session.
+            </p>
+            <Button onClick={copyToClipboard} className="w-full">
+              <Copy className="h-4 w-4 mr-2" />
+              Copy Invitation Link
             </Button>
           </div>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2">
             <AlertDialogAction asChild>
-              <Button onClick={() => setLocation("/sessions")}>
+              <Button onClick={() => setLocation("/sessions")} className="w-full">
                 View All Sessions
               </Button>
             </AlertDialogAction>
