@@ -57,6 +57,8 @@ export default function AuthPage() {
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [checkingUsername, setCheckingUsername] = useState<boolean>(false);
+  const [isRequestingReset, setIsRequestingReset] = useState<boolean>(false);
+  const [isResettingPassword, setIsResettingPassword] = useState<boolean>(false);
   const usernameTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // Redirect to home if already logged in
@@ -193,9 +195,12 @@ export default function AuthPage() {
       {/* Auth Form Column */}
       <div className="w-full max-w-md mx-auto">
         <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className={`grid w-full ${activeTab === "forgotPassword" || activeTab === "resetPassword" ? "grid-cols-3" : "grid-cols-2"} mb-8`}>
             <TabsTrigger value="login">Sign In</TabsTrigger>
             <TabsTrigger value="register">Sign Up</TabsTrigger>
+            {(activeTab === "forgotPassword" || activeTab === "resetPassword") && (
+              <TabsTrigger value="forgotPassword">Reset Password</TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="login">
@@ -233,10 +238,7 @@ export default function AuthPage() {
                               variant="link" 
                               className="px-0 h-5 text-xs text-primary"
                               type="button"
-                              onClick={() => toast({
-                                title: "Password Recovery",
-                                description: "Password recovery feature coming soon",
-                              })}
+                              onClick={() => setActiveTab("forgotPassword")}
                             >
                               Forgot Password?
                             </Button>
@@ -428,6 +430,172 @@ export default function AuthPage() {
                   </svg>
                   Sign up with Google
                 </Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="forgotPassword">
+            <Card>
+              <CardHeader>
+                <CardTitle>Reset Password</CardTitle>
+                <CardDescription>
+                  Enter your email to receive a password reset link
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!resetToken ? (
+                  <Form {...forgotPasswordForm}>
+                    <form 
+                      onSubmit={forgotPasswordForm.handleSubmit(async (data) => {
+                        try {
+                          setIsRequestingReset(true);
+                          
+                          // Request password reset from the API
+                          const response = await fetch("/api/request-password-reset", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ email: data.email }),
+                          });
+                          
+                          if (!response.ok) {
+                            throw new Error("Failed to request password reset");
+                          }
+                          
+                          toast({
+                            title: "Reset link sent",
+                            description: "If an account exists with this email, you will receive a password reset link"
+                          });
+                          
+                          // For demo purposes, we'll simulate receiving a reset token
+                          setTimeout(() => {
+                            setResetToken("demo-reset-token");
+                            setIsRequestingReset(false);
+                          }, 1500);
+                        } catch (error) {
+                          setIsRequestingReset(false);
+                          toast({
+                            title: "Error",
+                            description: "There was a problem requesting a password reset. Please try again.",
+                            variant: "destructive"
+                          });
+                        }
+                      })} 
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={forgotPasswordForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="you@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button 
+                        type="submit" 
+                        className="w-full"
+                      >
+                        Send Reset Link
+                      </Button>
+                    </form>
+                  </Form>
+                ) : (
+                  <Form {...resetPasswordForm}>
+                    <form 
+                      onSubmit={resetPasswordForm.handleSubmit(async (data) => {
+                        try {
+                          // Reset password via the API
+                          const response = await fetch("/api/reset-password", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ 
+                              token: resetToken,
+                              password: data.password
+                            }),
+                          });
+                          
+                          if (!response.ok) {
+                            throw new Error("Failed to reset password");
+                          }
+                          
+                          toast({
+                            title: "Password reset successful",
+                            description: "Your password has been reset. You can now sign in with your new password."
+                          });
+                          
+                          // Redirect to login
+                          setResetToken(null);
+                          setActiveTab("login");
+                        } catch (error) {
+                          toast({
+                            title: "Error",
+                            description: "There was a problem resetting your password. Please try again.",
+                            variant: "destructive"
+                          });
+                        }
+                      })} 
+                      className="space-y-4"
+                    >
+                      <div className="bg-primary/10 text-primary p-3 rounded-md mb-4 text-sm">
+                        Enter your new password below.
+                      </div>
+                      <FormField
+                        control={resetPasswordForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>New Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="••••••••" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={resetPasswordForm.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Confirm New Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="••••••••" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button 
+                        type="submit" 
+                        className="w-full"
+                      >
+                        Reset Password
+                      </Button>
+                    </form>
+                  </Form>
+                )}
+              </CardContent>
+              <CardFooter>
+                <div className="text-sm text-center text-muted-foreground w-full">
+                  Remember your password?{" "}
+                  <button 
+                    onClick={() => {
+                      setResetToken(null);
+                      setActiveTab("login");
+                    }}
+                    className="text-primary hover:underline"
+                  >
+                    Back to Sign In
+                  </button>
+                </div>
               </CardFooter>
             </Card>
           </TabsContent>

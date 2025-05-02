@@ -365,6 +365,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to match sessions" });
     }
   });
+  
+  // Password Reset Request
+  app.post("/api/request-password-reset", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      // In a real app, we would:
+      // 1. Check if the email exists in our database
+      // 2. Generate a unique token
+      // 3. Save the token to the database with an expiration time
+      // 4. Send an email with the reset link containing the token
+      
+      // For this demo, we'll just return a success message regardless of whether
+      // the email exists or not (for security, don't reveal if an email exists)
+      res.json({ success: true, message: "If an account with that email exists, a password reset link has been sent." });
+    } catch (error) {
+      console.error("Error requesting password reset:", error);
+      res.status(500).json({ message: "Failed to process password reset request" });
+    }
+  });
+  
+  // Password Reset with Token
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      
+      // In a real app, we would:
+      // 1. Verify the token exists and hasn't expired
+      // 2. Find the user associated with the token
+      // 3. Update the user's password
+      // 4. Delete the used token
+      
+      // For this demo, we'll just return a success message
+      res.json({ success: true, message: "Password has been reset successfully" });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
 
   const httpServer = createServer(app);
 
