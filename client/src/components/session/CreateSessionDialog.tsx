@@ -517,7 +517,7 @@ export function CreateSessionDialog({
       </Dialog>
 
       <AlertDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Share Your Game Session</AlertDialogTitle>
             <AlertDialogDescription>
@@ -525,7 +525,7 @@ export function CreateSessionDialog({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex items-center justify-between p-3 mt-2 bg-muted rounded-md">
-            <div className="truncate flex-1 mr-2 text-sm">{inviteLink}</div>
+            <div className="truncate flex-1 mr-2 text-sm overflow-hidden text-ellipsis">{inviteLink}</div>
             <Button size="sm" variant="outline" onClick={copyToClipboard}>
               <Copy className="h-4 w-4 mr-1" />
               Copy
