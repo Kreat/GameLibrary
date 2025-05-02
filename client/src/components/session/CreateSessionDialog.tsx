@@ -5,7 +5,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Clock, MapPin, Users, Link, Copy } from "lucide-react";
 import { format } from "date-fns";
-import { addDoc, collection, Timestamp } from "firebase/firestore"; 
 import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
@@ -149,7 +148,7 @@ export function CreateSessionDialog({
         title: data.title,
         description: data.description,
         gameType: data.gameType,
-        startTime: Timestamp.fromDate(dateTime),
+        startTime: dateTime,
         duration: data.duration,
         location: data.location,
         experienceLevel: data.experienceLevel,
@@ -167,12 +166,12 @@ export function CreateSessionDialog({
           }
         ],
         maxParticipants: data.maxParticipants,
-        createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
       
-      // Add session to Firestore
-      const docRef = await addDoc(collection(db, "sessions"), gameSession);
+      // Add session to mock Firestore
+      const docRef = await db.collection("sessions").add(gameSession);
       
       // Generate invitation link
       const sessionLink = `${window.location.origin}/join/${docRef.id}`;
