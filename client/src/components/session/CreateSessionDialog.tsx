@@ -184,20 +184,7 @@ export function CreateSessionDialog({
         description: "Your game session has been scheduled.",
       });
       
-      // Reset form for next use
-      form.reset({
-        title: "",
-        description: "",
-        gameType: "",
-        date: new Date(),
-        time: "18:00",
-        duration: "2 hours",
-        location: "",
-        maxParticipants: "4",
-        experienceLevel: "Any",
-        isRecurring: "no",
-      });
-      
+      // Close form dialog and open invitation dialog
       setOpen(false);
       setInviteDialogOpen(true);
     } catch (error) {
@@ -224,7 +211,7 @@ export function CreateSessionDialog({
     toast({
       title: "Invitation link copied!",
       description: "You can now share it with friends to invite them to your session.",
-      variant: "success",
+      variant: "default",
     });
   };
 
@@ -533,8 +520,27 @@ export function CreateSessionDialog({
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-        <AlertDialogOverlay className="cursor-pointer" />
+      <AlertDialog 
+        open={inviteDialogOpen} 
+        onOpenChange={(open) => {
+          setInviteDialogOpen(open);
+          if (!open) {
+            // When dialog is being closed, reset form
+            form.reset({
+              title: "",
+              description: "",
+              gameType: "",
+              date: new Date(),
+              time: "18:00",
+              duration: "2 hours",
+              location: "",
+              maxParticipants: "4",
+              experienceLevel: "Any",
+              isRecurring: "no",
+            });
+          }
+        }}
+      >
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Game Session Created!</AlertDialogTitle>
