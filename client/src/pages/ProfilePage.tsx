@@ -362,34 +362,13 @@ const ProfilePage = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center">
-                  <div className="relative group">
-                    <Avatar className="h-24 w-24 mb-4">
+                  <div className="relative group mb-2">
+                    <Avatar className="h-24 w-24 mb-4 border-2 border-primary/20">
                       <AvatarImage src={photoURL || user.photoURL || undefined} alt={user.displayName || "User"} />
                       <AvatarFallback className="text-2xl">
                         {user.displayName?.[0] || user.email?.[0] || "U"}
                       </AvatarFallback>
                     </Avatar>
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            className="absolute bottom-4 right-0 bg-primary text-white rounded-full p-1.5 shadow-md hover:bg-primary/90 transition-all"
-                            onClick={triggerFileUpload}
-                            disabled={uploadingPhoto}
-                          >
-                            {uploadingPhoto ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Camera className="h-4 w-4" />
-                            )}
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Change profile picture</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                     
                     {/* Hidden file input */}
                     <input
@@ -400,6 +379,21 @@ const ProfilePage = () => {
                       className="hidden"
                     />
                   </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="mb-4 flex items-center gap-2"
+                    onClick={triggerFileUpload}
+                    disabled={uploadingPhoto}
+                  >
+                    {uploadingPhoto ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Camera className="h-4 w-4" />
+                    )}
+                    Change Profile Picture
+                  </Button>
                   <h2 className="text-xl font-bold">
                     {profileLoading ? "Loading..." : (profileData?.displayName || user.displayName || "New User")}
                   </h2>
