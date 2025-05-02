@@ -76,7 +76,7 @@ const HeroSection = () => {
               className="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
               asChild
             >
-              <Link href="#session-wizard">Host a Game</Link>
+              <Link href={user ? "/create-session" : "/auth"}>Host a Game</Link>
             </Button>
           </div>
         </div>

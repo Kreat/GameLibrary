@@ -514,7 +514,7 @@ const SessionsPage = () => {
         
         <div className="flex flex-wrap gap-2">
           <Button asChild>
-            <Link href={user ? "/#session-wizard" : "/auth"}>
+            <Link href={user ? "/create-session" : "/auth"}>
               <Plus className="mr-2 h-4 w-4" />
               Host Session
             </Link>
@@ -737,7 +737,7 @@ const SessionsPage = () => {
                     Try adjusting your search or filter criteria.
                   </p>
                   <Button asChild>
-                    <Link href={user ? "/#session-wizard" : "/auth"}>
+                    <Link href={user ? "/create-session" : "/auth"}>
                       <Plus className="mr-2 h-4 w-4" />
                       Host Your Own Session
                     </Link>
