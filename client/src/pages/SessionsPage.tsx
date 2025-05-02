@@ -739,11 +739,11 @@ const SessionsPage = () => {
                     Try adjusting your search or filter criteria.
                   </p>
                   <CreateSessionDialog
-                    buttonLabel="Host Your Own Session"
+                    buttonLabel="Host a Game"
                   >
                     <Button>
                       <Plus className="mr-2 h-4 w-4" />
-                      Host Your Own Session
+                      Host a Game
                     </Button>
                   </CreateSessionDialog>
                 </div>
@@ -881,11 +881,11 @@ const SessionsPage = () => {
                             Select a date with a number indicator to view available gaming sessions
                           </p>
                           <CreateSessionDialog
-                            buttonLabel="Create a Session"
+                            buttonLabel="Host a Game"
                           >
                             <Button variant="outline">
                               <Plus className="mr-2 h-4 w-4" />
-                              Create a Session
+                              Host a Game
                             </Button>
                           </CreateSessionDialog>
                         </div>
