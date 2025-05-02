@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, User, Calendar, Clock, Settings, Gamepad } from "lucide-react";
+import { Loader2, User, Calendar, Clock, Settings, Gamepad, Camera, Upload } from "lucide-react";
 
 // Define the profile form schema with Zod
 const profileFormSchema = z.object({
@@ -48,6 +48,9 @@ const ProfilePage = () => {
   const [profileData, setProfileData] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("profile");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoURL, setPhotoURL] = useState<string | undefined>(undefined);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Initialize profile form
@@ -214,6 +217,82 @@ const ProfilePage = () => {
     }
   };
 
+  // Handle photo upload
+  const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || !event.target.files[0] || !user) return;
+    
+    const file = event.target.files[0];
+    
+    // Validate file type and size
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file (JPEG, PNG, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      toast({
+        title: "File too large",
+        description: "Profile picture must be less than 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setUploadingPhoto(true);
+    
+    try {
+      // Get Firebase storage reference
+      const storage = getStorage();
+      const storageRef = ref(storage, `profile-photos/${user.uid}/${Date.now()}-${file.name}`);
+      
+      // Upload the file
+      await uploadBytes(storageRef, file);
+      
+      // Get the download URL
+      const url = await getDownloadURL(storageRef);
+      
+      // Update user profile with new photo URL
+      const userDocRef = doc(db, "users", user.uid);
+      await setDoc(userDocRef, {
+        photoURL: url,
+        updatedAt: new Date(),
+      }, { merge: true });
+      
+      // Update state
+      setPhotoURL(url);
+      
+      toast({
+        title: "Photo uploaded",
+        description: "Your profile picture has been updated",
+      });
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      toast({
+        title: "Upload failed",
+        description: "Could not upload profile picture. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingPhoto(false);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+  
+  // Trigger file upload dialog
+  const triggerFileUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   // Handle sign out
   const handleSignOut = async () => {
     try {
@@ -283,12 +362,44 @@ const ProfilePage = () => {
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center">
-                  <Avatar className="h-24 w-24 mb-4">
-                    <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
-                    <AvatarFallback className="text-2xl">
-                      {user.displayName?.[0] || user.email?.[0] || "U"}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative group">
+                    <Avatar className="h-24 w-24 mb-4">
+                      <AvatarImage src={photoURL || user.photoURL || undefined} alt={user.displayName || "User"} />
+                      <AvatarFallback className="text-2xl">
+                        {user.displayName?.[0] || user.email?.[0] || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className="absolute bottom-4 right-0 bg-primary text-white rounded-full p-1.5 shadow-md hover:bg-primary/90 transition-all"
+                            onClick={triggerFileUpload}
+                            disabled={uploadingPhoto}
+                          >
+                            {uploadingPhoto ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Camera className="h-4 w-4" />
+                            )}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Change profile picture</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    {/* Hidden file input */}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handlePhotoUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                  </div>
                   <h2 className="text-xl font-bold">
                     {profileLoading ? "Loading..." : (profileData?.displayName || user.displayName || "New User")}
                   </h2>
