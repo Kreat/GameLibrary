@@ -13,6 +13,7 @@ import SessionsPage from "@/pages/SessionsPage";
 import CommunityPage from "@/pages/CommunityPage";
 import ProfilePage from "@/pages/ProfilePage";
 import CreateSessionPage from "@/pages/CreateSessionPage";
+import JoinSessionPage from "@/pages/JoinSessionPage";
 import AuthPage from "@/pages/AuthPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -31,6 +32,7 @@ function Router() {
           <Route path="/community" component={CommunityPage} />
           <ProtectedRoute path="/profile" component={ProfilePage} />
           <ProtectedRoute path="/create-session" component={CreateSessionPage} />
+          <Route path="/join/:id" component={JoinSessionPage} />
           <Route component={NotFound} />
         </Switch>
       </main>

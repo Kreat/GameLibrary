@@ -21,6 +21,10 @@ const CreateSessionPage = () => {
   const [_, navigate] = useLocation();
   const { user, loading } = useAuth();
   const { toast } = useToast();
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [inviteLink, setInviteLink] = useState("");
+  const [copySuccess, setCopySuccess] = useState(false);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -101,12 +105,16 @@ const CreateSessionPage = () => {
       // Add session to Firestore
       const docRef = await addDoc(collection(db, "sessions"), gameSession);
       
+      // Generate invitation link for the session
+      const sessionLink = `${window.location.origin}/join/${docRef.id}`;
+      setSessionId(docRef.id);
+      setInviteLink(sessionLink);
+      setInviteDialogOpen(true);
+      
       toast({
         title: "Session created!",
         description: "Your gaming session has been successfully created.",
       });
-      
-      navigate(`/sessions/${docRef.id}`);
     } catch (error) {
       console.error("Error creating session:", error);
       toast({
@@ -117,10 +125,82 @@ const CreateSessionPage = () => {
     }
   };
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+      
+      toast({
+        title: "Link copied!",
+        description: "Game invitation link copied to clipboard",
+      });
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+      toast({
+        title: "Copy failed",
+        description: "Please try copying the link manually",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  const handleDialogClose = () => {
+    setInviteDialogOpen(false);
+    if (sessionId) {
+      navigate(`/sessions/${sessionId}`);
+    }
+  };
+
   return (
     <div className="pb-12">
       {/* SessionWizard has all the form handling logic */}
       <SessionWizard onSessionCreated={createSession} />
+      
+      {/* Invitation Link Dialog */}
+      <Dialog open={inviteDialogOpen} onOpenChange={handleDialogClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Game Session</DialogTitle>
+            <DialogDescription>
+              Share this invitation link with the players you want to invite to your game session
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex items-center space-x-2 mt-4">
+            <div className="grid flex-1 gap-2">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <LinkIcon className="h-4 w-4 text-gray-500" />
+                </div>
+                <input
+                  type="text"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={inviteLink}
+                  readOnly
+                />
+              </div>
+            </div>
+            <Button 
+              size="icon" 
+              onClick={handleCopyLink}
+              className="px-3"
+            >
+              {copySuccess ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            </Button>
+          </div>
+          
+          <DialogFooter className="sm:justify-start mt-4">
+            <div className="text-xs text-muted-foreground">
+              People with this link can request to join your game session
+            </div>
+            <div className="flex-1"></div>
+            <Button onClick={handleDialogClose}>
+              Go to Session
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
