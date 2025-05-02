@@ -212,11 +212,15 @@ const CommunityPage = () => {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button
-                className="bg-white text-primary hover:bg-gray-100"
+                variant="outline"
+                className="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
                 size="lg"
                 asChild
               >
-                <Link href="#forums">Browse Forums</Link>
+                <Link href="#forums">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Browse Forums
+                </Link>
               </Button>
               <Button
                 variant="outline"
