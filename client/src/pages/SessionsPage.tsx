@@ -15,6 +15,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
   CalendarIcon,
   MapPin,
   User,
@@ -24,8 +33,9 @@ import {
   Filter,
   Plus,
   Download,
+  ListFilter,
 } from "lucide-react";
-import { formatDate, generateCalendarEvent, downloadICSFile } from "@/lib/utils";
+import { formatDate, generateCalendarEvent, downloadICSFile, cn } from "@/lib/utils";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, query, where, Timestamp } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
@@ -60,6 +70,8 @@ const SessionsPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [gameTypeFilter, setGameTypeFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSessionDetails, setShowSessionDetails] = useState(false);
+  const [selectedDateSessions, setSelectedDateSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -230,6 +242,25 @@ const SessionsPage = () => {
         return "bg-gray-600";
     }
   };
+  
+  // Function to check if a date has any sessions
+  const getSessionsForDate = (date: Date) => {
+    if (!date) return [];
+    
+    return displaySessions.filter(session => {
+      const sessionDate = session.startTime.toDate();
+      return (
+        sessionDate.getDate() === date.getDate() &&
+        sessionDate.getMonth() === date.getMonth() &&
+        sessionDate.getFullYear() === date.getFullYear()
+      );
+    });
+  };
+  
+  // Function to check if a date has any sessions for the calendar
+  const hasSessionsOnDate = (date: Date) => {
+    return getSessionsForDate(date).length > 0;
+  };
 
   // SEO - Set document title
   useEffect(() => {
@@ -331,7 +362,7 @@ const SessionsPage = () => {
             <div className="flex items-center justify-between">
               <TabsList>
                 <TabsTrigger value="list" className="flex items-center gap-1.5">
-                  <List className="h-4 w-4" />
+                  <ListFilter className="h-4 w-4" />
                   List View
                 </TabsTrigger>
                 <TabsTrigger value="calendar" className="flex items-center gap-1.5">
@@ -471,8 +502,5 @@ const SessionsPage = () => {
     </div>
   );
 };
-
-// Import List at the top to avoid error
-import { List } from "lucide-react";
 
 export default SessionsPage;
