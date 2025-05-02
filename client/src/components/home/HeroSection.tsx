@@ -1,11 +1,11 @@
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Dice5, Users, CalendarDays } from "lucide-react";
+import { CreateSessionDialog } from "@/components/session/CreateSessionDialog";
 
 const HeroSection = () => {
   const { user } = useAuth();
-  const [_, setLocation] = useLocation();
 
   return (
     <section className="relative bg-slateNight text-white overflow-hidden">
@@ -71,20 +71,11 @@ const HeroSection = () => {
             >
               <Link href="/sessions">Find Players</Link>
             </Button>
-            <Button
-              size="lg"
-              variant="default"
-              className="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
-              onClick={() => {
-                if (user) {
-                  setLocation("/create-session");
-                } else {
-                  setLocation("/auth");
-                }
-              }}
-            >
-              Host a Game
-            </Button>
+            <CreateSessionDialog 
+              buttonSize="lg"
+              buttonLabel="Host a Game"
+              buttonClassNames="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
+            />
           </div>
         </div>
       </div>
