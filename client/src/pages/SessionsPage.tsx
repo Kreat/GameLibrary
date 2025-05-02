@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { CreateSessionDialog } from "@/components/session/CreateSessionDialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -738,18 +738,14 @@ const SessionsPage = () => {
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     Try adjusting your search or filter criteria.
                   </p>
-                  <Button
-                    onClick={() => {
-                      if (user) {
-                        setLocation("/create-session");
-                      } else {
-                        setLocation("/auth");
-                      }
-                    }}
+                  <CreateSessionDialog
+                    buttonLabel="Host Your Own Session"
                   >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Host Your Own Session
-                  </Button>
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Host Your Own Session
+                    </Button>
+                  </CreateSessionDialog>
                 </div>
               )}
             </TabsContent>
@@ -884,19 +880,14 @@ const SessionsPage = () => {
                           <p className="text-gray-500 dark:text-gray-400 mb-6">
                             Select a date with a number indicator to view available gaming sessions
                           </p>
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              if (user) {
-                                setLocation("/create-session");
-                              } else {
-                                setLocation("/auth");
-                              }
-                            }}
+                          <CreateSessionDialog
+                            buttonLabel="Create a Session"
                           >
-                            <Plus className="mr-2 h-4 w-4" />
-                            Create a Session
-                          </Button>
+                            <Button variant="outline">
+                              <Plus className="mr-2 h-4 w-4" />
+                              Create a Session
+                            </Button>
+                          </CreateSessionDialog>
                         </div>
                       )}
                     </div>
