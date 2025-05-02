@@ -1,7 +1,10 @@
 import { Link } from "wouter";
 import { Gamepad, Twitter, Facebook, Instagram, MessagesSquare } from "lucide-react";
+import { CreateSessionDialog } from "@/components/session/CreateSessionDialog";
+import { useAuth } from "@/hooks/use-auth";
 
 const Footer = () => {
+  const { user } = useAuth();
   return (
     <footer className="bg-gray-900 text-gray-300 py-12">
       <div className="container mx-auto px-4">
@@ -36,7 +39,17 @@ const Footer = () => {
             <h3 className="text-white font-medium mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li><Link href="/games" className="text-gray-400 hover:text-white transition-colors">Find Games</Link></li>
-              <li><Link href="/create-session" className="text-gray-400 hover:text-white transition-colors">Host a Session</Link></li>
+              <li>
+                <span 
+                  onClick={() => user ? document.getElementById('footerCreateSessionTrigger')?.click() : window.location.href = '/auth'}
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  Host a Game
+                </span>
+                <div className="hidden">
+                  <CreateSessionDialog id="footerCreateSessionTrigger" buttonLabel="Host a Game" />
+                </div>
+              </li>
               <li><Link href="/community" className="text-gray-400 hover:text-white transition-colors">Community Forums</Link></li>
               <li><Link href="/games" className="text-gray-400 hover:text-white transition-colors">Game Library</Link></li>
               <li><Link href="/sessions" className="text-gray-400 hover:text-white transition-colors">Event Calendar</Link></li>
