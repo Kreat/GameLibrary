@@ -248,12 +248,16 @@ const CommunityPage = () => {
                 variant="outline"
                 className="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
                 size="lg"
-                asChild
+                onClick={() => {
+                  setActiveTab("discussions");
+                  document.getElementById("discussions-tab")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
               >
-                <Link href="#forums">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Browse Forums
-                </Link>
+                <MessageCircle className="mr-2 h-4 w-4" />
+                Browse Discussions
               </Button>
               <PostDiscussionDialog
                 buttonVariant="outline"
@@ -278,7 +282,7 @@ const CommunityPage = () => {
           <TabsList className="w-full grid grid-cols-3 mb-6">
             <TabsTrigger value="forums" className="flex items-center gap-1.5">
               <MessageSquare className="h-4 w-4" />
-              Forums
+              Thread Discussions
             </TabsTrigger>
             <TabsTrigger value="discussions" className="flex items-center gap-1.5">
               <MessageCircle className="h-4 w-4" />
@@ -341,7 +345,7 @@ const CommunityPage = () => {
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400 text-sm">
                       {activeCategory === "all" 
-                        ? "Browse all forum discussions" 
+                        ? "Browse all thread discussions" 
                         : categories.find(c => c.id === activeCategory)?.description}
                     </p>
                   </div>
@@ -473,7 +477,7 @@ const CommunityPage = () => {
           </TabsContent>
           
           {/* Discussions Tab Content */}
-          <TabsContent value="discussions">
+          <TabsContent value="discussions" id="discussions-tab">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <div className="flex justify-between items-center mb-6">
@@ -500,7 +504,7 @@ const CommunityPage = () => {
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={user.photoUrl || undefined} alt={user.displayName || "User"} />
+                          <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
                           <AvatarFallback>{user.displayName?.[0] || user.email?.[0] || "U"}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
@@ -615,9 +619,8 @@ const CommunityPage = () => {
                   </CardContent>
                   <CardFooter className="p-4">
                     <Button variant="outline" className="w-full" asChild>
-                      <Link href="#forums" onClick={() => {
-                        setActiveTab("forums");
-                        setActiveCategory("all");
+                      <Link href="#discussions-tab" onClick={() => {
+                        setActiveTab("discussions");
                       }}>
                         View All Categories
                       </Link>
