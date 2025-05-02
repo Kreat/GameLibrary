@@ -773,7 +773,13 @@ const SessionsPage = () => {
                               }
                             }
                           }}
-                          className="mx-auto border rounded-md p-4"
+                          className="mx-auto border rounded-md p-4 shadow-sm" 
+                          classNames={{
+                            day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100",
+                            day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+                            head_cell: "text-gray-500 dark:text-gray-400 font-medium text-xs",
+                            cell: "h-10 w-10 text-center text-sm relative p-0 focus-within:relative focus-within:z-20",
+                          }}
                           modifiers={{
                             sessionsCount1: (date) => getSessionsForDate(date).length === 1,
                             sessionsCount2: (date) => getSessionsForDate(date).length === 2,
@@ -790,25 +796,25 @@ const SessionsPage = () => {
                           }}
                         />
                       </div>
-                      <div className="flex flex-wrap items-center justify-center mt-4 text-sm text-gray-500 gap-3">
+                      <div className="flex flex-wrap items-center justify-center mt-6 text-sm text-gray-500 gap-4">
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-count-1"></div>
+                          <div className="w-7 h-7 mr-2 relative sessions-count-1"></div>
                           <span>1 Session</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-count-2"></div>
+                          <div className="w-7 h-7 mr-2 relative sessions-count-2"></div>
                           <span>2 Sessions</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-count-3"></div>
+                          <div className="w-7 h-7 mr-2 relative sessions-count-3"></div>
                           <span>3 Sessions</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-count-4"></div>
+                          <div className="w-7 h-7 mr-2 relative sessions-count-4"></div>
                           <span>4 Sessions</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-count-5plus"></div>
+                          <div className="w-7 h-7 mr-2 relative sessions-count-5plus"></div>
                           <span>5+ Sessions</span>
                         </div>
                       </div>
