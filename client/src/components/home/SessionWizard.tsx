@@ -44,7 +44,11 @@ const stepThreeSchema = z.object({
 
 type StepThreeValues = z.infer<typeof stepThreeSchema>;
 
-const SessionWizard = () => {
+type SessionWizardProps = {
+  onSessionCreated?: (sessionData: any) => void;
+};
+
+const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
   const [step, setStep] = useState(1);
   
   const stepOneForm = useForm<StepOneValues>({
@@ -101,8 +105,13 @@ const SessionWizard = () => {
     
     console.log("Complete session data:", sessionData);
     
-    // Here you would submit to your API
-    alert("Session created successfully! (Demo only)");
+    // If onSessionCreated callback is provided, call it with the session data
+    if (onSessionCreated) {
+      onSessionCreated(sessionData);
+    } else {
+      // Fallback for when the callback is not provided (demo mode)
+      alert("Session created successfully! (Demo only)");
+    }
   };
   
   return (

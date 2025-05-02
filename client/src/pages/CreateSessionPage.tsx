@@ -1,10 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { z } from "zod";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Copy, Check, Link as LinkIcon } from "lucide-react";
 import SessionWizard from "@/components/home/SessionWizard";
 
 const CreateSessionPage = () => {
