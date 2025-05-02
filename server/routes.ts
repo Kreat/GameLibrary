@@ -14,6 +14,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
   
+  // Check username availability
+  app.get("/api/check-username/:username", async (req, res) => {
+    try {
+      const { username } = req.params;
+      const existingUser = await storage.getUserByUsername(username);
+      res.json({ available: !existingUser });
+    } catch (error) {
+      console.error("Error checking username availability:", error);
+      res.status(500).json({ message: "Failed to check username availability" });
+    }
+  });
+  
   // User Routes
   app.get("/api/users", async (req, res) => {
     try {

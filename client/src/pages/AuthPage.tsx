@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 
 // Form validation schemas
 const loginSchema = z.object({
@@ -55,12 +55,35 @@ export default function AuthPage() {
   const [, setLocation] = useLocation();
   const { user, isLoading } = useAuth();
   const [resetToken, setResetToken] = useState<string | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
+  const [checkingUsername, setCheckingUsername] = useState<boolean>(false);
+  const usernameTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // Redirect to home if already logged in
   if (user && !isLoading) {
     setLocation("/");
     return null;
   }
+  
+  // Check username availability
+  const checkUsernameAvailability = async (username: string) => {
+    // Don't check if username is too short
+    if (username.length < 3) {
+      setUsernameAvailable(null);
+      return;
+    }
+    
+    try {
+      setCheckingUsername(true);
+      const response = await fetch(`/api/check-username/${username}`);
+      const data = await response.json();
+      setUsernameAvailable(data.available);
+    } catch (error) {
+      console.error("Error checking username availability:", error);
+    } finally {
+      setCheckingUsername(false);
+    }
+  };
 
   // Login Form
   const loginForm = useForm<LoginFormValues>({
@@ -204,7 +227,20 @@ export default function AuthPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel>Password</FormLabel>
+                            <Button 
+                              variant="link" 
+                              className="px-0 h-5 text-xs text-primary"
+                              type="button"
+                              onClick={() => toast({
+                                title: "Password Recovery",
+                                description: "Password recovery feature coming soon",
+                              })}
+                            >
+                              Forgot Password?
+                            </Button>
+                          </div>
                           <FormControl>
                             <Input type="password" placeholder="••••••••" {...field} />
                           </FormControl>
@@ -266,10 +302,44 @@ export default function AuthPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Username</FormLabel>
-                          <FormControl>
-                            <Input placeholder="yourusername" {...field} />
-                          </FormControl>
+                          <div className="relative">
+                            <FormControl>
+                              <Input 
+                                placeholder="yourusername" 
+                                {...field} 
+                                onChange={(e) => {
+                                  field.onChange(e);
+                                  // Clear any existing timeout
+                                  if (usernameTimeout.current) {
+                                    clearTimeout(usernameTimeout.current);
+                                  }
+                                  
+                                  // Set a new timeout to check username availability
+                                  usernameTimeout.current = setTimeout(() => {
+                                    checkUsernameAvailability(e.target.value);
+                                  }, 500); // Wait for 500ms after user stops typing
+                                }}
+                              />
+                            </FormControl>
+                            {field.value.length >= 3 && (
+                              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                {checkingUsername ? (
+                                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                ) : usernameAvailable === true ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                ) : usernameAvailable === false ? (
+                                  <XCircle className="h-4 w-4 text-red-500" />
+                                ) : null}
+                              </div>
+                            )}
+                          </div>
                           <FormMessage />
+                          {usernameAvailable === false && field.value.length >= 3 && (
+                            <p className="text-xs text-red-500 mt-1">This username is already taken</p>
+                          )}
+                          {usernameAvailable === true && field.value.length >= 3 && (
+                            <p className="text-xs text-green-500 mt-1">Username is available</p>
+                          )}
                         </FormItem>
                       )}
                     />
