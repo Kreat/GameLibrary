@@ -73,7 +73,7 @@ const ProfilePage = () => {
     },
   });
 
-  // Fetch profile data when user is authenticated
+  // Simulate profile data for demonstration
   useEffect(() => {
     const fetchProfile = async () => {
       if (!user) {
@@ -82,40 +82,48 @@ const ProfilePage = () => {
       }
 
       try {
-        const userDocRef = doc(db, "users", user.uid);
-        const userDoc = await getDoc(userDocRef);
+        // For demonstration, instead of firebase fetch, use mock data
+        const mockUserData = {
+          displayName: user.displayName || "Demo Player",
+          bio: "Enthusiastic board game player and RPG fan. I love strategy games and collaborative storytelling games.",
+          location: "Seattle, WA",
+          favoriteGames: "Catan, D&D 5e, Gloomhaven, Magic: The Gathering",
+          availability: {
+            weekdayMorning: false,
+            weekdayAfternoon: false,
+            weekdayEvening: true,
+            weekendMorning: true, 
+            weekendAfternoon: true,
+            weekendEvening: true,
+            notes: "I'm usually available on weekends and weekday evenings after 7pm."
+          }
+        };
         
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          setProfileData(userData);
+        // Simulate a brief loading delay
+        setTimeout(() => {
+          setProfileData(mockUserData);
           
           // Update form values
           profileForm.reset({
-            displayName: userData.displayName || user.displayName || "",
-            bio: userData.bio || "",
-            location: userData.location || "",
-            favoriteGames: userData.favoriteGames || "",
+            displayName: mockUserData.displayName,
+            bio: mockUserData.bio,
+            location: mockUserData.location,
+            favoriteGames: mockUserData.favoriteGames,
           });
           
           availabilityForm.reset({
-            weekdayMorning: userData.availability?.weekdayMorning || false,
-            weekdayAfternoon: userData.availability?.weekdayAfternoon || false,
-            weekdayEvening: userData.availability?.weekdayEvening || false,
-            weekendMorning: userData.availability?.weekendMorning || false,
-            weekendAfternoon: userData.availability?.weekendAfternoon || false,
-            weekendEvening: userData.availability?.weekendEvening || false,
-            notes: userData.availability?.notes || "",
+            weekdayMorning: mockUserData.availability.weekdayMorning,
+            weekdayAfternoon: mockUserData.availability.weekdayAfternoon,
+            weekdayEvening: mockUserData.availability.weekdayEvening,
+            weekendMorning: mockUserData.availability.weekendMorning,
+            weekendAfternoon: mockUserData.availability.weekendAfternoon,
+            weekendEvening: mockUserData.availability.weekendEvening,
+            notes: mockUserData.availability.notes,
           });
-        } else if (user.displayName) {
-          // If user exists in Firebase Auth but not in Firestore,
-          // pre-populate with data from Auth
-          profileForm.reset({
-            displayName: user.displayName || "",
-            bio: "",
-            location: "",
-            favoriteGames: "",
-          });
-        }
+          
+          setProfileLoading(false);
+        }, 800);
+        
       } catch (error) {
         console.error("Error fetching profile:", error);
         toast({
@@ -123,7 +131,6 @@ const ProfilePage = () => {
           description: "Could not load profile data. Please try again later.",
           variant: "destructive",
         });
-      } finally {
         setProfileLoading(false);
       }
     };
@@ -614,26 +621,191 @@ const ProfilePage = () => {
                         </TabsList>
                         
                         <TabsContent value="upcoming">
-                          <div className="text-center py-8">
-                            <p className="text-gray-500 dark:text-gray-400">You're not part of any upcoming sessions.</p>
-                            <Button className="mt-4" asChild>
-                              <a href="/sessions">Find Sessions</a>
-                            </Button>
+                          <div className="space-y-4">
+                            <div className="rounded-lg border overflow-hidden">
+                              <div className="bg-primary/20 p-3 flex justify-between items-center">
+                                <div className="flex items-center font-medium">
+                                  <Calendar className="mr-2 h-4 w-4" />
+                                  <span>May 5, 2025 • 7:00 PM</span>
+                                </div>
+                                <span className="text-xs bg-primary px-2 py-1 rounded-full">Board Game</span>
+                              </div>
+                              <div className="p-4">
+                                <h4 className="font-bold">Catan Tournament Night</h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                  Join us for an evening of strategic gameplay. All expansions will be available.
+                                </p>
+                                <div className="text-xs text-gray-500 mb-2">
+                                  <span className="font-medium">Location:</span> Game Store Downtown
+                                </div>
+                                <div className="flex justify-between items-center mt-4">
+                                  <div className="flex -space-x-2">
+                                    <Avatar className="h-7 w-7 border-2 border-background">
+                                      <AvatarFallback>KJ</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className="h-7 w-7 border-2 border-background">
+                                      <AvatarFallback>SR</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className="h-7 w-7 border-2 border-background">
+                                      <AvatarFallback>TM</AvatarFallback>
+                                    </Avatar>
+                                    <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs border-2 border-background">
+                                      +2
+                                    </div>
+                                  </div>
+                                  <Button size="sm" variant="outline">Leave Session</Button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="rounded-lg border overflow-hidden">
+                              <div className="bg-accent/20 p-3 flex justify-between items-center">
+                                <div className="flex items-center font-medium">
+                                  <Calendar className="mr-2 h-4 w-4" />
+                                  <span>May 12, 2025 • 6:30 PM</span>
+                                </div>
+                                <span className="text-xs bg-accent px-2 py-1 rounded-full">Card Game</span>
+                              </div>
+                              <div className="p-4">
+                                <h4 className="font-bold">Magic: The Gathering Draft</h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                  Casual draft night with the latest set. $15 entry includes 3 packs.
+                                </p>
+                                <div className="text-xs text-gray-500 mb-2">
+                                  <span className="font-medium">Location:</span> Card Kingdom Cafe
+                                </div>
+                                <div className="flex justify-between items-center mt-4">
+                                  <div className="flex -space-x-2">
+                                    <Avatar className="h-7 w-7 border-2 border-background">
+                                      <AvatarFallback>CJ</AvatarFallback>
+                                    </Avatar>
+                                    <Avatar className="h-7 w-7 border-2 border-background">
+                                      <AvatarFallback>DP</AvatarFallback>
+                                    </Avatar>
+                                    <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-xs border-2 border-background">
+                                      +5
+                                    </div>
+                                  </div>
+                                  <Button size="sm" variant="outline">Leave Session</Button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-2 text-center">
+                              <Button className="mt-4" asChild>
+                                <a href="/sessions">Find More Sessions</a>
+                              </Button>
+                            </div>
                           </div>
                         </TabsContent>
                         
                         <TabsContent value="hosting">
-                          <div className="text-center py-8">
-                            <p className="text-gray-500 dark:text-gray-400">You're not hosting any sessions.</p>
+                          <div className="rounded-lg border overflow-hidden mb-4">
+                            <div className="bg-purple-800 text-white p-3 flex justify-between items-center">
+                              <div className="flex items-center font-medium">
+                                <Calendar className="mr-2 h-4 w-4" />
+                                <span>May 20, 2025 • 6:00 PM</span>
+                              </div>
+                              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">RPG</span>
+                            </div>
+                            <div className="p-4">
+                              <h4 className="font-bold">D&D 5e - Curse of Strahd</h4>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                Character level 3-5. New campaign starting! Beginner-friendly.
+                              </p>
+                              <div className="text-xs text-gray-500 mb-2">
+                                <span className="font-medium">Location:</span> Your Place
+                              </div>
+                              
+                              <div className="bg-gray-50 dark:bg-gray-800/50 rounded p-3 mb-3">
+                                <h5 className="text-sm font-medium mb-2">Participants (3/5)</h5>
+                                <div className="flex flex-wrap gap-2">
+                                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-full px-2 py-1 text-xs">
+                                    <Avatar className="h-5 w-5">
+                                      <AvatarFallback>H</AvatarFallback>
+                                    </Avatar>
+                                    <span>Hannah</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-full px-2 py-1 text-xs">
+                                    <Avatar className="h-5 w-5">
+                                      <AvatarFallback>I</AvatarFallback>
+                                    </Avatar>
+                                    <span>Ivan</span>
+                                  </div>
+                                  <div className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-full px-2 py-1 text-xs">
+                                    <Avatar className="h-5 w-5">
+                                      <AvatarFallback>J</AvatarFallback>
+                                    </Avatar>
+                                    <span>Jamie</span>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="flex justify-between">
+                                <Button size="sm" variant="outline">Edit Session</Button>
+                                <Button size="sm" variant="destructive">Cancel Session</Button>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-2 text-center">
                             <Button className="mt-4" asChild>
-                              <a href="/create-session">Host a Session</a>
+                              <a href="/create-session">Host Another Session</a>
                             </Button>
                           </div>
                         </TabsContent>
                         
                         <TabsContent value="past">
-                          <div className="text-center py-8">
-                            <p className="text-gray-500 dark:text-gray-400">No past sessions found.</p>
+                          <div className="space-y-4">
+                            <div className="rounded-lg border overflow-hidden opacity-70">
+                              <div className="bg-gray-200 dark:bg-gray-700 p-3 flex justify-between items-center">
+                                <div className="flex items-center font-medium">
+                                  <Calendar className="mr-2 h-4 w-4" />
+                                  <span>April 15, 2025 • 7:00 PM</span>
+                                </div>
+                                <span className="text-xs bg-gray-600 text-white px-2 py-1 rounded-full">Board Game</span>
+                              </div>
+                              <div className="p-4">
+                                <h4 className="font-bold">Ticket to Ride Night</h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                  All editions available! Come travel across the world on trains.
+                                </p>
+                                <div className="flex justify-between">
+                                  <div className="flex items-center text-xs">
+                                    <User className="mr-1 h-3 w-3" />
+                                    <span>Hosted by Alex</span>
+                                  </div>
+                                  <Button size="sm" variant="ghost">
+                                    View Details
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="rounded-lg border overflow-hidden opacity-70">
+                              <div className="bg-gray-200 dark:bg-gray-700 p-3 flex justify-between items-center">
+                                <div className="flex items-center font-medium">
+                                  <Calendar className="mr-2 h-4 w-4" />
+                                  <span>March 28, 2025 • 6:00 PM</span>
+                                </div>
+                                <span className="text-xs bg-gray-600 text-white px-2 py-1 rounded-full">Card Game</span>
+                              </div>
+                              <div className="p-4">
+                                <h4 className="font-bold">Dominion Tournament</h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                  Multiple expansions! Strategy guide provided for beginners.
+                                </p>
+                                <div className="flex justify-between">
+                                  <div className="flex items-center text-xs">
+                                    <User className="mr-1 h-3 w-3" />
+                                    <span>Hosted by Morgan</span>
+                                  </div>
+                                  <Button size="sm" variant="ghost">
+                                    View Details
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </TabsContent>
                       </Tabs>
@@ -653,6 +825,8 @@ const ProfilePage = () => {
                           <h3 className="text-lg font-medium mb-1">Email</h3>
                           <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                         </div>
+                        
+                        <Separator />
                         
                         <div>
                           <h3 className="text-lg font-medium mb-4">Notification Preferences</h3>
@@ -693,7 +867,97 @@ const ProfilePage = () => {
                           </div>
                         </div>
                         
-                        <Button variant="outline">Save Preferences</Button>
+                        <Separator />
+                        
+                        <div>
+                          <h3 className="text-lg font-medium mb-4">Game Preferences</h3>
+                          <div className="grid gap-4">
+                            <div>
+                              <h4 className="text-base font-medium mb-2">Favorite Game Types</h4>
+                              <div className="flex flex-wrap gap-2">
+                                <span className="bg-primary text-white px-2 py-1 rounded-full text-xs">Board Games</span>
+                                <span className="bg-accent text-white px-2 py-1 rounded-full text-xs">Card Games</span>
+                                <span className="bg-purple-800 text-white px-2 py-1 rounded-full text-xs">RPG</span>
+                                <span className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full text-xs">+ Add More</span>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <h4 className="text-base font-medium mb-2">Player Type</h4>
+                              <div className="space-y-2">
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="casual"
+                                    name="player-type"
+                                    className="mr-2"
+                                    defaultChecked
+                                  />
+                                  <label htmlFor="casual">Casual - I play for fun</label>
+                                </div>
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="competitive"
+                                    name="player-type"
+                                    className="mr-2"
+                                  />
+                                  <label htmlFor="competitive">Competitive - I play to win</label>
+                                </div>
+                                <div className="flex items-center">
+                                  <input
+                                    type="radio"
+                                    id="mixed"
+                                    name="player-type"
+                                    className="mr-2"
+                                  />
+                                  <label htmlFor="mixed">Mixed - It depends on the game</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <Separator />
+                        
+                        <div>
+                          <h3 className="text-lg font-medium mb-4">Privacy</h3>
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="text-base font-medium">Profile Visibility</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  Control who can view your profile information
+                                </p>
+                              </div>
+                              <select className="form-select rounded border-gray-300 focus:border-primary focus:ring-primary bg-background px-3 py-1.5">
+                                <option>Public</option>
+                                <option>Members Only</option>
+                                <option>Friends Only</option>
+                              </select>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="text-base font-medium">Session History</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                  Control who can see your past gaming sessions
+                                </p>
+                              </div>
+                              <select className="form-select rounded border-gray-300 focus:border-primary focus:ring-primary bg-background px-3 py-1.5">
+                                <option>Public</option>
+                                <option selected>Members Only</option>
+                                <option>Friends Only</option>
+                                <option>Only Me</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2 pt-4">
+                          <Button variant="outline">Reset</Button>
+                          <Button>Save Preferences</Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

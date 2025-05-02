@@ -23,8 +23,16 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<MockUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Using a mock user for demonstration
+  const mockUser: MockUser = {
+    uid: "demo-user-123",
+    email: "demo@gamehub.com",
+    displayName: "Demo Player",
+    photoURL: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamehub",
+  };
+
+  const [user, setUser] = useState<MockUser | null>(mockUser);
+  const [loading, setLoading] = useState(false);
 
   const value = {
     user,
