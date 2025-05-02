@@ -133,7 +133,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 ${step >= 1 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>1</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 1 ? "text-primary dark:text-primary-foreground" : "text-gray-500 dark:text-gray-400"}`}>Game Details</span>
+                  <span className={`text-xs mt-2 font-medium ${step >= 1 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Game Details</span>
                 </div>
               </div>
               <div className="w-12 flex items-center justify-center">
@@ -142,7 +142,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 ${step >= 2 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>2</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 2 ? "text-primary dark:text-primary-foreground" : "text-gray-500 dark:text-gray-400"}`}>Schedule</span>
+                  <span className={`text-xs mt-2 font-medium ${step >= 2 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Schedule</span>
                 </div>
               </div>
               <div className="w-12 flex items-center justify-center">
@@ -151,7 +151,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 ${step >= 3 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>3</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 3 ? "text-primary dark:text-primary-foreground" : "text-gray-500 dark:text-gray-400"}`}>Location</span>
+                  <span className={`text-xs mt-2 font-medium ${step >= 3 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Location</span>
                 </div>
               </div>
             </div>
