@@ -53,16 +53,22 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link to="/">
-              <div className="flex items-center space-x-2 animate-fade-in">
-                <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
-                  <Dices className="h-6 w-6 text-slateNight" />
-                </div>
-                <span className="text-2xl font-display font-bold gradient-text">
-                  GameHub
-                </span>
+            <button 
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (location !== '/') {
+                  window.location.href = '/';
+                }
+              }}
+              className="flex items-center space-x-2 animate-fade-in cursor-pointer"
+            >
+              <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+                <Dices className="h-6 w-6 text-slateNight" />
               </div>
-            </Link>
+              <span className="text-2xl font-display font-bold gradient-text">
+                GameHub
+              </span>
+            </button>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex ml-10 space-x-6">
@@ -154,14 +160,23 @@ const Navbar = () => {
               </SheetTrigger>
               <SheetContent side="right" className="bg-background/95 dark:bg-slateNight/95 backdrop-blur-md border-l border-meeple/20">
                 <div className="mt-8 flex flex-col space-y-5">
-                  <div className="flex items-center space-x-3 mb-6">
+                  <button 
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      setMobileMenuOpen(false);
+                      if (location !== '/') {
+                        window.location.href = '/';
+                      }
+                    }}
+                    className="flex items-center space-x-3 mb-6 cursor-pointer"
+                  >
                     <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
                       <Dices className="h-6 w-6 text-slateNight" />
                     </div>
                     <span className="text-2xl font-display font-bold gradient-text">
                       GameHub
                     </span>
-                  </div>
+                  </button>
                   
                   {navLinks.map((link, index) => (
                     <Link
