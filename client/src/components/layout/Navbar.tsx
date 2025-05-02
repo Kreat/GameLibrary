@@ -73,21 +73,26 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex ml-10 space-x-6">
               {navLinks.map((link, index) => (
-                <Link
+                <button
                   key={link.href}
-                  href={link.href}
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (location !== link.href) {
+                      window.location.href = link.href;
+                    }
+                  }}
                   className={`${
                     isActive(link.href)
                       ? "text-meeple dark:text-meeple font-semibold"
                       : "text-foreground dark:text-white/80 hover:text-meeple dark:hover:text-meeple"
-                  } px-3 py-2 text-sm font-medium transition-colors relative animate-fade-in`}
+                  } px-3 py-2 text-sm font-medium transition-colors relative animate-fade-in cursor-pointer`}
                   style={{ animationDelay: `${100 + (index * 100)}ms` }}
                 >
                   {link.label}
                   {isActive(link.href) && (
                     <span className="absolute bottom-0 left-0 w-full h-0.5 bg-meeple rounded-full"></span>
                   )}
-                </Link>
+                </button>
               ))}
             </nav>
           </div>
@@ -120,11 +125,15 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-background/90 dark:bg-slateNight/90 backdrop-blur-lg border border-meeple/20">
-                  <DropdownMenuItem asChild className="hover:bg-meeple/10 dark:hover:bg-meeple/20">
-                    <Link href="/profile" className="cursor-pointer flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-mintToken"></span>
-                      Profile
-                    </Link>
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.location.href = '/profile';
+                    }}
+                    className="hover:bg-meeple/10 dark:hover:bg-meeple/20 cursor-pointer flex items-center gap-2"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-mintToken"></span>
+                    Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={handleSignOut} 
@@ -140,9 +149,12 @@ const Navbar = () => {
                 variant="default"
                 size="sm"
                 className="hidden md:inline-flex gradient-bg-primary text-slateNight font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all animate-fade-in delay-500"
-                asChild
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.location.href = '/auth';
+                }}
               >
-                <Link href="/auth">Sign In</Link>
+                Sign In
               </Button>
             )}
 
@@ -179,29 +191,37 @@ const Navbar = () => {
                   </button>
                   
                   {navLinks.map((link, index) => (
-                    <Link
+                    <button
                       key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        setMobileMenuOpen(false);
+                        if (location !== link.href) {
+                          window.location.href = link.href;
+                        }
+                      }}
                       className={`${
                         isActive(link.href)
                           ? "text-meeple dark:text-meeple font-semibold"
                           : "text-foreground dark:text-white/80 hover:text-meeple dark:hover:text-meeple"
-                      } px-4 py-3 text-lg font-medium transition-colors rounded-lg ${isActive(link.href) ? "bg-meeple/10 dark:bg-meeple/20" : "hover:bg-meeple/5 dark:hover:bg-meeple/10"}`}
+                      } px-4 py-3 text-lg font-medium transition-colors rounded-lg cursor-pointer text-left ${isActive(link.href) ? "bg-meeple/10 dark:bg-meeple/20" : "hover:bg-meeple/5 dark:hover:bg-meeple/10"}`}
                       style={{ animationDelay: `${100 + (index * 100)}ms` }}
                     >
                       {link.label}
-                    </Link>
+                    </button>
                   ))}
                   
                   {!user && (
                     <Button
                       variant="default"
-                      asChild
                       className="mt-6 gradient-bg-primary text-slateNight font-semibold px-5 py-6 h-auto rounded-xl shadow-md hover:shadow-lg transition-all"
-                      onClick={() => setMobileMenuOpen(false)}
+                      onClick={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        setMobileMenuOpen(false);
+                        window.location.href = '/auth';
+                      }}
                     >
-                      <Link href="/auth">Sign In</Link>
+                      Sign In
                     </Button>
                   )}
                 </div>
