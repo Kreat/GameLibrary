@@ -22,8 +22,9 @@ export function useNavigation() {
 
   // Watch for location changes
   useEffect(() => {
-    // When location changes, handle navigation end
+    // When location changes, handle navigation end and scroll to top
     handleNavigationEnd();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     
     return () => {
       // Clean up if component unmounts during navigation
