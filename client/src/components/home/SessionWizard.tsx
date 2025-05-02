@@ -115,7 +115,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
   };
   
   return (
-    <section className="py-12 bg-white dark:bg-gray-900 relative overflow-hidden">
+    <section id="session-wizard" className="py-12 bg-white dark:bg-gray-900 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-72 h-72 bg-primary-200/50 dark:bg-primary-900/20 rounded-full -mr-24 -mt-24"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/10 rounded-full -ml-16 -mb-16"></div>
       
