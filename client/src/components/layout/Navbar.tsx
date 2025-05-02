@@ -17,11 +17,9 @@ import { useToast } from "@/hooks/use-toast";
 const Navbar = () => {
   const { user } = useAuth();
   const [location, setLocation] = useLocation();
+  const { handleNavigationStart } = useNavigation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { toast } = useToast();
-  
-  // Use our custom navigation hook to add the transition class
-  useNavigation();
 
   const { logoutMutation } = useAuth();
   

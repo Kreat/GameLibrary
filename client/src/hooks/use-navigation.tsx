@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useLocation } from 'wouter';
 
 /**
@@ -8,36 +8,33 @@ import { useLocation } from 'wouter';
 export function useNavigation() {
   const [location, setLocation] = useLocation();
 
+  // Function to handle navigation start
+  const handleNavigationStart = useCallback(() => {
+    document.documentElement.classList.add('navigating');
+  }, []);
+
+  // Function to handle navigation end
+  const handleNavigationEnd = useCallback(() => {
+    setTimeout(() => {
+      document.documentElement.classList.remove('navigating');
+    }, 300); // Small delay for a better transition effect
+  }, []);
+
+  // Watch for location changes
   useEffect(() => {
-    // Function to handle navigation start
-    const handleNavigationStart = () => {
-      document.documentElement.classList.add('navigating');
-    };
-
-    // Function to handle navigation end
-    const handleNavigationEnd = () => {
-      setTimeout(() => {
-        document.documentElement.classList.remove('navigating');
-      }, 150); // Small delay for a better transition effect
-    };
-
-    // The original navigate function from wouter
-    const originalNavigate = setLocation;
-
-    // Override the navigate function to add our transition handling
-    const enhancedNavigate = (to: string) => {
-      if (to !== location) {
-        handleNavigationStart();
-        originalNavigate(to);
-        handleNavigationEnd();
-      }
-    };
-
+    // When location changes, handle navigation end
+    handleNavigationEnd();
+    
     return () => {
-      // Cleanup
+      // Clean up if component unmounts during navigation
       document.documentElement.classList.remove('navigating');
     };
-  }, [location, setLocation]);
+  }, [location, handleNavigationEnd]);
 
-  return { location };
+  // Return both the location and the handleNavigationStart function
+  // so components can trigger the start of navigation animations
+  return { 
+    location,
+    handleNavigationStart 
+  };
 }

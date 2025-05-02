@@ -17,9 +17,13 @@ import JoinSessionPage from "@/pages/JoinSessionPage";
 import AuthPage from "@/pages/AuthPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useNavigation } from "@/hooks/use-navigation";
 import { useEffect } from "react";
 
 function Router() {
+  // Use our custom navigation hook
+  useNavigation();
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
