@@ -737,7 +737,7 @@ const SessionsPage = () => {
                     Try adjusting your search or filter criteria.
                   </p>
                   <Button asChild>
-                    <Link href="/create-session">
+                    <Link href={user ? "/create-session" : "/auth"}>
                       <Plus className="mr-2 h-4 w-4" />
                       Host Your Own Session
                     </Link>
@@ -877,7 +877,7 @@ const SessionsPage = () => {
                             Select a date with a number indicator to view available gaming sessions
                           </p>
                           <Button asChild variant="outline">
-                            <Link href="/create-session">
+                            <Link href={user ? "/create-session" : "/auth"}>
                               <Plus className="mr-2 h-4 w-4" />
                               Create a Session
                             </Link>

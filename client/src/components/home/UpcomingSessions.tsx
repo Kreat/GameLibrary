@@ -231,7 +231,7 @@ const UpcomingSessions = () => {
                     size="sm"
                     asChild
                   >
-                    <Link href={user ? `/sessions/${session.id}` : "/profile"}>
+                    <Link href={user ? `/sessions/${session.id}` : "/auth"}>
                       Join Session
                     </Link>
                   </Button>
