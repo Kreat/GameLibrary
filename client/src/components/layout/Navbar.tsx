@@ -79,7 +79,8 @@ const Navbar = () => {
                 <button
                   key={link.href}
                   onClick={() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Force scroll to top first, then navigate
+                    window.scrollTo(0, 0);
                     if (location !== link.href) {
                       handleNavigationStart();
                       setLocation(link.href);
@@ -131,7 +132,7 @@ const Navbar = () => {
                 <DropdownMenuContent align="end" className="bg-background/90 dark:bg-slateNight/90 backdrop-blur-lg border border-meeple/20">
                   <DropdownMenuItem 
                     onClick={() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.scrollTo(0, 0); 
                       handleNavigationStart();
                       setLocation('/profile');
                     }}
@@ -155,7 +156,7 @@ const Navbar = () => {
                 size="sm"
                 className="hidden md:inline-flex gradient-bg-primary text-slateNight font-semibold px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all animate-fade-in delay-500"
                 onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo(0, 0);
                   handleNavigationStart();
                   setLocation('/auth');
                 }}
@@ -180,7 +181,7 @@ const Navbar = () => {
                 <div className="mt-8 flex flex-col space-y-5">
                   <button 
                     onClick={() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      window.scrollTo(0, 0);
                       setMobileMenuOpen(false);
                       if (location !== '/') {
                         handleNavigationStart();
@@ -201,7 +202,7 @@ const Navbar = () => {
                     <button
                       key={link.href}
                       onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        window.scrollTo(0, 0);
                         setMobileMenuOpen(false);
                         if (location !== link.href) {
                           handleNavigationStart();
@@ -224,7 +225,7 @@ const Navbar = () => {
                       variant="default"
                       className="mt-6 gradient-bg-primary text-slateNight font-semibold px-5 py-6 h-auto rounded-xl shadow-md hover:shadow-lg transition-all"
                       onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        window.scrollTo(0, 0);
                         setMobileMenuOpen(false);
                         handleNavigationStart();
                         setLocation('/auth');

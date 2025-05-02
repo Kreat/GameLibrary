@@ -38,10 +38,13 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-medium mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/games" className="text-gray-400 hover:text-white transition-colors">Find Games</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games" className="text-gray-400 hover:text-white transition-colors">Find Games</Link></li>
               <li>
                 <span 
-                  onClick={() => user ? document.getElementById('footerCreateSessionTrigger')?.click() : window.location.href = '/auth'}
+                  onClick={() => {
+                    window.scrollTo(0, 0);
+                    user ? document.getElementById('footerCreateSessionTrigger')?.click() : window.location.href = '/auth'
+                  }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer"
                 >
                   Host a Game
@@ -50,20 +53,20 @@ const Footer = () => {
                   <CreateSessionDialog id="footerCreateSessionTrigger" buttonLabel="Host a Game" />
                 </div>
               </li>
-              <li><Link href="/community" className="text-gray-400 hover:text-white transition-colors">Community Forums</Link></li>
-              <li><Link href="/games" className="text-gray-400 hover:text-white transition-colors">Game Library</Link></li>
-              <li><Link href="/sessions" className="text-gray-400 hover:text-white transition-colors">Event Calendar</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/community" className="text-gray-400 hover:text-white transition-colors">Community Forums</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games" className="text-gray-400 hover:text-white transition-colors">Game Library</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/sessions" className="text-gray-400 hover:text-white transition-colors">Event Calendar</Link></li>
             </ul>
           </div>
           
           <div>
             <h3 className="text-white font-medium mb-4">Game Categories</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/games?category=board" className="text-gray-400 hover:text-white transition-colors">Board Games</Link></li>
-              <li><Link href="/games?category=card" className="text-gray-400 hover:text-white transition-colors">Card Games</Link></li>
-              <li><Link href="/games?category=rpg" className="text-gray-400 hover:text-white transition-colors">Tabletop RPGs</Link></li>
-              <li><Link href="/games?category=miniature" className="text-gray-400 hover:text-white transition-colors">Miniature Games</Link></li>
-              <li><Link href="/games?category=party" className="text-gray-400 hover:text-white transition-colors">Party Games</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games?category=board" className="text-gray-400 hover:text-white transition-colors">Board Games</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games?category=card" className="text-gray-400 hover:text-white transition-colors">Card Games</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games?category=rpg" className="text-gray-400 hover:text-white transition-colors">Tabletop RPGs</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games?category=miniature" className="text-gray-400 hover:text-white transition-colors">Miniature Games</Link></li>
+              <li><Link onClick={() => window.scrollTo(0, 0)} href="/games?category=party" className="text-gray-400 hover:text-white transition-colors">Party Games</Link></li>
             </ul>
           </div>
           
