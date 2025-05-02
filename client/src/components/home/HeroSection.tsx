@@ -74,9 +74,15 @@ const HeroSection = () => {
               size="lg"
               variant="default"
               className="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
-              asChild
+              onClick={() => {
+                if (user) {
+                  window.location.href = "/create-session";
+                } else {
+                  window.location.href = "/auth";
+                }
+              }}
             >
-              <Link href={user ? "/create-session" : "/auth"}>Host a Game</Link>
+              Host a Game
             </Button>
           </div>
         </div>

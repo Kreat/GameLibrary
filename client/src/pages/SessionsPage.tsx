@@ -736,11 +736,17 @@ const SessionsPage = () => {
                   <p className="text-gray-600 dark:text-gray-400 mb-6">
                     Try adjusting your search or filter criteria.
                   </p>
-                  <Button asChild>
-                    <Link href={user ? "/create-session" : "/auth"}>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Host Your Own Session
-                    </Link>
+                  <Button
+                    onClick={() => {
+                      if (user) {
+                        window.location.href = "/create-session";
+                      } else {
+                        window.location.href = "/auth";
+                      }
+                    }}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Host Your Own Session
                   </Button>
                 </div>
               )}
@@ -876,11 +882,18 @@ const SessionsPage = () => {
                           <p className="text-gray-500 dark:text-gray-400 mb-6">
                             Select a date with a number indicator to view available gaming sessions
                           </p>
-                          <Button asChild variant="outline">
-                            <Link href={user ? "/create-session" : "/auth"}>
-                              <Plus className="mr-2 h-4 w-4" />
-                              Create a Session
-                            </Link>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              if (user) {
+                                window.location.href = "/create-session";
+                              } else {
+                                window.location.href = "/auth";
+                              }
+                            }}
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create a Session
                           </Button>
                         </div>
                       )}
