@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, User, Calendar, Clock, Settings, Gamepad, Camera, Upload } from "lucide-react";
+import { CreateSessionDialog } from "@/components/session/CreateSessionDialog";
 
 // Define the profile form schema with Zod
 const profileFormSchema = z.object({
@@ -856,9 +857,9 @@ const ProfilePage = () => {
                           </div>
                           
                           <div className="mt-2 text-center">
-                            <Button className="mt-4" asChild>
-                              <a href="/create-session">Host Another Session</a>
-                            </Button>
+                            <div className="mt-4 inline-block">
+                              <CreateSessionDialog id="profileCreateSessionTrigger" buttonLabel="Host a Game" />
+                            </div>
                           </div>
                         </TabsContent>
                         
