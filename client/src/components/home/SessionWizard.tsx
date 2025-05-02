@@ -305,7 +305,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="beginner"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Beginner
                               </Label>
@@ -318,7 +318,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="intermediate"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Intermediate
                               </Label>
@@ -331,7 +331,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="advanced"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Advanced
                               </Label>
@@ -474,7 +474,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="once"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 One-time
                               </Label>
@@ -487,7 +487,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="weekly"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Weekly
                               </Label>
@@ -500,7 +500,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="biweekly"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Bi-weekly
                               </Label>
@@ -513,7 +513,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                               />
                               <Label
                                 htmlFor="monthly"
-                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary dark:peer-data-[state=checked]:bg-primary-900/30 dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-primary-foreground dark:border-gray-700 dark:text-gray-300"
+                                className="flex items-center justify-center p-3 border rounded-lg text-sm font-medium cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-white dark:peer-data-[state=checked]:bg-primary dark:peer-data-[state=checked]:border-primary dark:peer-data-[state=checked]:text-white dark:border-gray-700 dark:text-gray-300"
                               >
                                 Monthly
                               </Label>
