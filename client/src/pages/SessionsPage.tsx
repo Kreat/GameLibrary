@@ -73,9 +73,156 @@ const SessionsPage = () => {
   const [showSessionDetails, setShowSessionDetails] = useState(false);
   const [selectedDateSessions, setSelectedDateSessions] = useState<Session[]>([]);
 
+  // Create sample sessions with multiple sessions on some days
+  const createSampleSessions = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    
+    // Sample game types
+    const gameTypes = ["Board Games", "Card Games", "RPG", "Miniature Games", "Party Games"];
+    const locations = ["Game Store Downtown", "Community Center", "University Gaming Club", "Online - Discord", "The Dice Tower Cafe"];
+    const durations = ["1 hour", "2 hours", "3 hours", "4 hours", "All day"];
+    
+    const sampleSessions: Session[] = [];
+    
+    // Today - 1 session
+    const today = new Date();
+    sampleSessions.push({
+      id: "session-today",
+      title: "Casual Board Game Night",
+      description: "Join us for a casual board game night with various gateway games. Perfect for beginners!",
+      gameType: gameTypes[0],
+      duration: durations[1],
+      startTime: Timestamp.fromDate(new Date(today.setHours(19, 0, 0, 0))),
+      endTime: Timestamp.fromDate(new Date(today.setHours(21, 0, 0, 0))),
+      location: locations[0],
+      host: { id: "user1", name: "Alex Smith" },
+      participants: [
+        { id: "user1", name: "Alex Smith" },
+        { id: "user2", name: "Jamie Taylor" }
+      ],
+      maxParticipants: 6
+    });
+    
+    // Tomorrow - 2 sessions
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    sampleSessions.push({
+      id: "session-tomorrow-1",
+      title: "Magic: The Gathering Draft",
+      description: "Booster draft for the latest set. $15 entry fee includes 3 packs.",
+      gameType: gameTypes[1],
+      duration: durations[2],
+      startTime: Timestamp.fromDate(new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 18, 0, 0)),
+      endTime: Timestamp.fromDate(new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 21, 0, 0)),
+      location: locations[0],
+      host: { id: "user3", name: "Chris Johnson" },
+      participants: [
+        { id: "user3", name: "Chris Johnson" },
+        { id: "user4", name: "Sam Wilson" },
+        { id: "user5", name: "Taylor Moore" }
+      ],
+      maxParticipants: 8
+    });
+    
+    sampleSessions.push({
+      id: "session-tomorrow-2",
+      title: "Catan Tournament",
+      description: "Monthly Catan tournament with prizes for the top 3 players.",
+      gameType: gameTypes[0],
+      duration: durations[2],
+      startTime: Timestamp.fromDate(new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 14, 0, 0)),
+      endTime: Timestamp.fromDate(new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 17, 0, 0)),
+      location: locations[4],
+      host: { id: "user6", name: "Jordan Lee" },
+      participants: [
+        { id: "user6", name: "Jordan Lee" },
+        { id: "user7", name: "Morgan Chen" }
+      ],
+      maxParticipants: 16
+    });
+    
+    // Day after tomorrow - 3 sessions
+    const dayAfterTomorrow = new Date();
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+    
+    for (let i = 0; i < 3; i++) {
+      sampleSessions.push({
+        id: `session-day-after-tomorrow-${i}`,
+        title: `${i === 0 ? 'D&D Campaign Start' : i === 1 ? 'Warhammer 40K Battle' : 'Poker Night'}`,
+        description: `${i === 0 ? 'Starting a new D&D campaign in a homebrew setting.' : 
+                       i === 1 ? '2000 point Warhammer 40K battle. Bring your painted army.' : 
+                       'Texas Hold\'em poker night. $10 buy-in, snacks provided.'}`,
+        gameType: i === 0 ? gameTypes[2] : i === 1 ? gameTypes[3] : gameTypes[4],
+        duration: durations[i+1],
+        startTime: Timestamp.fromDate(new Date(dayAfterTomorrow.getFullYear(), dayAfterTomorrow.getMonth(), dayAfterTomorrow.getDate(), 17 + i, 0, 0)),
+        endTime: Timestamp.fromDate(new Date(dayAfterTomorrow.getFullYear(), dayAfterTomorrow.getMonth(), dayAfterTomorrow.getDate(), 19 + i, 0, 0)),
+        location: locations[i],
+        host: { id: `user${8+i}`, name: `Host ${i+1}` },
+        participants: [
+          { id: `user${8+i}`, name: `Host ${i+1}` },
+          { id: `user${11+i}`, name: `Player ${i+1}` },
+          { id: `user${14+i}`, name: `Player ${i+4}` }
+        ],
+        maxParticipants: 6 + i
+      });
+    }
+    
+    // Next week - 4 sessions on one day
+    const nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    
+    for (let i = 0; i < 4; i++) {
+      sampleSessions.push({
+        id: `session-next-week-${i}`,
+        title: `Game Night ${i+1}`,
+        description: `Weekly game night featuring ${gameTypes[i % gameTypes.length].toLowerCase()}.`,
+        gameType: gameTypes[i % gameTypes.length],
+        duration: durations[i % durations.length],
+        startTime: Timestamp.fromDate(new Date(nextWeek.getFullYear(), nextWeek.getMonth(), nextWeek.getDate(), 16 + i, 0, 0)),
+        endTime: Timestamp.fromDate(new Date(nextWeek.getFullYear(), nextWeek.getMonth(), nextWeek.getDate(), 18 + i, 0, 0)),
+        location: locations[i % locations.length],
+        host: { id: `user${20+i}`, name: `Organizer ${i+1}` },
+        participants: Array(i+2).fill(0).map((_, idx) => ({ 
+          id: `user${25+idx+i*3}`, 
+          name: `Attendee ${idx+1}` 
+        })),
+        maxParticipants: 8 + i
+      });
+    }
+    
+    // Next month - 6 sessions on one day (for 5+ indicator)
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    
+    for (let i = 0; i < 6; i++) {
+      sampleSessions.push({
+        id: `session-next-month-${i}`,
+        title: `Community Game Day Event ${i+1}`,
+        description: `Part of our monthly community game day featuring ${gameTypes[i % gameTypes.length].toLowerCase()}.`,
+        gameType: gameTypes[i % gameTypes.length],
+        duration: durations[i % durations.length],
+        startTime: Timestamp.fromDate(new Date(nextMonth.getFullYear(), nextMonth.getMonth(), nextMonth.getDate(), 10 + i, 0, 0)),
+        endTime: Timestamp.fromDate(new Date(nextMonth.getFullYear(), nextMonth.getMonth(), nextMonth.getDate(), 12 + i, 0, 0)),
+        location: locations[i % locations.length],
+        host: { id: `user${40+i}`, name: `Event Host ${i+1}` },
+        participants: Array(i+1).fill(0).map((_, idx) => ({ 
+          id: `user${50+idx+i*5}`, 
+          name: `Participant ${idx+1}` 
+        })),
+        maxParticipants: 10 + i*2
+      });
+    }
+    
+    return sampleSessions;
+  };
+
   useEffect(() => {
     const fetchSessions = async () => {
       try {
+        // Try to fetch from Firebase first
         const now = new Date();
         const sessionsCollection = collection(db, "sessions");
         const sessionQuery = query(
@@ -83,15 +230,28 @@ const SessionsPage = () => {
           where("startTime", ">", now)
         );
         
-        const querySnapshot = await getDocs(sessionQuery);
-        const sessionsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Session[];
-        
-        setSessions(sessionsData);
+        try {
+          const querySnapshot = await getDocs(sessionQuery);
+          const sessionsData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Session[];
+          
+          if (sessionsData.length > 0) {
+            setSessions(sessionsData);
+          } else {
+            // If no sessions were found, use our sample data
+            setSessions(createSampleSessions());
+          }
+        } catch (error) {
+          // If Firebase query fails, use our sample data
+          console.error("Error fetching from Firebase, using sample data:", error);
+          setSessions(createSampleSessions());
+        }
       } catch (error) {
-        console.error("Error fetching sessions:", error);
+        console.error("Error in session loading:", error);
+        // Fallback to sample data on any error
+        setSessions(createSampleSessions());
       } finally {
         setLoading(false);
       }
@@ -624,7 +784,7 @@ const SessionsPage = () => {
                           }}
                         />
                       </div>
-                      <div className="flex flex-wrap items-center justify-center mt-2 text-sm text-gray-500 gap-3">
+                      <div className="flex flex-wrap items-center justify-center mt-4 text-sm text-gray-500 gap-3">
                         <div className="flex items-center">
                           <div className="w-6 h-6 mr-1.5 relative sessions-count-1"></div>
                           <span>1 Session</span>
