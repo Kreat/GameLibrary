@@ -1,10 +1,11 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { Dice5, Users, CalendarDays } from "lucide-react";
 
 const HeroSection = () => {
   const { user } = useAuth();
+  const [_, setLocation] = useLocation();
 
   return (
     <section className="relative bg-slateNight text-white overflow-hidden">
@@ -76,9 +77,9 @@ const HeroSection = () => {
               className="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
               onClick={() => {
                 if (user) {
-                  window.location.href = "/create-session";
+                  setLocation("/create-session");
                 } else {
-                  window.location.href = "/auth";
+                  setLocation("/auth");
                 }
               }}
             >

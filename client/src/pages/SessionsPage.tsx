@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -64,6 +64,7 @@ type Session = {
 
 const SessionsPage = () => {
   const { user } = useAuth();
+  const [_, setLocation] = useLocation();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState("list");
@@ -739,9 +740,9 @@ const SessionsPage = () => {
                   <Button
                     onClick={() => {
                       if (user) {
-                        window.location.href = "/create-session";
+                        setLocation("/create-session");
                       } else {
-                        window.location.href = "/auth";
+                        setLocation("/auth");
                       }
                     }}
                   >
@@ -886,9 +887,9 @@ const SessionsPage = () => {
                             variant="outline"
                             onClick={() => {
                               if (user) {
-                                window.location.href = "/create-session";
+                                setLocation("/create-session");
                               } else {
-                                window.location.href = "/auth";
+                                setLocation("/auth");
                               }
                             }}
                           >
