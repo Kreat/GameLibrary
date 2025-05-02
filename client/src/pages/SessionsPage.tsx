@@ -269,6 +269,77 @@ const SessionsPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Session Details Dialog */}
+      <Dialog open={showSessionDetails} onOpenChange={setShowSessionDetails}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Sessions on {selectedDate ? formatDate(selectedDate) : ""}</DialogTitle>
+            <DialogDescription>
+              Gaming sessions scheduled for this date
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
+            {selectedDateSessions.map((session) => (
+              <Card key={session.id} className="overflow-hidden">
+                <CardContent className="p-0">
+                  <div className={`p-3 ${getBadgeColor(session.gameType)} text-white flex justify-between items-center`}>
+                    <div className="flex items-center">
+                      <span className="font-medium">{session.gameType}</span>
+                      <span className="ml-2 text-xs flex items-center opacity-90">
+                        <Clock className="mr-1 h-3 w-3" /> {session.duration}
+                      </span>
+                    </div>
+                    <span className="text-xs font-medium">
+                      {session.participants.length}/{session.maxParticipants} players
+                    </span>
+                  </div>
+                  
+                  <div className="p-4">
+                    <h4 className="font-bold mb-2">{session.title}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{session.description}</p>
+                    
+                    <div className="text-xs text-gray-500 flex items-center mb-2">
+                      <MapPin className="mr-1.5 h-3 w-3" />
+                      <span>{session.location}</span>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 flex items-center">
+                      <User className="mr-1.5 h-3 w-3" />
+                      <span>Hosted by {session.host.name}</span>
+                    </div>
+                    
+                    <div className="mt-3 flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleExportCalendar(session)}
+                      >
+                        <Download className="mr-1 h-3 w-3" />
+                        Export
+                      </Button>
+                      <Button
+                        size="sm"
+                        asChild
+                      >
+                        <Link href={user ? `/sessions/${session.id}` : "/profile"}>
+                          Join Session
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowSessionDetails(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-display font-bold">Find Gaming Sessions</h1>
@@ -300,8 +371,24 @@ const SessionsPage = () => {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={setSelectedDate}
+                  onSelect={(date) => {
+                    setSelectedDate(date);
+                    
+                    if (date) {
+                      const sessionsOnDate = getSessionsForDate(date);
+                      if (sessionsOnDate.length > 0) {
+                        setSelectedDateSessions(sessionsOnDate);
+                        setShowSessionDetails(true);
+                      }
+                    }
+                  }}
                   className="border rounded-md p-2"
+                  modifiers={{
+                    hasSession: (date) => hasSessionsOnDate(date),
+                  }}
+                  modifiersClassNames={{
+                    hasSession: "relative after:absolute after:content-[''] after:w-1 after:h-1 after:rounded-full after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:bg-primary",
+                  }}
                 />
               </div>
               
@@ -490,9 +577,119 @@ const SessionsPage = () => {
             <TabsContent value="calendar" className="mt-6">
               <Card>
                 <CardContent className="p-6">
-                  <p className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    Calendar view coming soon! Please use the list view for now.
-                  </p>
+                  <div className="grid gap-6 lg:grid-cols-2">
+                    <div>
+                      <h3 className="text-lg font-medium mb-4">Select a Date</h3>
+                      <div className="mb-4">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={(date) => {
+                            setSelectedDate(date);
+                            
+                            if (date) {
+                              const sessionsOnDate = getSessionsForDate(date);
+                              if (sessionsOnDate.length > 0) {
+                                setSelectedDateSessions(sessionsOnDate);
+                                setShowSessionDetails(true);
+                              }
+                            }
+                          }}
+                          className="mx-auto border rounded-md p-4"
+                          modifiers={{
+                            hasSession: (date) => hasSessionsOnDate(date),
+                          }}
+                          modifiersClassNames={{
+                            hasSession: "relative after:absolute after:content-[''] after:w-1.5 after:h-1.5 after:rounded-full after:bottom-1 after:left-1/2 after:-translate-x-1/2 after:bg-primary",
+                          }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-center mt-2 text-sm text-gray-500">
+                        <div className="flex items-center mr-4">
+                          <div className="w-2 h-2 rounded-full bg-primary mr-1.5"></div>
+                          <span>Sessions Available</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-lg font-medium mb-4">
+                        {selectedDate && getSessionsForDate(selectedDate).length > 0 
+                          ? `Sessions on ${formatDate(selectedDate)}` 
+                          : 'No Sessions Selected'}
+                      </h3>
+                      
+                      {selectedDate && getSessionsForDate(selectedDate).length > 0 ? (
+                        <div className="space-y-4">
+                          {getSessionsForDate(selectedDate).map((session) => (
+                            <Card key={session.id} className="overflow-hidden">
+                              <CardContent className="p-0">
+                                <div className={`p-3 ${getBadgeColor(session.gameType)} text-white flex justify-between items-center`}>
+                                  <div className="flex items-center">
+                                    <span className="font-medium">{session.gameType}</span>
+                                    <span className="ml-2 text-xs flex items-center opacity-90">
+                                      <Clock className="mr-1 h-3 w-3" /> {session.duration}
+                                    </span>
+                                  </div>
+                                  <span className="text-xs font-medium">
+                                    {session.participants.length}/{session.maxParticipants} players
+                                  </span>
+                                </div>
+                                
+                                <div className="p-4">
+                                  <h4 className="font-bold mb-2">{session.title}</h4>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{session.description}</p>
+                                  
+                                  <div className="text-xs text-gray-500 flex items-center mb-2">
+                                    <MapPin className="mr-1.5 h-3 w-3" />
+                                    <span>{session.location}</span>
+                                  </div>
+                                  
+                                  <div className="text-xs text-gray-500 flex items-center">
+                                    <User className="mr-1.5 h-3 w-3" />
+                                    <span>Hosted by {session.host.name}</span>
+                                  </div>
+                                  
+                                  <div className="mt-3 flex gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleExportCalendar(session)}
+                                    >
+                                      <Download className="mr-1 h-3 w-3" />
+                                      Export
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      asChild
+                                    >
+                                      <Link href={user ? `/sessions/${session.id}` : "/profile"}>
+                                        Join Session
+                                      </Link>
+                                    </Button>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="rounded-lg border border-gray-200 dark:border-gray-800 p-8 text-center">
+                          <CalendarIcon2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                          <h4 className="text-lg font-medium mb-2">No Sessions Found</h4>
+                          <p className="text-gray-500 dark:text-gray-400 mb-6">
+                            Select a date with a dot indicator to view available gaming sessions
+                          </p>
+                          <Button asChild variant="outline">
+                            <Link href="/create-session">
+                              <Plus className="mr-2 h-4 w-4" />
+                              Create a Session
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
