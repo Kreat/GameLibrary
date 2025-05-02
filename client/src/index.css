@@ -274,70 +274,54 @@
     animation: slide-in 0.5s ease-out;
   }
   
-  /* Calendar session dots */
-  .sessions-dot-1 {
+  /* Calendar session numbers */
+  .sessions-count-1, .sessions-count-2, .sessions-count-3, .sessions-count-4, .sessions-count-5plus {
     position: relative;
   }
 
-  .sessions-dot-1::after {
-    content: '';
+  .sessions-count-1::after,
+  .sessions-count-2::after,
+  .sessions-count-3::after,
+  .sessions-count-4::after,
+  .sessions-count-5plus::after {
     position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 9999px;
-    bottom: 2px;
+    bottom: -4px;
     left: 50%;
     transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 600;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: hsl(var(--background));
+  }
+
+  .sessions-count-1::after {
+    content: '1';
     background-color: hsl(var(--primary));
   }
 
-  .sessions-dot-2 {
-    position: relative;
+  .sessions-count-2::after {
+    content: '2';
+    background-color: hsl(var(--accent));
   }
 
-  .sessions-dot-2::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 14px;
-    height: 6px;
-    background: linear-gradient(to right,
-      hsl(var(--accent)) 0%,
-      hsl(var(--accent)) 45%,
-      transparent 45%,
-      transparent 55%,
-      hsl(var(--primary)) 55%,
-      hsl(var(--primary)) 100%
-    );
-    border-radius: 9999px;
+  .sessions-count-3::after {
+    content: '3';
+    background-color: hsl(var(--destructive));
   }
 
-  .sessions-dot-3 {
-    position: relative;
+  .sessions-count-4::after {
+    content: '4';
+    background-color: hsl(var(--secondary));
   }
 
-  .sessions-dot-3::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 6px;
-    background: linear-gradient(to right,
-      hsl(var(--primary)) 0%,
-      hsl(var(--primary)) 30%,
-      transparent 30%,
-      transparent 35%,
-      hsl(var(--accent)) 35%,
-      hsl(var(--accent)) 65%,
-      transparent 65%,
-      transparent 70%,
-      hsl(var(--primary)) 70%,
-      hsl(var(--primary)) 100%
-    );
-    border-radius: 9999px;
+  .sessions-count-5plus::after {
+    content: '5+';
+    background-color: hsl(var(--secondary));
+    font-size: 8px;
   }
 }

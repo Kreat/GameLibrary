@@ -388,14 +388,18 @@ const SessionsPage = () => {
                   }}
                   className="border rounded-md p-2"
                   modifiers={{
-                    hasSessions1: (date) => getSessionsForDate(date).length === 1,
-                    hasSessions2: (date) => getSessionsForDate(date).length === 2,
-                    hasSessions3: (date) => getSessionsForDate(date).length >= 3,
+                    sessionsCount1: (date) => getSessionsForDate(date).length === 1,
+                    sessionsCount2: (date) => getSessionsForDate(date).length === 2,
+                    sessionsCount3: (date) => getSessionsForDate(date).length === 3,
+                    sessionsCount4: (date) => getSessionsForDate(date).length === 4,
+                    sessionsCount5plus: (date) => getSessionsForDate(date).length >= 5,
                   }}
                   modifiersClassNames={{
-                    hasSessions1: "sessions-dot-1",
-                    hasSessions2: "sessions-dot-2",
-                    hasSessions3: "sessions-dot-3",
+                    sessionsCount1: "sessions-count-1",
+                    sessionsCount2: "sessions-count-2",
+                    sessionsCount3: "sessions-count-3",
+                    sessionsCount4: "sessions-count-4",
+                    sessionsCount5plus: "sessions-count-5plus",
                   }}
                 />
               </div>
@@ -605,29 +609,41 @@ const SessionsPage = () => {
                           }}
                           className="mx-auto border rounded-md p-4"
                           modifiers={{
-                            hasSessions1: (date) => getSessionsForDate(date).length === 1,
-                            hasSessions2: (date) => getSessionsForDate(date).length === 2,
-                            hasSessions3: (date) => getSessionsForDate(date).length >= 3,
+                            sessionsCount1: (date) => getSessionsForDate(date).length === 1,
+                            sessionsCount2: (date) => getSessionsForDate(date).length === 2,
+                            sessionsCount3: (date) => getSessionsForDate(date).length === 3,
+                            sessionsCount4: (date) => getSessionsForDate(date).length === 4,
+                            sessionsCount5plus: (date) => getSessionsForDate(date).length >= 5,
                           }}
                           modifiersClassNames={{
-                            hasSessions1: "sessions-dot-1",
-                            hasSessions2: "sessions-dot-2",
-                            hasSessions3: "sessions-dot-3",
+                            sessionsCount1: "sessions-count-1",
+                            sessionsCount2: "sessions-count-2",
+                            sessionsCount3: "sessions-count-3",
+                            sessionsCount4: "sessions-count-4",
+                            sessionsCount5plus: "sessions-count-5plus",
                           }}
                         />
                       </div>
                       <div className="flex flex-wrap items-center justify-center mt-2 text-sm text-gray-500 gap-3">
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-1"></div>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-count-1"></div>
                           <span>1 Session</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-2"></div>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-count-2"></div>
                           <span>2 Sessions</span>
                         </div>
                         <div className="flex items-center">
-                          <div className="w-6 h-6 mr-1.5 relative sessions-dot-3"></div>
-                          <span>3+ Sessions</span>
+                          <div className="w-6 h-6 mr-1.5 relative sessions-count-3"></div>
+                          <span>3 Sessions</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-6 h-6 mr-1.5 relative sessions-count-4"></div>
+                          <span>4 Sessions</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="w-6 h-6 mr-1.5 relative sessions-count-5plus"></div>
+                          <span>5+ Sessions</span>
                         </div>
                       </div>
                     </div>
@@ -698,7 +714,7 @@ const SessionsPage = () => {
                           <CalendarIcon2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                           <h4 className="text-lg font-medium mb-2">No Sessions Found</h4>
                           <p className="text-gray-500 dark:text-gray-400 mb-6">
-                            Select a date with a dot indicator to view available gaming sessions
+                            Select a date with a number indicator to view available gaming sessions
                           </p>
                           <Button asChild variant="outline">
                             <Link href="/create-session">
