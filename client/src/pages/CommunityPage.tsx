@@ -217,6 +217,24 @@ const CommunityPage = () => {
 
   return (
     <div>
+      {/* Thread view dialog */}
+      {selectedThreadDetails && (
+        <ThreadViewDialog
+          open={threadDialogOpen}
+          onOpenChange={setThreadDialogOpen}
+          threadId={selectedThreadDetails.id}
+          title={selectedThreadDetails.title}
+          category={selectedThreadDetails.category}
+          categoryColor={categories.find(c => c.id === selectedThreadDetails.category)?.color || ""}
+          categoryName={categories.find(c => c.id === selectedThreadDetails.category)?.name || ""}
+          author={selectedThreadDetails.author}
+          timestamp={selectedThreadDetails.lastReply}
+          likes={20}
+          views={selectedThreadDetails.views}
+          tags={selectedThreadDetails.tags}
+        />
+      )}
+      
       {/* Community Banner */}
       <div className="bg-gradient-to-r from-primary to-purple-900 text-white py-12">
         <div className="container mx-auto px-4">
@@ -341,12 +359,20 @@ const CommunityPage = () => {
                     <Button variant="outline" size="icon">
                       <Filter className="h-4 w-4" />
                     </Button>
-                    <Button asChild>
-                      <Link href={user ? "/community/new-thread" : "/profile"}>
-                        <Plus className="h-4 w-4 mr-1" />
-                        New Thread
-                      </Link>
-                    </Button>
+                    <PostDiscussionDialog
+                      buttonLabel={
+                        <>
+                          <Plus className="h-4 w-4 mr-1" />
+                          New Thread
+                        </>
+                      }
+                      refreshThreads={() => {
+                        toast({
+                          title: "Discussion posted",
+                          description: "Your thread is now visible to the community",
+                        });
+                      }}
+                    />
                   </div>
                 </div>
                 
@@ -374,9 +400,12 @@ const CommunityPage = () => {
                                 </div>
                                 
                                 <h3 className="text-lg font-medium">
-                                  <Link href={`/community/thread/${thread.id}`} className="hover:text-primary">
+                                  <button 
+                                    className="text-left hover:text-primary" 
+                                    onClick={() => handleViewThread(thread.id)}
+                                  >
                                     {thread.title}
-                                  </Link>
+                                  </button>
                                 </h3>
                                 
                                 <div className="mt-2 flex flex-wrap gap-2">
@@ -405,12 +434,20 @@ const CommunityPage = () => {
                           <p className="text-gray-500 dark:text-gray-400 mb-4">
                             No discussions found matching your criteria.
                           </p>
-                          <Button asChild>
-                            <Link href={user ? "/community/new-thread" : "/profile"}>
-                              <Plus className="h-4 w-4 mr-1" />
-                              Start a New Discussion
-                            </Link>
-                          </Button>
+                          <PostDiscussionDialog
+                            buttonLabel={
+                              <>
+                                <Plus className="h-4 w-4 mr-1" />
+                                Start a New Discussion
+                              </>
+                            }
+                            refreshThreads={() => {
+                              toast({
+                                title: "Discussion posted",
+                                description: "Your thread is now visible to the community",
+                              });
+                            }}
+                          />
                         </div>
                       )}
                     </div>
@@ -441,12 +478,20 @@ const CommunityPage = () => {
               <div className="md:col-span-2">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-display font-bold">Recent Discussions</h2>
-                  <Button asChild>
-                    <Link href={user ? "/community/new-post" : "/profile"}>
-                      <Plus className="h-4 w-4 mr-1" />
-                      New Post
-                    </Link>
-                  </Button>
+                  <PostDiscussionDialog
+                    buttonLabel={
+                      <>
+                        <Plus className="h-4 w-4 mr-1" />
+                        New Post
+                      </>
+                    }
+                    refreshThreads={() => {
+                      toast({
+                        title: "Discussion posted",
+                        description: "Your post is now visible to the community",
+                      });
+                    }}
+                  />
                 </div>
                 
                 {/* Post input for logged in users */}
@@ -455,7 +500,7 @@ const CommunityPage = () => {
                     <CardContent className="p-4">
                       <div className="flex items-start gap-4">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={user.photoURL || undefined} alt={user.displayName || "User"} />
+                          <AvatarImage src={user.photoUrl || undefined} alt={user.displayName || "User"} />
                           <AvatarFallback>{user.displayName?.[0] || user.email?.[0] || "U"}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
