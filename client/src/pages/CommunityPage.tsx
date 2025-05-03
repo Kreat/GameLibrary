@@ -227,11 +227,12 @@ const CommunityPage = () => {
     e.preventDefault();
     console.log("Start Discussion button clicked, current user:", user);
     
-    if (!user) {
-      console.log("User not logged in, redirecting to auth page");
-      window.location.href = "/auth";
-      return;
-    }
+    // TEMPORARILY BYPASSING AUTH CHECK FOR TESTING
+    // if (!user) {
+    //   console.log("User not logged in, redirecting to auth page");
+    //   window.location.href = "/auth";
+    //   return;
+    // }
     
     console.log("Opening discussion dialog, current discussionDialogOpen:", discussionDialogOpen);
     setDiscussionDialogOpen(true);
