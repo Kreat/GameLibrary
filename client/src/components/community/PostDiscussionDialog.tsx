@@ -107,6 +107,7 @@ interface PostDiscussionDialogProps {
   buttonLabel?: React.ReactNode;
   buttonVariant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   buttonSize?: "default" | "sm" | "lg" | "icon";
+  buttonId?: string;
   children?: React.ReactNode;
   refreshThreads?: () => void;
   asChild?: boolean;
@@ -122,6 +123,7 @@ export function PostDiscussionDialog({
   ),
   buttonVariant = "outline",
   buttonSize = "lg",
+  buttonId,
   children,
   refreshThreads,
   asChild
@@ -194,6 +196,7 @@ export function PostDiscussionDialog({
             variant={buttonVariant} 
             size={buttonSize}
             className={buttonClassNames}
+            id={buttonId}
           >
             {buttonLabel}
           </Button>

@@ -261,24 +261,45 @@ const CommunityPage = () => {
                 <MessageCircle className="mr-2 h-4 w-4" />
                 Join Discussions
               </Button>
-              <PostDiscussionDialog
-                buttonVariant="outline"
-                buttonClassNames="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
-                buttonSize="lg"
-                buttonLabel={
-                  <>
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Start a Discussion
-                  </>
-                }
-                refreshThreads={() => {
-                  // In a real app, this would fetch the latest threads
-                  toast({
-                    title: "Discussion posted",
-                    description: "Your thread is now visible to the community",
-                  });
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
+                onClick={() => {
+                  if (!user) {
+                    window.location.href = "/auth";
+                    return;
+                  }
+                  
+                  // Open discussion dialog directly
+                  document.getElementById("start-discussion-button")?.click();
                 }}
-              />
+              >
+                <MessageCircle className="mr-2 h-4 w-4" />
+                Start a Discussion
+              </Button>
+              
+              {/* Hidden button that triggers the dialog */}
+              <div className="hidden">
+                <PostDiscussionDialog
+                  buttonVariant="outline"
+                  buttonSize="lg"
+                  buttonLabel={
+                    <>
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Start Discussion
+                    </>
+                  }
+                  buttonId="start-discussion-button"
+                  refreshThreads={() => {
+                    // In a real app, this would fetch the latest threads
+                    toast({
+                      title: "Discussion posted",
+                      description: "Your thread is now visible to the community",
+                    });
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
