@@ -259,7 +259,7 @@ const CommunityPage = () => {
                 }}
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
-                Browse Discussions
+                Join Discussions
               </Button>
               <PostDiscussionDialog
                 buttonVariant="outline"
@@ -268,7 +268,7 @@ const CommunityPage = () => {
                 buttonLabel={
                   <>
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Join Discussion
+                    Start a Discussion
                   </>
                 }
                 refreshThreads={() => {
