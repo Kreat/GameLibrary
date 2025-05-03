@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { PostDiscussionDialog } from "@/components/community/PostDiscussionDialog";
 import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
+import { StartDiscussionButton } from "@/components/community/StartDiscussionButton";
 
 const categories = [
   {
@@ -261,45 +262,16 @@ const CommunityPage = () => {
                 <MessageCircle className="mr-2 h-4 w-4" />
                 Join Discussions
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
-                onClick={() => {
-                  if (!user) {
-                    window.location.href = "/auth";
-                    return;
-                  }
-                  
-                  // Open discussion dialog directly
-                  document.getElementById("start-discussion-button")?.click();
+              <StartDiscussionButton
+                className="community-hero-start-discussion-btn"
+                refreshThreads={() => {
+                  // In a real app, this would fetch the latest threads
+                  toast({
+                    title: "Discussion posted",
+                    description: "Your thread is now visible to the community",
+                  });
                 }}
-              >
-                <MessageCircle className="mr-2 h-4 w-4" />
-                Start a Discussion
-              </Button>
-              
-              {/* Hidden button that triggers the dialog */}
-              <div className="hidden">
-                <PostDiscussionDialog
-                  buttonVariant="outline"
-                  buttonSize="lg"
-                  buttonLabel={
-                    <>
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Start Discussion
-                    </>
-                  }
-                  buttonId="start-discussion-button"
-                  refreshThreads={() => {
-                    // In a real app, this would fetch the latest threads
-                    toast({
-                      title: "Discussion posted",
-                      description: "Your thread is now visible to the community",
-                    });
-                  }}
-                />
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -392,20 +364,23 @@ const CommunityPage = () => {
                     <Button variant="outline" size="icon">
                       <Filter className="h-4 w-4" />
                     </Button>
-                    <PostDiscussionDialog
-                      buttonLabel={
-                        <>
-                          <Plus className="h-4 w-4 mr-1" />
-                          New Thread
-                        </>
-                      }
-                      refreshThreads={() => {
-                        toast({
-                          title: "Discussion posted",
-                          description: "Your thread is now visible to the community",
-                        });
+                    <Button 
+                      onClick={() => {
+                        if (!user) {
+                          window.location.href = "/auth";
+                          return;
+                        }
+                        const startDiscussionBtn = document.querySelector('.community-hero-start-discussion-btn') as HTMLElement;
+                        if (startDiscussionBtn) {
+                          startDiscussionBtn.click();
+                        }
                       }}
-                    />
+                      variant="default"
+                      size="sm"
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      New Thread
+                    </Button>
                   </div>
                 </div>
                 
@@ -467,20 +442,22 @@ const CommunityPage = () => {
                           <p className="text-gray-500 dark:text-gray-400 mb-4">
                             No discussions found matching your criteria.
                           </p>
-                          <PostDiscussionDialog
-                            buttonLabel={
-                              <>
-                                <Plus className="h-4 w-4 mr-1" />
-                                Start a New Discussion
-                              </>
-                            }
-                            refreshThreads={() => {
-                              toast({
-                                title: "Discussion posted",
-                                description: "Your thread is now visible to the community",
-                              });
+                          <Button
+                            onClick={() => {
+                              if (!user) {
+                                window.location.href = "/auth";
+                                return;
+                              }
+                              const startDiscussionBtn = document.querySelector('.community-hero-start-discussion-btn') as HTMLElement;
+                              if (startDiscussionBtn) {
+                                startDiscussionBtn.click();
+                              }
                             }}
-                          />
+                            variant="default"
+                          >
+                            <Plus className="h-4 w-4 mr-1" />
+                            Start a New Discussion
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -511,20 +488,23 @@ const CommunityPage = () => {
               <div className="md:col-span-2">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-display font-bold">Recent Discussions</h2>
-                  <PostDiscussionDialog
-                    buttonLabel={
-                      <>
-                        <Plus className="h-4 w-4 mr-1" />
-                        New Post
-                      </>
-                    }
-                    refreshThreads={() => {
-                      toast({
-                        title: "Discussion posted",
-                        description: "Your post is now visible to the community",
-                      });
+                  <Button
+                    onClick={() => {
+                      if (!user) {
+                        window.location.href = "/auth";
+                        return;
+                      }
+                      const startDiscussionBtn = document.querySelector('.community-hero-start-discussion-btn') as HTMLElement;
+                      if (startDiscussionBtn) {
+                        startDiscussionBtn.click();
+                      }
                     }}
-                  />
+                    variant="default"
+                    size="sm"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    New Post
+                  </Button>
                 </div>
                 
                 {/* Post input for logged in users */}
