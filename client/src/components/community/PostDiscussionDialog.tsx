@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Dialog, 
   DialogContent, 
@@ -27,11 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MessageCircle, Plus } from "lucide-react";
+import { MessageCircle, Plus, Gamepad } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import * as z from "zod";
 
 // Categories
@@ -68,6 +69,20 @@ const categories = [
   }
 ];
 
+// Sample games (in a real app, these would come from the database)
+const sampleGames = [
+  { id: 1, title: "Catan", type: "board" },
+  { id: 2, title: "Wingspan", type: "board" },
+  { id: 3, title: "Magic: The Gathering", type: "card" },
+  { id: 4, title: "Pokémon TCG", type: "card" },
+  { id: 5, title: "Dungeons & Dragons", type: "rpg" },
+  { id: 6, title: "Call of Cthulhu", type: "rpg" },
+  { id: 7, title: "Warhammer 40k", type: "miniature" },
+  { id: 8, title: "Ticket to Ride", type: "board" },
+  { id: 9, title: "Pandemic", type: "board" },
+  { id: 10, title: "Gloomhaven", type: "board" },
+];
+
 // Form schema
 const formSchema = z.object({
   title: z.string().min(5, {
@@ -78,6 +93,7 @@ const formSchema = z.object({
   category: z.string({
     required_error: "Please select a category.",
   }),
+  gameId: z.string().optional(),
   content: z.string().min(10, {
     message: "Content must be at least 10 characters.",
   }),
@@ -120,6 +136,7 @@ export function PostDiscussionDialog({
     defaultValues: {
       title: "",
       category: "general",
+      gameId: "",
       content: "",
       tags: "",
     },
@@ -231,6 +248,35 @@ export function PostDiscussionDialog({
                   </Select>
                   <FormDescription>
                     Choose the most appropriate category for your discussion.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="gameId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Related Game (Optional)</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a game (optional)" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="">No specific game</SelectItem>
+                      {sampleGames.map((game) => (
+                        <SelectItem key={game.id} value={game.id.toString()}>
+                          {game.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>
+                    Select a game that your discussion is about.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
