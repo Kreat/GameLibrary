@@ -320,7 +320,7 @@ const CommunityPage = () => {
             </TabsTrigger>
             <TabsTrigger value="members" className="flex items-center gap-1.5">
               <Users className="h-4 w-4" />
-              Members
+              Friends
             </TabsTrigger>
           </TabsList>
           
@@ -690,14 +690,14 @@ const CommunityPage = () => {
               <div className="md:col-span-3">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                   <div>
-                    <h2 className="text-2xl font-display font-bold">Community Members</h2>
-                    <p className="text-gray-600 dark:text-gray-400">Connect with fellow tabletop gamers</p>
+                    <h2 className="text-2xl font-display font-bold">Friends</h2>
+                    <p className="text-gray-600 dark:text-gray-400">Connect with your gaming buddies</p>
                   </div>
                   
                   <div className="w-full md:w-auto flex gap-2">
                     <div className="relative w-full md:w-64">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                      <Input placeholder="Search members..." className="pl-8" />
+                      <Input placeholder="Search friends..." className="pl-8" />
                     </div>
                     <Button variant="outline" size="icon">
                       <Filter className="h-4 w-4" />
@@ -705,9 +705,9 @@ const CommunityPage = () => {
                   </div>
                 </div>
                 
-                {/* Featured members section */}
+                {/* Close friends section */}
                 <div className="mb-8">
-                  <h3 className="text-lg font-medium mb-4">Featured Members</h3>
+                  <h3 className="text-lg font-medium mb-4">Close Friends</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {communityMembers.map((member) => (
                       <Card key={member.id}>
@@ -737,9 +737,9 @@ const CommunityPage = () => {
                 
                 <Separator className="my-8" />
                 
-                {/* Member directory */}
+                {/* Friend suggestions section */}
                 <div>
-                  <h3 className="text-lg font-medium mb-4">Member Directory</h3>
+                  <h3 className="text-lg font-medium mb-4">Friend Suggestions</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {Array.from({ length: 9 }).map((_, i) => (
                       <Card key={i}>
@@ -749,8 +749,8 @@ const CommunityPage = () => {
                           </Avatar>
                           
                           <div>
-                            <h4 className="font-medium">User {i + 1}</h4>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">Member</p>
+                            <h4 className="font-medium">Gamer {i + 1}</h4>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Suggested Friend</p>
                           </div>
                         </CardContent>
                       </Card>
@@ -758,7 +758,7 @@ const CommunityPage = () => {
                   </div>
                   
                   <div className="mt-6 text-center">
-                    <Button variant="outline">Load More Members</Button>
+                    <Button variant="outline">Find More Friends</Button>
                   </div>
                 </div>
               </div>
