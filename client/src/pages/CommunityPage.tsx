@@ -312,11 +312,11 @@ const CommunityPage = () => {
           <TabsList className="w-full grid grid-cols-3 mb-6">
             <TabsTrigger value="forums" className="flex items-center gap-1.5">
               <MessageSquare className="h-4 w-4" />
-              Thread Discussions
+              Discussions
             </TabsTrigger>
             <TabsTrigger value="discussions" className="flex items-center gap-1.5">
               <MessageCircle className="h-4 w-4" />
-              Discussions
+              My Communities
             </TabsTrigger>
             <TabsTrigger value="members" className="flex items-center gap-1.5">
               <Users className="h-4 w-4" />
@@ -498,7 +498,7 @@ const CommunityPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-display font-bold">Recent Discussions</h2>
+                  <h2 className="text-2xl font-display font-bold">My Communities</h2>
                   <Button
                     onClick={handleStartDiscussion}
                     variant="default"
