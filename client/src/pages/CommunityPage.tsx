@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { CreateDiscussionDialog } from "@/components/community/CreateDiscussionDialog";
 import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
+import { SimpleDialog } from "@/components/community/SimpleDialog";
 
 const categories = [
   {
@@ -766,31 +766,37 @@ const CommunityPage = () => {
         </Tabs>
       </div>
       
-      {/* Discussion Creation Dialog */}
-      <CreateDiscussionDialog
-        open={discussionDialogOpen}
-        onOpenChange={(open) => {
-          console.log("Dialog onOpenChange from parent, setting to:", open);
-          setDiscussionDialogOpen(open);
-        }}
-        categories={categories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          color: cat.color
-        }))}
-        games={sampleGames}
-        onSubmit={(values) => {
-          console.log("Form values:", values);
+      {/* Discussion Creation Dialog - SimpleDialog version */}
+      <SimpleDialog 
+        isOpen={discussionDialogOpen} 
+        onClose={() => setDiscussionDialogOpen(false)}
+        title="Create a New Discussion"
+      >
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Title</label>
+            <Input placeholder="Enter a descriptive title" />
+          </div>
           
-          // In a real app, this would send the data to your API
-          toast({
-            title: "Discussion created",
-            description: "Your discussion has been posted successfully!",
-          });
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Category</label>
+            <select className="w-full p-2 border rounded-md">
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
           
-          setDiscussionDialogOpen(false);
-        }}
-      />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Content</label>
+            <textarea 
+              className="w-full p-2 border rounded-md" 
+              rows={5}
+              placeholder="Write your discussion content here..."
+            />
+          </div>
+        </div>
+      </SimpleDialog>
       
       {/* Add a debug element to show current dialog state */}
       <div style={{ position: 'fixed', bottom: '10px', right: '10px', backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '5px', fontSize: '10px', zIndex: 9999 }}>
