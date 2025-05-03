@@ -250,10 +250,12 @@ const CommunityPage = () => {
                 size="lg"
                 onClick={() => {
                   setActiveTab("discussions");
-                  document.getElementById("discussions-tab")?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                  });
+                  setTimeout(() => {
+                    document.getElementById("discussions-tab")?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                  }, 100);
                 }}
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
@@ -263,6 +265,12 @@ const CommunityPage = () => {
                 buttonVariant="outline"
                 buttonClassNames="border-primary-foreground/40 text-white hover:bg-primary-foreground/10"
                 buttonSize="lg"
+                buttonLabel={
+                  <>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Join Discussion
+                  </>
+                }
                 refreshThreads={() => {
                   // In a real app, this would fetch the latest threads
                   toast({
