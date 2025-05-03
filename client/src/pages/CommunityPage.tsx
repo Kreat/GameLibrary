@@ -528,10 +528,7 @@ const CommunityPage = () => {
                                 window.location.href = "/auth";
                                 return;
                               }
-                              const startDiscussionBtn = document.querySelector('.community-hero-start-discussion-btn') as HTMLElement;
-                              if (startDiscussionBtn) {
-                                startDiscussionBtn.click();
-                              }
+                              setDiscussionDialogOpen(true);
                             }}
                             variant="default"
                           >
@@ -574,10 +571,7 @@ const CommunityPage = () => {
                         window.location.href = "/auth";
                         return;
                       }
-                      const startDiscussionBtn = document.querySelector('.community-hero-start-discussion-btn') as HTMLElement;
-                      if (startDiscussionBtn) {
-                        startDiscussionBtn.click();
-                      }
+                      setDiscussionDialogOpen(true);
                     }}
                     variant="default"
                     size="sm"
@@ -603,7 +597,7 @@ const CommunityPage = () => {
                             rows={3}
                           ></textarea>
                           <div className="mt-2 flex justify-end">
-                            <Button>Post</Button>
+                            <Button onClick={() => setDiscussionDialogOpen(true)}>Post</Button>
                           </div>
                         </div>
                       </div>
