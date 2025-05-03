@@ -10,37 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { PostDiscussionDialog } from "@/components/community/PostDiscussionDialog";
+import { CreateDiscussionDialog } from "@/components/community/CreateDiscussionDialog";
 import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
-// Using a direct modal approach instead of StartDiscussionButton
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 
 const categories = [
   {
@@ -222,17 +193,6 @@ const sampleGames = [
   { id: 7, title: "Minecraft" },
 ];
 
-// Form schema for discussion creation
-const formSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters").max(100),
-  category: z.string(),
-  gameId: z.string().optional(),
-  content: z.string().min(20, "Content must be at least 20 characters"),
-  tags: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 const CommunityPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -242,33 +202,6 @@ const CommunityPage = () => {
   const [selectedThread, setSelectedThread] = useState<number | null>(null);
   const [threadDialogOpen, setThreadDialogOpen] = useState(false);
   const [discussionDialogOpen, setDiscussionDialogOpen] = useState(false);
-  
-  // Form setup
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      category: "general",
-      gameId: "",
-      content: "",
-      tags: "",
-    },
-  });
-  
-  // Handle form submission
-  const onSubmit = (values: FormValues) => {
-    console.log("Form values:", values);
-    
-    // In a real app, this would send the data to your API
-    toast({
-      title: "Discussion created",
-      description: "Your discussion has been posted successfully!",
-    });
-    
-    // Reset form and close dialog
-    form.reset();
-    setDiscussionDialogOpen(false);
-  };
   
   // Filter threads based on active category and search query
   const filteredThreads = forumThreads.filter(thread => {
@@ -287,6 +220,20 @@ const CommunityPage = () => {
   const handleViewThread = (threadId: number) => {
     setSelectedThread(threadId);
     setThreadDialogOpen(true);
+  };
+
+  // Handle starting a new discussion
+  const handleStartDiscussion = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log("Start Discussion button clicked, current user:", user);
+    
+    if (!user) {
+      window.location.href = "/auth";
+      return;
+    }
+    
+    console.log("Opening discussion dialog");
+    setDiscussionDialogOpen(true);
   };
 
   // SEO - Set document title
@@ -341,18 +288,7 @@ const CommunityPage = () => {
                 Join Discussions
               </Button>
               <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  console.log("Hero button clicked, current user:", user);
-                  if (!user) {
-                    // Use client-side routing instead of direct window.location change
-                    window.history.pushState({}, "", "/auth");
-                    window.dispatchEvent(new Event("popstate"));
-                    return;
-                  }
-                  console.log("Setting discussion dialog to open");
-                  setDiscussionDialogOpen(true);
-                }}
+                onClick={handleStartDiscussion}
                 variant="default"
                 size="lg"
                 className="community-hero-start-discussion-btn"
@@ -453,18 +389,7 @@ const CommunityPage = () => {
                       <Filter className="h-4 w-4" />
                     </Button>
                     <Button 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        console.log("New Thread button clicked");
-                        if (!user) {
-                          // Use client-side routing instead of direct window.location change
-                          window.history.pushState({}, "", "/auth");
-                          window.dispatchEvent(new Event("popstate"));
-                          return;
-                        }
-                        console.log("Opening discussion dialog");
-                        setDiscussionDialogOpen(true);
-                      }}
+                      onClick={handleStartDiscussion}
                       variant="default"
                       size="sm"
                     >
@@ -533,18 +458,7 @@ const CommunityPage = () => {
                             No discussions found matching your criteria.
                           </p>
                           <Button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              console.log("Start New Discussion button clicked");
-                              if (!user) {
-                                // Use client-side routing instead of direct window.location change
-                                window.history.pushState({}, "", "/auth");
-                                window.dispatchEvent(new Event("popstate"));
-                                return;
-                              }
-                              console.log("Opening discussion dialog from empty state");
-                              setDiscussionDialogOpen(true);
-                            }}
+                            onClick={handleStartDiscussion}
                             variant="default"
                           >
                             <Plus className="h-4 w-4 mr-1" />
@@ -581,18 +495,7 @@ const CommunityPage = () => {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-display font-bold">Recent Discussions</h2>
                   <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      console.log("New Post button clicked");
-                      if (!user) {
-                        // Use client-side routing instead of direct window.location change
-                        window.history.pushState({}, "", "/auth");
-                        window.dispatchEvent(new Event("popstate"));
-                        return;
-                      }
-                      console.log("Opening discussion dialog from New Post button");
-                      setDiscussionDialogOpen(true);
-                    }}
+                    onClick={handleStartDiscussion}
                     variant="default"
                     size="sm"
                   >
@@ -858,150 +761,29 @@ const CommunityPage = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
       {/* Discussion Creation Dialog */}
-      <Dialog 
-        open={discussionDialogOpen} 
-        onOpenChange={(open) => {
-          console.log("Dialog open changed to:", open);
-          setDiscussionDialogOpen(open);
-        }}>
-        <DialogContent className="sm:max-w-[550px]">
-          <DialogHeader>
-            <DialogTitle>Create a New Discussion</DialogTitle>
-            <DialogDescription>
-              Share your thoughts with the community. Start a new discussion thread here.
-            </DialogDescription>
-          </DialogHeader>
+      <CreateDiscussionDialog
+        open={discussionDialogOpen}
+        onOpenChange={setDiscussionDialogOpen}
+        categories={categories.map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          color: cat.color
+        }))}
+        games={sampleGames}
+        onSubmit={(values) => {
+          console.log("Form values:", values);
           
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Enter a descriptive title" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categories.map(category => (
-                          <SelectItem key={category.id} value={category.id}>
-                            <div className="flex items-center gap-2">
-                              <div className={`w-4 h-4 rounded-full ${category.color}`}></div>
-                              <span>{category.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="gameId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Game (Optional)</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
-                      defaultValue={field.value || undefined}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a related game" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {sampleGames.map(game => (
-                          <SelectItem key={game.id} value={game.id.toString()}>
-                            {game.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      Associate your discussion with a game
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Content</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Write your discussion content here..." 
-                        rows={5}
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tags</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="Separate tags with commas (e.g., beginner, strategy, help)" 
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Tags make it easier for others to find your discussion
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setDiscussionDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit">Create Discussion</Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+          // In a real app, this would send the data to your API
+          toast({
+            title: "Discussion created",
+            description: "Your discussion has been posted successfully!",
+          });
+          
+          setDiscussionDialogOpen(false);
+        }}
+      />
     </div>
   );
 };
