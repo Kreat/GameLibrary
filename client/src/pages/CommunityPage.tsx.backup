@@ -451,8 +451,7 @@ const CommunityPage = () => {
                       <Filter className="h-4 w-4" />
                     </Button>
                     <Button 
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={() => {
                         if (!user) {
                           window.location.href = "/auth";
                           return;
@@ -527,8 +526,7 @@ const CommunityPage = () => {
                             No discussions found matching your criteria.
                           </p>
                           <Button
-                            onClick={(e) => {
-                              e.preventDefault();
+                            onClick={() => {
                               if (!user) {
                                 window.location.href = "/auth";
                                 return;
@@ -571,8 +569,7 @@ const CommunityPage = () => {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-display font-bold">Recent Discussions</h2>
                   <Button
-                    onClick={(e) => {
-                      e.preventDefault();
+                    onClick={() => {
                       if (!user) {
                         window.location.href = "/auth";
                         return;
@@ -603,10 +600,7 @@ const CommunityPage = () => {
                             rows={3}
                           ></textarea>
                           <div className="mt-2 flex justify-end">
-                            <Button onClick={(e) => {
-                              e.preventDefault();
-                              setDiscussionDialogOpen(true);
-                            }}>Post</Button>
+                            <Button onClick={() => setDiscussionDialogOpen(true)}>Post</Button>
                           </div>
                         </div>
                       </div>
