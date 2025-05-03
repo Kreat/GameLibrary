@@ -88,8 +88,13 @@ export function CreateDiscussionDialog({
     form.reset();
   };
 
+  console.log("CreateDiscussionDialog rendering with open:", open);
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(newOpen) => {
+      console.log("Dialog onOpenChange called with:", newOpen);
+      onOpenChange(newOpen);
+    }}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Create a New Discussion</DialogTitle>

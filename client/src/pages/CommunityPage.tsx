@@ -228,12 +228,16 @@ const CommunityPage = () => {
     console.log("Start Discussion button clicked, current user:", user);
     
     if (!user) {
+      console.log("User not logged in, redirecting to auth page");
       window.location.href = "/auth";
       return;
     }
     
-    console.log("Opening discussion dialog");
+    console.log("Opening discussion dialog, current discussionDialogOpen:", discussionDialogOpen);
     setDiscussionDialogOpen(true);
+    setTimeout(() => {
+      console.log("After setting discussionDialogOpen, new value:", discussionDialogOpen);
+    }, 0);
   };
 
   // SEO - Set document title
@@ -765,7 +769,10 @@ const CommunityPage = () => {
       {/* Discussion Creation Dialog */}
       <CreateDiscussionDialog
         open={discussionDialogOpen}
-        onOpenChange={setDiscussionDialogOpen}
+        onOpenChange={(open) => {
+          console.log("Dialog onOpenChange from parent, setting to:", open);
+          setDiscussionDialogOpen(open);
+        }}
         categories={categories.map(cat => ({
           id: cat.id,
           name: cat.name,
@@ -784,6 +791,11 @@ const CommunityPage = () => {
           setDiscussionDialogOpen(false);
         }}
       />
+      
+      {/* Add a debug element to show current dialog state */}
+      <div style={{ position: 'fixed', bottom: '10px', right: '10px', backgroundColor: 'rgba(0,0,0,0.7)', color: 'white', padding: '5px', fontSize: '10px', zIndex: 9999 }}>
+        Dialog state: {discussionDialogOpen ? 'OPEN' : 'CLOSED'}
+      </div>
     </div>
   );
 };
