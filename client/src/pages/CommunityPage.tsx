@@ -345,7 +345,9 @@ const CommunityPage = () => {
                   e.preventDefault();
                   console.log("Hero button clicked, current user:", user);
                   if (!user) {
-                    window.location.href = "/auth";
+                    // Use client-side routing instead of direct window.location change
+                    window.history.pushState({}, "", "/auth");
+                    window.dispatchEvent(new Event("popstate"));
                     return;
                   }
                   console.log("Setting discussion dialog to open");
@@ -453,10 +455,14 @@ const CommunityPage = () => {
                     <Button 
                       onClick={(e) => {
                         e.preventDefault();
+                        console.log("New Thread button clicked");
                         if (!user) {
-                          window.location.href = "/auth";
+                          // Use client-side routing instead of direct window.location change
+                          window.history.pushState({}, "", "/auth");
+                          window.dispatchEvent(new Event("popstate"));
                           return;
                         }
+                        console.log("Opening discussion dialog");
                         setDiscussionDialogOpen(true);
                       }}
                       variant="default"
@@ -529,10 +535,14 @@ const CommunityPage = () => {
                           <Button
                             onClick={(e) => {
                               e.preventDefault();
+                              console.log("Start New Discussion button clicked");
                               if (!user) {
-                                window.location.href = "/auth";
+                                // Use client-side routing instead of direct window.location change
+                                window.history.pushState({}, "", "/auth");
+                                window.dispatchEvent(new Event("popstate"));
                                 return;
                               }
+                              console.log("Opening discussion dialog from empty state");
                               setDiscussionDialogOpen(true);
                             }}
                             variant="default"
@@ -573,10 +583,14 @@ const CommunityPage = () => {
                   <Button
                     onClick={(e) => {
                       e.preventDefault();
+                      console.log("New Post button clicked");
                       if (!user) {
-                        window.location.href = "/auth";
+                        // Use client-side routing instead of direct window.location change
+                        window.history.pushState({}, "", "/auth");
+                        window.dispatchEvent(new Event("popstate"));
                         return;
                       }
+                      console.log("Opening discussion dialog from New Post button");
                       setDiscussionDialogOpen(true);
                     }}
                     variant="default"
@@ -605,6 +619,7 @@ const CommunityPage = () => {
                           <div className="mt-2 flex justify-end">
                             <Button onClick={(e) => {
                               e.preventDefault();
+                              console.log("Textarea Post button clicked");
                               setDiscussionDialogOpen(true);
                             }}>Post</Button>
                           </div>
