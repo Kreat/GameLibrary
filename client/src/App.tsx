@@ -10,6 +10,7 @@ import Footer from "@/components/layout/Footer";
 import HomePage from "@/pages/HomePage";
 import GamesPage from "@/pages/GamesPage";
 import SessionsPage from "@/pages/SessionsPage";
+import ChatPage from "@/pages/ChatPage";
 import CommunityPage from "@/pages/CommunityPage";
 import ProfilePage from "@/pages/ProfilePage";
 import CreateSessionPage from "@/pages/CreateSessionPage";
@@ -23,7 +24,7 @@ import { useEffect } from "react";
 function Router() {
   // Use our custom navigation hook
   useNavigation();
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -33,9 +34,13 @@ function Router() {
           <Route path="/" component={HomePage} />
           <Route path="/games" component={GamesPage} />
           <Route path="/sessions" component={SessionsPage} />
+          <Route path="/chat" component={ChatPage} />
           <Route path="/community" component={CommunityPage} />
           <ProtectedRoute path="/profile" component={ProfilePage} />
-          <ProtectedRoute path="/create-session" component={CreateSessionPage} />
+          <ProtectedRoute
+            path="/create-session"
+            component={CreateSessionPage}
+          />
           <Route path="/join/:id" component={JoinSessionPage} />
           <Route component={NotFound} />
         </Switch>
@@ -48,7 +53,7 @@ function Router() {
 function App() {
   // Set dark mode as default
   useEffect(() => {
-    document.documentElement.classList.add('dark');
+    document.documentElement.classList.add("dark");
   }, []);
 
   return (

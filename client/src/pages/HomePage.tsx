@@ -3,7 +3,7 @@ import GameCategories from "@/components/home/GameCategories";
 import UpcomingSessions from "@/components/home/UpcomingSessions";
 import SessionWizard from "@/components/home/SessionWizard";
 import CommunityFeatures from "@/components/home/CommunityFeatures";
-import DownloadApp from "@/components/home/DownloadApp";
+// import DownloadApp from "@/components/home/DownloadApp";
 import { useEffect } from "react";
 
 const HomePage = () => {
@@ -19,7 +19,7 @@ const HomePage = () => {
       <UpcomingSessions />
       <SessionWizard />
       <CommunityFeatures />
-      <DownloadApp />
+      {/* <DownloadApp /> */}
     </>
   );
 };

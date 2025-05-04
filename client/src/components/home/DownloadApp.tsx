@@ -1,3 +1,6 @@
+// note: we deleted this from HomePage.tsx because we don't have a mobile app
+// so this page does nothing
+
 import { Button } from "@/components/ui/button";
 import { Apple, PlaySquare } from "lucide-react";
 
