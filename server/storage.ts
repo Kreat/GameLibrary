@@ -1,6 +1,6 @@
 import {
   users, games, sessions, sessionParticipants, userAvailability,
-  forumCategories, forumThreads, forumPosts,
+  forumCategories, forumThreads, forumPosts, chatMessages,
   type User, type InsertUser,
   type Game, type InsertGame,
   type Session, type InsertSession,
@@ -8,7 +8,8 @@ import {
   type UserAvailability, type InsertUserAvailability,
   type ForumCategory, type InsertForumCategory,
   type ForumThread, type InsertForumThread,
-  type ForumPost, type InsertForumPost
+  type ForumPost, type InsertForumPost,
+  type ChatMessage, type InsertChatMessage
 } from "@shared/schema";
 
 // modify the interface with any CRUD methods
@@ -60,6 +61,11 @@ export interface IStorage {
   
   // Matching algorithm
   findMatchingSessions(userId: number): Promise<Session[]>;
+  
+  // Chat methods
+  getAllChatMessages(): Promise<ChatMessage[]>;
+  getChatMessageById(id: number): Promise<ChatMessage | undefined>;
+  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
 }
 
 export class MemStorage implements IStorage {
@@ -71,6 +77,7 @@ export class MemStorage implements IStorage {
   private forumCategories: Map<number, ForumCategory>;
   private forumThreads: Map<number, ForumThread>;
   private forumPosts: Map<number, ForumPost>;
+  private chatMessages: Map<number, ChatMessage>;
   
   private userIdCounter: number;
   private gameIdCounter: number;
@@ -80,6 +87,7 @@ export class MemStorage implements IStorage {
   private categoryIdCounter: number;
   private threadIdCounter: number;
   private postIdCounter: number;
+  private messageIdCounter: number;
 
   constructor() {
     this.users = new Map();
@@ -90,6 +98,7 @@ export class MemStorage implements IStorage {
     this.forumCategories = new Map();
     this.forumThreads = new Map();
     this.forumPosts = new Map();
+    this.chatMessages = new Map();
     
     this.userIdCounter = 1;
     this.gameIdCounter = 1;
@@ -99,6 +108,7 @@ export class MemStorage implements IStorage {
     this.categoryIdCounter = 1;
     this.threadIdCounter = 1;
     this.postIdCounter = 1;
+    this.messageIdCounter = 1;
     
     // Initialize with sample data
     this.initSampleData();
@@ -513,4 +523,28 @@ export class MemStorage implements IStorage {
 }
 
 import { DatabaseStorage } from './database-storage';
+//Add chat message methods to MemStorage implementation
+MemStorage.prototype.getAllChatMessages = async function(): Promise<ChatMessage[]> {
+  return Array.from(this.chatMessages.values())
+    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+};
+
+MemStorage.prototype.getChatMessageById = async function(id: number): Promise<ChatMessage | undefined> {
+  return this.chatMessages.get(id);
+};
+
+MemStorage.prototype.createChatMessage = async function(insertMessage: InsertChatMessage): Promise<ChatMessage> {
+  const id = this.messageIdCounter++;
+  const timestamp = new Date();
+  
+  const message: ChatMessage = {
+    ...insertMessage,
+    id,
+    timestamp
+  };
+  
+  this.chatMessages.set(id, message);
+  return message;
+};
+
 export const storage = new DatabaseStorage();

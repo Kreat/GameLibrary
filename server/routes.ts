@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { setupAuth } from "./auth";
-import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema } from "@shared/schema";
+import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
@@ -402,6 +402,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error resetting password:", error);
       res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+  
+  // Chat Message Routes
+  app.get("/api/messages", async (req, res) => {
+    try {
+      const messages = await storage.getAllChatMessages();
+      
+      // Join the sender information for each message
+      const messagesWithSenders = await Promise.all(messages.map(async (message) => {
+        const sender = await storage.getUser(message.senderId);
+        return {
+          ...message,
+          sender: sender ? {
+            id: sender.id,
+            username: sender.username,
+            displayName: sender.displayName,
+            photoUrl: sender.photoUrl
+          } : null
+        };
+      }));
+      
+      res.json(messagesWithSenders);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
+  });
+  
+  app.post("/api/messages", async (req, res) => {
+    try {
+      // Ensure user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to send messages" });
+      }
+      
+      // Create message with authenticated user ID
+      const validatedData = insertChatMessageSchema.parse({
+        ...req.body,
+        senderId: req.user.id
+      });
+      
+      const newMessage = await storage.createChatMessage(validatedData);
+      
+      // Add sender information to the response
+      const messageWithSender = {
+        ...newMessage,
+        sender: {
+          id: req.user.id,
+          username: req.user.username,
+          displayName: req.user.displayName,
+          photoUrl: req.user.photoUrl
+        }
+      };
+      
+      res.status(201).json(messageWithSender);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid message data", errors: error.errors });
+      }
+      
+      console.error("Error creating chat message:", error);
+      res.status(500).json({ message: "Failed to send message" });
     }
   });
 
