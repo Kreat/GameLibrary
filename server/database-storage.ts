@@ -2,7 +2,7 @@ import { eq, and, or, gt, desc, sql } from "drizzle-orm";
 import { db } from "./db";
 import {
   users, games, sessions, sessionParticipants, userAvailability,
-  forumCategories, forumThreads, forumPosts,
+  forumCategories, forumThreads, forumPosts, chatMessages,
   type User, type InsertUser,
   type Game, type InsertGame,
   type Session, type InsertSession,
@@ -10,7 +10,8 @@ import {
   type UserAvailability, type InsertUserAvailability,
   type ForumCategory, type InsertForumCategory,
   type ForumThread, type InsertForumThread,
-  type ForumPost, type InsertForumPost
+  type ForumPost, type InsertForumPost,
+  type ChatMessage, type InsertChatMessage
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
@@ -411,5 +412,31 @@ export class DatabaseStorage implements IStorage {
     
     // Return sessions sorted by start time (already sorted by getUpcomingSessions)
     return matchingSessions;
+  }
+  
+  // Chat message methods
+  async getAllChatMessages(): Promise<ChatMessage[]> {
+    return await db.select()
+      .from(chatMessages)
+      .orderBy(chatMessages.timestamp);
+  }
+  
+  async getChatMessageById(id: number): Promise<ChatMessage | undefined> {
+    const [message] = await db.select()
+      .from(chatMessages)
+      .where(eq(chatMessages.id, id));
+    
+    return message;
+  }
+  
+  async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
+    const [message] = await db.insert(chatMessages)
+      .values({
+        ...insertMessage,
+        timestamp: new Date()
+      })
+      .returning();
+    
+    return message;
   }
 }
