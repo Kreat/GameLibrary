@@ -1,97 +1,115 @@
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect } from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { ChatInput } from "./ChatInput";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatMessageProps } from "./ChatMessage";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { ChatMessage } from "@shared/schema";
+import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export function ChatContainer() {
   const { user } = useAuth();
-  const queryKey = ["/api/messages"];
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   // Fetch messages
   const { 
-    data: messagesData = [], 
-    isLoading,
-    isError,
-    error
-  } = useQuery<any[]>({
-    queryKey,
+    data: messages = [], 
+    isLoading: isLoadingMessages,
+    error: messagesError,
+    refetch: refetchMessages
+  } = useQuery<Omit<ChatMessageProps, "isCurrentUser">[]>({
+    queryKey: ["/api/messages"],
+    queryFn: async () => {
+      const response = await fetch("/api/messages");
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
+      
+      const data = await response.json();
+      
+      // Transform data to match ChatMessageProps format
+      return data.map((message: any) => ({
+        id: message.id.toString(),
+        content: message.content,
+        sender: message.sender || {
+          id: message.senderId,
+          username: "Unknown",
+          displayName: null,
+          photoUrl: null
+        },
+        timestamp: new Date(message.timestamp)
+      }));
+    },
     refetchInterval: 5000, // Poll for new messages every 5 seconds
   });
   
-  // Format the chat messages for display
-  const messages: ChatMessageProps[] = messagesData.map((msg: any) => ({
-    id: msg.messageId || msg.id.toString(),
-    content: msg.content,
-    sender: {
-      id: msg.senderId,
-      username: msg.sender?.username || 'Anonymous',
-      displayName: msg.sender?.displayName,
-      photoUrl: msg.sender?.photoUrl
-    },
-    timestamp: new Date(msg.timestamp || Date.now()),
-    isCurrentUser: msg.senderId === user?.id
-  }));
-  
-  // Send message mutation
-  const sendMessageMutation = useMutation({
+  // Handle sending messages
+  const { mutate: sendMessage, isPending: isSending } = useMutation({
     mutationFn: async (content: string) => {
-      return apiRequest("POST", "/api/messages", { content });
+      const response = await apiRequest("POST", "/api/messages", { content });
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+      return await response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      // Invalidate messages query to refetch
+      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
     },
+    onError: (error) => {
+      toast({
+        title: "Error sending message",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   });
-
+  
+  // Show error toast if messages fail to load
+  useEffect(() => {
+    if (messagesError) {
+      toast({
+        title: "Error loading messages",
+        description: (messagesError as Error).message,
+        variant: "destructive"
+      });
+    }
+  }, [messagesError, toast]);
+  
   // Handle sending a new message
   const handleSendMessage = (content: string) => {
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Not logged in",
+        description: "You must be logged in to send messages",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    sendMessageMutation.mutate(content);
+    sendMessage(content);
   };
-
-  // Show error if there is one
-  if (isError) {
-    return (
-      <Card className="w-full h-[600px] flex flex-col">
-        <CardHeader>
-          <CardTitle>Global Chat</CardTitle>
-        </CardHeader>
-        <CardContent className="flex-1 flex items-center justify-center text-destructive">
-          Error loading messages: {error instanceof Error ? error.message : 'Unknown error'}
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Render chat container
+  
   return (
-    <Card className="w-full h-[600px] flex flex-col">
-      <CardHeader>
-        <CardTitle>Global Chat</CardTitle>
+    <Card className="shadow-md border-muted/40">
+      <CardHeader className="p-4 pb-2 border-b">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+          <h2 className="font-medium">Live Chat</h2>
+        </div>
       </CardHeader>
-      <Separator />
-      <CardContent className="flex-1 p-0 overflow-hidden">
-        <ScrollArea className="h-full w-full">
-          <ChatMessageList 
-            messages={messages}
-            isLoading={isLoading}
-            currentUserId={user?.id || null}
-          />
-        </ScrollArea>
+      <CardContent className="p-4 h-[400px] overflow-y-auto">
+        <ChatMessageList
+          messages={messages}
+          isLoading={isLoadingMessages}
+        />
       </CardContent>
-      <Separator />
-      <CardFooter className="p-4">
-        <ChatInput 
+      <CardFooter className="p-4 pt-2 border-t">
+        <ChatInput
           onSendMessage={handleSendMessage}
-          isLoading={sendMessageMutation.isPending}
+          isLoading={isSending}
         />
       </CardFooter>
     </Card>
