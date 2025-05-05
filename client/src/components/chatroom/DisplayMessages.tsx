@@ -1,13 +1,17 @@
+// takes as input a list of messages
+// defines how the messages are arranged on the UI
+// also defines special messages for loading and no messages
+
 import React, { useEffect, useRef } from "react";
 import { ChatMessage, ChatMessageProps } from "./ChatMessage";
 import { useAuth } from "@/hooks/use-auth";
 
-interface ChatMessageListProps {
+interface MessageListProps {
   messages: Omit<ChatMessageProps, "isCurrentUser">[];
   isLoading: boolean;
 }
 
-export function ChatMessageList({ messages, isLoading }: ChatMessageListProps) {
+export function DisplayMessages({ messages, isLoading }: MessageListProps) {
   const { user } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   

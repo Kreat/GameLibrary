@@ -520,31 +520,46 @@ export class MemStorage implements IStorage {
       .sort((a, b) => b.score - a.score) // Sort by score descending
       .map(item => item.session);
   }
+
+  // Chat methods
+  // async getAllChatMessages(): Promise<ChatMessage[]> {
+  //   // TODO
+  //   return;
+  // };
+  // async getChatMessageById(id: number): Promise<ChatMessage | undefined> {
+  //   // TODO
+  //   return;
+  // };
+  // async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
+  //   // TODO
+  //   return;
+  // };
+
+  //Add chat message methods to MemStorage implementation
+  async getAllChatMessages(): Promise<ChatMessage[]> {
+    return Array.from(this.chatMessages.values())
+      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  };
+
+    async getChatMessageById(id: number): Promise<ChatMessage | undefined> {
+    return this.chatMessages.get(id);
+  };
+
+    async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
+    const id = this.messageIdCounter++;
+    const timestamp = new Date();
+
+    const wrappedMsg: ChatMessage = {
+      ...message,
+      id,
+      timestamp
+    };
+
+    this.chatMessages.set(id, wrappedMsg);
+    return wrappedMsg;
+  };
 }
 
 import { DatabaseStorage } from './database-storage';
-//Add chat message methods to MemStorage implementation
-MemStorage.prototype.getAllChatMessages = async function(): Promise<ChatMessage[]> {
-  return Array.from(this.chatMessages.values())
-    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-};
-
-MemStorage.prototype.getChatMessageById = async function(id: number): Promise<ChatMessage | undefined> {
-  return this.chatMessages.get(id);
-};
-
-MemStorage.prototype.createChatMessage = async function(insertMessage: InsertChatMessage): Promise<ChatMessage> {
-  const id = this.messageIdCounter++;
-  const timestamp = new Date();
-  
-  const message: ChatMessage = {
-    ...insertMessage,
-    id,
-    timestamp
-  };
-  
-  this.chatMessages.set(id, message);
-  return message;
-};
 
 export const storage = new DatabaseStorage();

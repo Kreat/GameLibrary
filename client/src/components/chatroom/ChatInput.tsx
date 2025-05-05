@@ -1,3 +1,5 @@
+// defines the field where the user types their message
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +17,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Trim the message and check if it's not empty
     const trimmedMessage = messageText.trim();
     if (trimmedMessage && !isLoading) {
@@ -26,7 +28,10 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // Send message on Shift+Enter or Ctrl+Enter
-    if ((e.key === "Enter" && (e.shiftKey || e.ctrlKey)) || (e.key === "Enter" && !e.shiftKey && !isLoading)) {
+    if (
+      (e.key === "Enter" && (e.shiftKey || e.ctrlKey)) ||
+      (e.key === "Enter" && !e.shiftKey && !isLoading)
+    ) {
       e.preventDefault();
       const trimmedMessage = messageText.trim();
       if (trimmedMessage) {
@@ -37,13 +42,16 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative border rounded-md focus-within:ring-1 focus-within:ring-primary focus-within:border-primary">
+    <form
+      onSubmit={handleSubmit}
+      className="relative border rounded-md focus-within:ring-1 focus-within:ring-primary focus-within:border-primary w-full max-h-[80px]"
+    >
       <Textarea
         value={messageText}
         onChange={(e) => setMessageText(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={user ? "Type your message..." : "Please log in to chat"}
-        className="min-h-[80px] max-h-[160px] pr-16 border-none focus-visible:ring-0 resize-none"
+        className="max-h-[160px] w-full max-w-full pr-16 border-none focus-visible:ring-0 resize-none"
         disabled={!user || isLoading}
       />
       <Button
@@ -52,7 +60,10 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
         disabled={!user || isLoading || !messageText.trim()}
         className="absolute bottom-2 right-2"
       >
-        <SendHorizontal size={18} className={isLoading ? "animate-pulse" : ""} />
+        <SendHorizontal
+          size={18}
+          className={isLoading ? "animate-pulse" : ""}
+        />
         <span className="sr-only">Send message</span>
       </Button>
     </form>

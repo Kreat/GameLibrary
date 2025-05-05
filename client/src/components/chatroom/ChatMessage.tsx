@@ -1,3 +1,6 @@
+// defines how each message is displayed in the UI
+// NOTE: why does this work even though we don't have a chat page in client/src/pages?
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
