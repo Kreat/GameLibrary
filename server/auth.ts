@@ -101,6 +101,11 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Username already exists" });
       }
       
+      // Validate Stanford email address
+      if (!email.endsWith('@stanford.edu')) {
+        return res.status(400).json({ message: "Only Stanford email addresses (@stanford.edu) are allowed" });
+      }
+      
       // Hash password
       const hashedPassword = await hashPassword(password);
       

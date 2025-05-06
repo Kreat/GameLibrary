@@ -23,7 +23,12 @@ const loginSchema = z.object({
 
 const registerSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
+  email: z.string()
+    .email("Please enter a valid email")
+    .refine(
+      (email) => email.endsWith('@stanford.edu'),
+      { message: "Only Stanford email addresses (@stanford.edu) are allowed" }
+    ),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
   displayName: z.string().optional(),
@@ -292,7 +297,7 @@ export default function AuthPage() {
               <CardHeader>
                 <CardTitle>Create an Account</CardTitle>
                 <CardDescription>
-                  Enter your details to join GameHub
+                  Stanford-exclusive gaming platform - Only @stanford.edu emails allowed
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -350,11 +355,14 @@ export default function AuthPage() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>Stanford Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="you@example.com" {...field} />
+                            <Input type="email" placeholder="you@stanford.edu" {...field} />
                           </FormControl>
                           <FormMessage />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Only Stanford email addresses are allowed for registration
+                          </p>
                         </FormItem>
                       )}
                     />
