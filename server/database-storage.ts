@@ -3,6 +3,7 @@ import { db } from "./db";
 import {
   users, games, sessions, sessionParticipants, userAvailability,
   forumCategories, forumThreads, forumPosts, chatMessages,
+  userStats, sessionReviews,
   type User, type InsertUser,
   type Game, type InsertGame,
   type Session, type InsertSession,
@@ -11,7 +12,9 @@ import {
   type ForumCategory, type InsertForumCategory,
   type ForumThread, type InsertForumThread,
   type ForumPost, type InsertForumPost,
-  type ChatMessage, type InsertChatMessage
+  type ChatMessage, type InsertChatMessage,
+  type UserStats, type InsertUserStats,
+  type SessionReview, type InsertSessionReview
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
@@ -438,5 +441,142 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return message;
+  }
+
+  // User Stats and Leaderboard methods
+  async getUserStats(userId: number): Promise<UserStats | undefined> {
+    const [stats] = await db.select()
+      .from(userStats)
+      .where(eq(userStats.userId, userId));
+    
+    return stats;
+  }
+
+  async createOrUpdateUserStats(insertStats: InsertUserStats): Promise<UserStats> {
+    const existingStats = await this.getUserStats(insertStats.userId);
+    
+    if (existingStats) {
+      // Update existing stats
+      const [updated] = await db.update(userStats)
+        .set({
+          ...insertStats,
+          updatedAt: new Date()
+        })
+        .where(eq(userStats.id, existingStats.id))
+        .returning();
+      
+      return updated;
+    } else {
+      // Create new stats
+      const [stats] = await db.insert(userStats)
+        .values({
+          ...insertStats,
+          updatedAt: new Date()
+        })
+        .returning();
+      
+      return stats;
+    }
+  }
+
+  async getTopHosts(limit: number = 10): Promise<(UserStats & { user: User })[]> {
+    // Get top hosts by host rating
+    const topHostStats = await db.select()
+      .from(userStats)
+      .orderBy(desc(userStats.hostRating), desc(userStats.sessionsHosted))
+      .limit(limit);
+    
+    // For each stat, get the associated user
+    const results: (UserStats & { user: User })[] = [];
+    
+    for (const stat of topHostStats) {
+      const user = await this.getUser(stat.userId);
+      if (user) {
+        results.push({ ...stat, user });
+      }
+    }
+    
+    return results;
+  }
+
+  async getTopPlayers(limit: number = 10): Promise<(UserStats & { user: User })[]> {
+    // Get top players by player rating
+    const topPlayerStats = await db.select()
+      .from(userStats)
+      .orderBy(desc(userStats.playerRating), desc(userStats.sessionsJoined))
+      .limit(limit);
+    
+    // For each stat, get the associated user
+    const results: (UserStats & { user: User })[] = [];
+    
+    for (const stat of topPlayerStats) {
+      const user = await this.getUser(stat.userId);
+      if (user) {
+        results.push({ ...stat, user });
+      }
+    }
+    
+    return results;
+  }
+
+  async createSessionReview(review: InsertSessionReview): Promise<SessionReview> {
+    // Create the review
+    const [newReview] = await db.insert(sessionReviews)
+      .values({
+        ...review,
+        createdAt: new Date()
+      })
+      .returning();
+    
+    // Update the user stats based on the review
+    const targetStats = await this.getUserStats(review.targetId);
+    
+    if (targetStats) {
+      // Prepare base updates
+      const updates = {
+        reviewsReceived: targetStats.reviewsReceived + 1,
+        updatedAt: new Date()
+      };
+      
+      // Update the appropriate rating
+      if (review.isHostReview) {
+        // This is a review of a host
+        const totalRating = targetStats.hostRating * targetStats.reviewsReceived + review.rating;
+        const newRating = Math.round(totalRating / (targetStats.reviewsReceived + 1));
+        
+        await db.update(userStats)
+          .set({ 
+            ...updates, 
+            hostRating: newRating 
+          })
+          .where(eq(userStats.id, targetStats.id));
+      } else {
+        // This is a review of a player
+        const totalRating = targetStats.playerRating * targetStats.reviewsReceived + review.rating;
+        const newRating = Math.round(totalRating / (targetStats.reviewsReceived + 1));
+        
+        await db.update(userStats)
+          .set({ 
+            ...updates, 
+            playerRating: newRating 
+          })
+          .where(eq(userStats.id, targetStats.id));
+      }
+    } else {
+      // Create new stats for this user
+      const initialRating = review.rating;
+      await this.createOrUpdateUserStats({
+        userId: review.targetId,
+        sessionsHosted: review.isHostReview ? 1 : 0,
+        sessionsJoined: review.isHostReview ? 0 : 1,
+        reputation: 0,
+        gamesPlayed: 1,
+        hostRating: review.isHostReview ? initialRating : 0,
+        playerRating: review.isHostReview ? 0 : initialRating,
+        reviewsReceived: 1
+      });
+    }
+    
+    return newReview;
   }
 }

@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { setupAuth } from "./auth";
-import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema } from "@shared/schema";
+import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema, insertSessionReviewSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
@@ -402,6 +402,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error resetting password:", error);
       res.status(500).json({ message: "Failed to reset password" });
+    }
+  });
+  
+  // Leaderboard Routes
+  app.get("/api/leaderboard/top-hosts", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const topHosts = await storage.getTopHosts(limit);
+      res.json(topHosts);
+    } catch (error) {
+      console.error("Error fetching top hosts:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard data" });
+    }
+  });
+  
+  app.get("/api/leaderboard/top-players", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const topPlayers = await storage.getTopPlayers(limit);
+      res.json(topPlayers);
+    } catch (error) {
+      console.error("Error fetching top players:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard data" });
+    }
+  });
+  
+  app.get("/api/user-stats/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const stats = await storage.getUserStats(userId);
+      
+      if (!stats) {
+        return res.status(404).json({ message: "User stats not found" });
+      }
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+  
+  app.post("/api/session-reviews", async (req, res) => {
+    try {
+      // Ensure user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to submit reviews" });
+      }
+      
+      // Validate the review data
+      const validatedData = insertSessionReviewSchema.parse({
+        ...req.body,
+        reviewerId: req.user.id
+      });
+      
+      const newReview = await storage.createSessionReview(validatedData);
+      res.status(201).json(newReview);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid review data", errors: error.errors });
+      }
+      
+      console.error("Error creating session review:", error);
+      res.status(500).json({ message: "Failed to submit review" });
     }
   });
   

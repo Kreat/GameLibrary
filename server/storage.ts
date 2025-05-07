@@ -569,6 +569,151 @@ export class MemStorage implements IStorage {
     this.chatMessages.set(id, wrappedMsg);
     return wrappedMsg;
   };
+  
+  // User Stats and Leaderboard methods
+  async getUserStats(userId: number): Promise<UserStats | undefined> {
+    return Array.from(this.userStats.values()).find(
+      stats => stats.userId === userId
+    );
+  }
+
+  async createOrUpdateUserStats(stats: InsertUserStats): Promise<UserStats> {
+    // Check if stats already exist for this user
+    const existingStats = await this.getUserStats(stats.userId);
+    
+    if (existingStats) {
+      // Update existing stats
+      const updatedStats: UserStats = {
+        ...existingStats,
+        ...stats,
+        updatedAt: new Date()
+      };
+      
+      this.userStats.set(existingStats.id, updatedStats);
+      return updatedStats;
+    } else {
+      // Create new stats
+      const id = this.userIdCounter++; // Reusing userIdCounter for simplicity
+      const updatedAt = new Date();
+      
+      const newStats: UserStats = {
+        ...stats,
+        id,
+        updatedAt
+      };
+      
+      this.userStats.set(id, newStats);
+      return newStats;
+    }
+  }
+
+  async getTopHosts(limit: number = 10): Promise<(UserStats & { user: User })[]> {
+    // Get all user stats sorted by host rating (descending)
+    const sortedStats = Array.from(this.userStats.values())
+      .sort((a, b) => {
+        // First sort by host rating
+        if (b.hostRating !== a.hostRating) {
+          return b.hostRating - a.hostRating;
+        }
+        // Then by sessions hosted
+        return b.sessionsHosted - a.sessionsHosted;
+      })
+      .slice(0, limit);
+    
+    // Add user data to each stats entry
+    const statsWithUsers = [];
+    for (const stats of sortedStats) {
+      const user = await this.getUser(stats.userId);
+      if (user) {
+        statsWithUsers.push({ ...stats, user });
+      }
+    }
+    
+    return statsWithUsers;
+  }
+
+  async getTopPlayers(limit: number = 10): Promise<(UserStats & { user: User })[]> {
+    // Get all user stats sorted by player rating (descending)
+    const sortedStats = Array.from(this.userStats.values())
+      .sort((a, b) => {
+        // First sort by player rating
+        if (b.playerRating !== a.playerRating) {
+          return b.playerRating - a.playerRating;
+        }
+        // Then by sessions joined
+        return b.sessionsJoined - a.sessionsJoined;
+      })
+      .slice(0, limit);
+    
+    // Add user data to each stats entry
+    const statsWithUsers = [];
+    for (const stats of sortedStats) {
+      const user = await this.getUser(stats.userId);
+      if (user) {
+        statsWithUsers.push({ ...stats, user });
+      }
+    }
+    
+    return statsWithUsers;
+  }
+
+  async createSessionReview(review: InsertSessionReview): Promise<SessionReview> {
+    const id = this.userIdCounter++; // Reusing userIdCounter for simplicity
+    const createdAt = new Date();
+    
+    const newReview: SessionReview = {
+      ...review,
+      id,
+      createdAt
+    };
+    
+    this.sessionReviews.set(id, newReview);
+    
+    // Update the user stats based on the review
+    const targetStats = await this.getUserStats(review.targetId);
+    
+    if (targetStats) {
+      const updatedStats = { 
+        ...targetStats,
+        reviewsReceived: targetStats.reviewsReceived + 1,
+        updatedAt: new Date()
+      };
+      
+      // Update the appropriate rating
+      if (review.isHostReview) {
+        // This is a review of a host
+        const newRating = Math.round(
+          (targetStats.hostRating * targetStats.reviewsReceived + review.rating) / 
+          (targetStats.reviewsReceived + 1)
+        );
+        updatedStats.hostRating = newRating;
+      } else {
+        // This is a review of a player
+        const newRating = Math.round(
+          (targetStats.playerRating * targetStats.reviewsReceived + review.rating) / 
+          (targetStats.reviewsReceived + 1)
+        );
+        updatedStats.playerRating = newRating;
+      }
+      
+      this.userStats.set(targetStats.id, updatedStats);
+    } else {
+      // Create new stats for this user
+      const initialRating = review.rating;
+      await this.createOrUpdateUserStats({
+        userId: review.targetId,
+        sessionsHosted: review.isHostReview ? 1 : 0,
+        sessionsJoined: review.isHostReview ? 0 : 1,
+        reputation: 0,
+        gamesPlayed: 1,
+        hostRating: review.isHostReview ? initialRating : 0,
+        playerRating: review.isHostReview ? 0 : initialRating,
+        reviewsReceived: 1
+      });
+    }
+    
+    return newReview;
+  }
 }
 
 import { DatabaseStorage } from './database-storage';
