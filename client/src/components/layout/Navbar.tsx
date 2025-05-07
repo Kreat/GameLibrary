@@ -44,7 +44,6 @@ const Navbar = () => {
     { href: "/games", label: "Games" },
     { href: "/sessions", label: "Find Sessions" },
     { href: "/community", label: "Community" },
-    { href: "/leaderboard", label: "Leaderboard" },
   ];
 
   const isActive = (path: string) => {
