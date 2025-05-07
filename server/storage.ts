@@ -15,6 +15,20 @@ import {
 // modify the interface with any CRUD methods
 // you might need
 
+import { 
+  User, InsertUser,
+  Game, InsertGame,
+  Session, InsertSession,
+  SessionParticipant, InsertSessionParticipant,
+  UserAvailability, InsertUserAvailability,
+  ForumCategory, InsertForumCategory,
+  ForumThread, InsertForumThread,
+  ForumPost, InsertForumPost,
+  ChatMessage, InsertChatMessage,
+  UserStats, InsertUserStats,
+  SessionReview, InsertSessionReview
+} from "@shared/schema";
+
 export interface IStorage {
   // User methods
   getUser(id: number): Promise<User | undefined>;
