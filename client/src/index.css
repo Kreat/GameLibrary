@@ -7,84 +7,84 @@
 
 @layer base {
   :root {
-    /* GameHub custom colors - Light Mode */
-    --background: 0 0% 100%;
-    --foreground: 226 23% 21%; /* slateNight */
-    --card: 0 0% 100%;
-    --card-foreground: 226 23% 21%; /* slateNight */
-    --popover: 0 0% 100%;
-    --popover-foreground: 226 23% 21%; /* slateNight */
-    --primary: 44 100% 68%; /* meeple gold */
-    --primary-foreground: 226 23% 21%; /* slateNight */
-    --secondary: 226 23% 21%; /* slateNight */
-    --secondary-foreground: 0 0% 98%;
+    /* Stanford Colors - Light Mode */
+    --background: 0 0% 100%; /* stanfordWhite */
+    --foreground: 20 8% 17%; /* stanfordBlack */
+    --card: 0 0% 100%; /* stanfordWhite */
+    --card-foreground: 20 8% 17%; /* stanfordBlack */
+    --popover: 0 0% 100%; /* stanfordWhite */
+    --popover-foreground: 20 8% 17%; /* stanfordBlack */
+    --primary: 0 74% 32%; /* stanfordRed */
+    --primary-foreground: 0 0% 100%; /* stanfordWhite */
+    --secondary: 212 4% 31%; /* coolGray */
+    --secondary-foreground: 0 0% 100%; /* stanfordWhite */
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 162 95% 43%; /* mintToken */
-    --accent-foreground: 226 23% 21%; /* slateNight */
-    --destructive: 350 89% 60%; /* boardRed */
-    --destructive-foreground: 0 0% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 44 100% 68%; /* meeple */
-    --radius: 0.75rem;
+    --muted-foreground: 212 4% 31%; /* coolGray */
+    --accent: 212 4% 31%; /* coolGray */
+    --accent-foreground: 0 0% 100%; /* stanfordWhite */
+    --destructive: 0 74% 32%; /* stanfordRed darker */
+    --destructive-foreground: 0 0% 100%; /* stanfordWhite */
+    --border: 212 4% 85%; /* lighter coolGray */
+    --input: 212 4% 85%; /* lighter coolGray */
+    --ring: 0 74% 32%; /* stanfordRed */
+    --radius: 0.5rem;
     
     /* Chart colors */
-    --chart-1: 44 100% 68%; /* meeple */
-    --chart-2: 350 89% 60%; /* boardRed */
-    --chart-3: 162 95% 43%; /* mintToken */
-    --chart-4: 226 23% 21%; /* slateNight */
-    --chart-5: 189 94% 43%;
+    --chart-1: 0 74% 32%; /* stanfordRed */
+    --chart-2: 212 4% 31%; /* coolGray */
+    --chart-3: 20 8% 17%; /* stanfordBlack */
+    --chart-4: 0 0% 100%; /* stanfordWhite */
+    --chart-5: 0 74% 42%; /* lighter stanfordRed */
     
     /* Sidebar colors */
-    --sidebar-background: 226 23% 21%; /* slateNight */
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 44 100% 68%; /* meeple */
-    --sidebar-primary-foreground: 226 23% 21%; /* slateNight */
-    --sidebar-accent: 162 95% 43%; /* mintToken */
-    --sidebar-accent-foreground: 226 23% 21%; /* slateNight */
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 44 100% 68%; /* meeple */
+    --sidebar-background: 0 74% 32%; /* stanfordRed */
+    --sidebar-foreground: 0 0% 100%; /* stanfordWhite */
+    --sidebar-primary: 0 0% 100%; /* stanfordWhite */
+    --sidebar-primary-foreground: 0 74% 32%; /* stanfordRed */
+    --sidebar-accent: 212 4% 31%; /* coolGray */
+    --sidebar-accent-foreground: 0 0% 100%; /* stanfordWhite */
+    --sidebar-border: 0 74% 27%; /* darker stanfordRed */
+    --sidebar-ring: 0 0% 100%; /* stanfordWhite */
   }
 
   .dark {
-    /* GameHub custom colors - Dark Mode */
-    --background: 226 23% 11%; /* darker slateNight */
-    --foreground: 0 0% 95%;
-    --card: 226 23% 16%; /* dark slateNight */
-    --card-foreground: 0 0% 95%;
-    --popover: 226 23% 16%; /* dark slateNight */
-    --popover-foreground: 0 0% 95%;
-    --primary: 44 100% 63%; /* slightly darker meeple gold */
-    --primary-foreground: 226 23% 11%; /* darker slateNight */
-    --secondary: 0 0% 95%;
-    --secondary-foreground: 226 23% 21%; /* slateNight */
-    --muted: 226 23% 16%; /* dark slateNight */
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 162 95% 38%; /* darker mintToken */
-    --accent-foreground: 0 0% 98%;
-    --destructive: 350 89% 50%; /* darker boardRed */
-    --destructive-foreground: 0 0% 98%;
-    --border: 226 23% 26%; /* lighter slateNight */
-    --input: 226 23% 26%; /* lighter slateNight */
-    --ring: 44 100% 63%; /* slightly darker meeple gold */
+    /* Stanford Colors - Dark Mode */
+    --background: 20 8% 12%; /* darker stanfordBlack */
+    --foreground: 0 0% 95%; /* off-white */
+    --card: 20 8% 17%; /* stanfordBlack */
+    --card-foreground: 0 0% 95%; /* off-white */
+    --popover: 20 8% 17%; /* stanfordBlack */
+    --popover-foreground: 0 0% 95%; /* off-white */
+    --primary: 0 74% 27%; /* darker stanfordRed */
+    --primary-foreground: 0 0% 100%; /* stanfordWhite */
+    --secondary: 212 4% 26%; /* darker coolGray */
+    --secondary-foreground: 0 0% 100%; /* stanfordWhite */
+    --muted: 20 8% 25%; /* lighter stanfordBlack */
+    --muted-foreground: 215 20% 65%;
+    --accent: 212 4% 26%; /* darker coolGray */
+    --accent-foreground: 0 0% 100%; /* stanfordWhite */
+    --destructive: 0 74% 22%; /* much darker stanfordRed */
+    --destructive-foreground: 0 0% 100%; /* stanfordWhite */
+    --border: 20 8% 30%; /* much lighter stanfordBlack */
+    --input: 20 8% 30%; /* much lighter stanfordBlack */
+    --ring: 0 74% 27%; /* darker stanfordRed */
     
     /* Chart colors */
-    --chart-1: 44 100% 63%; /* slightly darker meeple gold */
-    --chart-2: 350 89% 50%; /* darker boardRed */
-    --chart-3: 162 95% 38%; /* darker mintToken */
-    --chart-4: 226 23% 40%; /* lighter slateNight */
-    --chart-5: 189 94% 43%;
+    --chart-1: 0 74% 27%; /* darker stanfordRed */
+    --chart-2: 212 4% 26%; /* darker coolGray */
+    --chart-3: 20 8% 25%; /* lighter stanfordBlack */
+    --chart-4: 0 0% 90%; /* off-white */
+    --chart-5: 0 74% 37%; /* slightly lighter stanfordRed */
     
     /* Sidebar colors */
-    --sidebar-background: 226 23% 16%; /* dark slateNight */
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 44 100% 63%; /* slightly darker meeple gold */
-    --sidebar-primary-foreground: 226 23% 11%; /* darker slateNight */
-    --sidebar-accent: 162 95% 38%; /* darker mintToken */
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 226 23% 26%; /* lighter slateNight */
-    --sidebar-ring: 44 100% 63%; /* slightly darker meeple gold */
+    --sidebar-background: 0 74% 27%; /* darker stanfordRed */
+    --sidebar-foreground: 0 0% 100%; /* stanfordWhite */
+    --sidebar-primary: 0 0% 100%; /* stanfordWhite */
+    --sidebar-primary-foreground: 0 74% 27%; /* darker stanfordRed */
+    --sidebar-accent: 212 4% 26%; /* darker coolGray */
+    --sidebar-accent-foreground: 0 0% 100%; /* stanfordWhite */
+    --sidebar-border: 0 74% 22%; /* much darker stanfordRed */
+    --sidebar-ring: 0 0% 100%; /* stanfordWhite */
   }
 }
 
@@ -105,15 +105,15 @@
 @layer components {
   /* Animated gradient backgrounds */
   .gradient-bg-primary {
-    @apply bg-gradient-to-r from-primary via-meeple to-amber-400 bg-[length:200%_auto] animate-gradient-shift;
+    @apply bg-gradient-to-r from-[#8C1515] via-[#B83A4B] to-[#E25D5D] bg-[length:200%_auto] animate-gradient-shift;
   }
   
   .gradient-bg-accent {
-    @apply bg-gradient-to-r from-accent via-mintToken to-emerald-400 bg-[length:200%_auto] animate-gradient-shift;
+    @apply bg-gradient-to-r from-[#4D4F53] via-[#6A6D73] to-[#9A9DA2] bg-[length:200%_auto] animate-gradient-shift;
   }
   
   .gradient-text {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary via-boardRed to-accent animate-gradient-shift;
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-[#8C1515] via-[#B83A4B] to-[#4D4F53] animate-gradient-shift;
   }
   
   /* Card animations */
@@ -171,53 +171,53 @@
     animation-delay: 500ms;
   }
   
-  /* GameHub Custom Colors */
-  .text-meeple {
-    @apply text-[#FFD45C];
+  /* Stanford Colors */
+  .text-stanford-red {
+    @apply text-[#8C1515];
   }
   
-  .text-slateNight {
-    @apply text-[#262D40];
+  .text-cool-gray {
+    @apply text-[#4D4F53];
   }
   
-  .text-boardRed {
-    @apply text-[#FF4560];
+  .text-stanford-black {
+    @apply text-[#2E2D29];
   }
   
-  .text-mintToken {
-    @apply text-[#00E396];
+  .text-stanford-white {
+    @apply text-[#FFFFFF];
   }
   
-  .bg-meeple {
-    @apply bg-[#FFD45C];
+  .bg-stanford-red {
+    @apply bg-[#8C1515];
   }
   
-  .bg-slateNight {
-    @apply bg-[#262D40];
+  .bg-cool-gray {
+    @apply bg-[#4D4F53];
   }
   
-  .bg-boardRed {
-    @apply bg-[#FF4560];
+  .bg-stanford-black {
+    @apply bg-[#2E2D29];
   }
   
-  .bg-mintToken {
-    @apply bg-[#00E396];
+  .bg-stanford-white {
+    @apply bg-[#FFFFFF];
   }
   
-  .border-meeple {
-    @apply border-[#FFD45C];
+  .border-stanford-red {
+    @apply border-[#8C1515];
   }
   
-  .border-slateNight {
-    @apply border-[#262D40];
+  .border-cool-gray {
+    @apply border-[#4D4F53];
   }
   
-  .border-boardRed {
-    @apply border-[#FF4560];
+  .border-stanford-black {
+    @apply border-[#2E2D29];
   }
   
-  .border-mintToken {
-    @apply border-[#00E396];
+  .border-stanford-white {
+    @apply border-[#FFFFFF];
   }
 }
 
@@ -252,10 +252,10 @@
   
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 5px 0 rgba(0, 227, 150, 0.3);
+      box-shadow: 0 0 5px 0 rgba(140, 21, 21, 0.3);
     }
     50% {
-      box-shadow: 0 0 15px 5px rgba(0, 227, 150, 0.5);
+      box-shadow: 0 0 15px 5px rgba(140, 21, 21, 0.5);
     }
   }
   
