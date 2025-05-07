@@ -81,20 +81,9 @@ const HeroSection = () => {
             </Link>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap gap-8 justify-center animate-fade-in delay-500">
-            <Button
-              size="lg"
-              variant="default"
-              className="gradient-bg-primary text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg"
-              asChild
-            >
-              <Link href="/sessions">Find Players</Link>
-            </Button>
+          {/* Hidden CreateSessionDialog trigger for the "Host a Game" card */}
+          <div className="hidden">
             <CreateSessionDialog 
-              buttonSize="lg"
-              buttonLabel="Host a Game"
-              buttonClassNames="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
               id="createSessionTrigger"
             />
           </div>
