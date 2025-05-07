@@ -120,38 +120,38 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-cool-gray/20 rounded-full -ml-16 -mb-16"></div>
       
       <div className="container mx-auto px-4 relative">
-        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
-          <div className="p-6 md:p-8 bg-primary text-white">
+        <div className="max-w-4xl mx-auto bg-[#1c1a17] rounded-xl shadow-lg overflow-hidden border border-stanford-red/20">
+          <div className="p-6 md:p-8 bg-stanford-red text-stanford-white">
             <h2 className="text-2xl md:text-3xl font-display font-bold mb-2">Host Your Own Game Session</h2>
-            <p className="text-primary-foreground/80">Create a new gaming event and find players to join</p>
+            <p className="text-stanford-white/80">Create a new gaming event and find players to join</p>
           </div>
           
           {/* Session Creation Wizard */}
           <div className="p-6 md:p-8">
             {/* Steps */}
-            <div className="flex mb-8 border-b border-gray-200 dark:border-gray-700 pb-4">
+            <div className="flex mb-8 border-b border-stanford-red/20 pb-4">
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
-                  <div className={`w-8 h-8 ${step >= 1 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>1</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 1 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Game Details</span>
+                  <div className={`w-8 h-8 ${step >= 1 ? "bg-stanford-red" : "bg-stanford-red/20"} text-stanford-white rounded-full flex items-center justify-center font-medium text-sm`}>1</div>
+                  <span className={`text-xs mt-2 font-medium ${step >= 1 ? "text-stanford-red text-stanford-white" : "text-stanford-white/50"}`}>Game Details</span>
                 </div>
               </div>
               <div className="w-12 flex items-center justify-center">
-                <div className={`w-full h-0.5 ${step >= 2 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"}`}></div>
+                <div className={`w-full h-0.5 ${step >= 2 ? "bg-stanford-red" : "bg-stanford-red/20"}`}></div>
               </div>
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
-                  <div className={`w-8 h-8 ${step >= 2 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>2</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 2 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Schedule</span>
+                  <div className={`w-8 h-8 ${step >= 2 ? "bg-stanford-red" : "bg-stanford-red/20"} text-stanford-white rounded-full flex items-center justify-center font-medium text-sm`}>2</div>
+                  <span className={`text-xs mt-2 font-medium ${step >= 2 ? "text-stanford-red text-stanford-white" : "text-stanford-white/50"}`}>Schedule</span>
                 </div>
               </div>
               <div className="w-12 flex items-center justify-center">
-                <div className={`w-full h-0.5 ${step >= 3 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"}`}></div>
+                <div className={`w-full h-0.5 ${step >= 3 ? "bg-stanford-red" : "bg-stanford-red/20"}`}></div>
               </div>
               <div className="flex-1 text-center">
                 <div className="flex flex-col items-center">
-                  <div className={`w-8 h-8 ${step >= 3 ? "bg-primary" : "bg-gray-200 dark:bg-gray-700"} text-white rounded-full flex items-center justify-center font-medium text-sm`}>3</div>
-                  <span className={`text-xs mt-2 font-medium ${step >= 3 ? "text-primary dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>Location</span>
+                  <div className={`w-8 h-8 ${step >= 3 ? "bg-stanford-red" : "bg-stanford-red/20"} text-stanford-white rounded-full flex items-center justify-center font-medium text-sm`}>3</div>
+                  <span className={`text-xs mt-2 font-medium ${step >= 3 ? "text-stanford-red text-stanford-white" : "text-stanford-white/50"}`}>Location</span>
                 </div>
               </div>
             </div>
@@ -343,7 +343,7 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                     )}
                   />
                   
-                  <Button type="submit" className="w-full">Continue to Schedule</Button>
+                  <Button type="submit" className="w-full bg-stanford-red hover:bg-stanford-red/90 text-stanford-white">Continue to Schedule</Button>
                 </form>
               </Form>
             )}
@@ -526,8 +526,8 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                   />
                   
                   <div className="flex justify-between pt-2">
-                    <Button type="button" variant="outline" onClick={() => setStep(1)}>Back</Button>
-                    <Button type="submit">Continue to Location</Button>
+                    <Button type="button" variant="outline" className="border-stanford-red/50 text-stanford-white hover:bg-stanford-red/10" onClick={() => setStep(1)}>Back</Button>
+                    <Button type="submit" className="bg-stanford-red hover:bg-stanford-red/90 text-stanford-white">Continue to Location</Button>
                   </div>
                 </form>
               </Form>
@@ -584,8 +584,8 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                   />
                   
                   <div className="flex justify-between pt-2">
-                    <Button type="button" variant="outline" onClick={() => setStep(2)}>Back</Button>
-                    <Button type="submit">Create Session</Button>
+                    <Button type="button" variant="outline" className="border-stanford-red/50 text-stanford-white hover:bg-stanford-red/10" onClick={() => setStep(2)}>Back</Button>
+                    <Button type="submit" className="bg-stanford-red hover:bg-stanford-red/90 text-stanford-white">Create Session</Button>
                   </div>
                 </form>
               </Form>
