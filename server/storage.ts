@@ -66,6 +66,13 @@ export interface IStorage {
   getAllChatMessages(): Promise<ChatMessage[]>;
   getChatMessageById(id: number): Promise<ChatMessage | undefined>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  
+  // User Stats and Leaderboard methods
+  getUserStats(userId: number): Promise<UserStats | undefined>;
+  createOrUpdateUserStats(stats: InsertUserStats): Promise<UserStats>;
+  getTopHosts(limit?: number): Promise<(UserStats & { user: User })[]>;
+  getTopPlayers(limit?: number): Promise<(UserStats & { user: User })[]>;
+  createSessionReview(review: InsertSessionReview): Promise<SessionReview>;
 }
 
 export class MemStorage implements IStorage {
@@ -78,6 +85,8 @@ export class MemStorage implements IStorage {
   private forumThreads: Map<number, ForumThread>;
   private forumPosts: Map<number, ForumPost>;
   private chatMessages: Map<number, ChatMessage>;
+  private userStats: Map<number, UserStats>;
+  private sessionReviews: Map<number, SessionReview>;
   
   private userIdCounter: number;
   private gameIdCounter: number;
@@ -99,6 +108,8 @@ export class MemStorage implements IStorage {
     this.forumThreads = new Map();
     this.forumPosts = new Map();
     this.chatMessages = new Map();
+    this.userStats = new Map();
+    this.sessionReviews = new Map();
     
     this.userIdCounter = 1;
     this.gameIdCounter = 1;

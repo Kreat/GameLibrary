@@ -245,3 +245,55 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
 
 export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 export type ChatMessage = typeof chatMessages.$inferSelect;
+
+// User Stats Table
+export const userStats = pgTable("user_stats", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  sessionsHosted: integer("sessions_hosted").notNull().default(0),
+  sessionsJoined: integer("sessions_joined").notNull().default(0),
+  reputation: integer("reputation").notNull().default(0),
+  gamesPlayed: integer("games_played").notNull().default(0),
+  hostRating: integer("host_rating").notNull().default(0),
+  playerRating: integer("player_rating").notNull().default(0),
+  reviewsReceived: integer("reviews_received").notNull().default(0),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertUserStatsSchema = createInsertSchema(userStats).pick({
+  userId: true,
+  sessionsHosted: true,
+  sessionsJoined: true,
+  reputation: true,
+  gamesPlayed: true,
+  hostRating: true,
+  playerRating: true,
+  reviewsReceived: true,
+});
+
+// Session Reviews Table
+export const sessionReviews = pgTable("session_reviews", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id").references(() => sessions.id).notNull(),
+  reviewerId: integer("reviewer_id").references(() => users.id).notNull(),
+  targetId: integer("target_id").references(() => users.id).notNull(),
+  rating: integer("rating").notNull(), // 1-5 stars
+  content: text("content"),
+  isHostReview: boolean("is_host_review").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertSessionReviewSchema = createInsertSchema(sessionReviews).pick({
+  sessionId: true,
+  reviewerId: true,
+  targetId: true,
+  rating: true,
+  content: true,
+  isHostReview: true,
+});
+
+export type InsertUserStats = z.infer<typeof insertUserStatsSchema>;
+export type UserStats = typeof userStats.$inferSelect;
+
+export type InsertSessionReview = z.infer<typeof insertSessionReviewSchema>;
+export type SessionReview = typeof sessionReviews.$inferSelect;
