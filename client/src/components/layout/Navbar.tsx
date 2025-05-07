@@ -63,14 +63,12 @@ const Navbar = () => {
                   setLocation('/');
                 }
               }}
-              className="flex items-center space-x-3 animate-fade-in cursor-pointer"
+              className="flex items-center space-x-2 animate-fade-in cursor-pointer"
             >
-              <img 
-                src="/images/stanford-logo.svg" 
-                alt="Stanford Logo" 
-                className="h-8 w-8"
-              />
-              <span className="text-2xl font-display font-bold text-stanford-red">
+              <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+                <Dices className="h-6 w-6 text-slateNight" />
+              </div>
+              <span className="text-2xl font-display font-bold gradient-text">
                 GameHub
               </span>
             </button>
@@ -192,12 +190,10 @@ const Navbar = () => {
                     }}
                     className="flex items-center space-x-3 mb-6 cursor-pointer"
                   >
-                    <img 
-                      src="/images/stanford-logo.svg" 
-                      alt="Stanford Logo" 
-                      className="h-8 w-8"
-                    />
-                    <span className="text-2xl font-display font-bold text-stanford-red">
+                    <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+                      <Dices className="h-6 w-6 text-slateNight" />
+                    </div>
+                    <span className="text-2xl font-display font-bold gradient-text">
                       GameHub
                     </span>
                   </button>

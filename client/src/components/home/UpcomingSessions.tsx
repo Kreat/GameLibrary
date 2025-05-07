@@ -144,16 +144,16 @@ const UpcomingSessions = () => {
   };
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-800">
+    <section className="py-12 bg-stanford-black text-stanford-white">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-end mb-8">
           <div>
-            <h2 className="text-2xl md:text-3xl font-display font-bold">Upcoming Sessions</h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">Join these games happening soon</p>
+            <h2 className="text-2xl md:text-3xl font-display font-bold text-stanford-white">Upcoming Sessions</h2>
+            <p className="text-stanford-white/80 mt-2">Join these games happening soon</p>
           </div>
           <Link
             href="/sessions"
-            className="text-primary dark:text-primary-foreground hover:text-primary/80 dark:hover:text-primary-foreground/80 text-sm font-medium hidden md:flex items-center"
+            className="text-stanford-red hover:text-stanford-red/80 text-sm font-medium hidden md:flex items-center"
           >
             View all sessions
             <ArrowRight className="ml-1 h-4 w-4" />
@@ -244,7 +244,7 @@ const UpcomingSessions = () => {
         <div className="mt-6 text-center md:hidden">
           <Link
             href="/sessions"
-            className="text-primary dark:text-primary-foreground hover:text-primary/80 dark:hover:text-primary-foreground/80 text-sm font-medium flex items-center justify-center"
+            className="text-stanford-red hover:text-stanford-red/80 text-sm font-medium flex items-center justify-center"
           >
             View all sessions
             <ArrowRight className="ml-1 h-4 w-4" />
