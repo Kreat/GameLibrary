@@ -178,42 +178,42 @@ const UpcomingSessions = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {displaySessions.map((session) => (
-              <div key={session.id} className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden flex flex-col h-full border border-gray-100 dark:border-gray-800">
-                <div className="p-4 bg-primary-50 dark:bg-primary-900/30 border-b border-primary-100 dark:border-primary-800/30 flex justify-between items-center">
+              <div key={session.id} className="bg-[#1c1a17] rounded-lg shadow-md overflow-hidden flex flex-col h-full border border-stanford-red/20">
+                <div className="p-4 bg-stanford-red/10 border-b border-stanford-red/20 flex justify-between items-center">
                   <div className="flex items-center">
                     <Badge className={`${getBadgeColor(session.gameType)} text-white`}>
                       {session.gameType}
                     </Badge>
-                    <span className="ml-2 text-xs text-primary-700 dark:text-primary-300 font-medium flex items-center">
+                    <span className="ml-2 text-xs text-stanford-white/80 font-medium flex items-center">
                       <Clock className="mr-1 h-3 w-3" /> {session.duration}
                     </span>
                   </div>
-                  <span className="text-xs text-primary-700 dark:text-primary-300 font-medium">
+                  <span className="text-xs text-stanford-white/80 font-medium">
                     {session.participants.length}/{session.maxParticipants} players
                   </span>
                 </div>
                 
                 <div className="p-4 flex-1">
-                  <h3 className="text-lg font-display font-bold mb-2">{session.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{session.description}</p>
+                  <h3 className="text-lg font-display font-bold mb-2 text-stanford-white">{session.title}</h3>
+                  <p className="text-stanford-white/70 text-sm mb-4">{session.description}</p>
                   
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    <Calendar className="mr-2 h-4 w-4 text-gray-400" />
+                  <div className="flex items-center text-sm text-stanford-white/70 mb-3">
+                    <Calendar className="mr-2 h-4 w-4 text-stanford-white/60" />
                     <span>{formatDate(session.startTime.toDate())}</span>
                   </div>
                   
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    <MapPin className="mr-2 h-4 w-4 text-gray-400" />
+                  <div className="flex items-center text-sm text-stanford-white/70 mb-3">
+                    <MapPin className="mr-2 h-4 w-4 text-stanford-white/60" />
                     <span>{session.location}</span>
                   </div>
                   
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                    <User className="mr-2 h-4 w-4 text-gray-400" />
+                  <div className="flex items-center text-sm text-stanford-white/70">
+                    <User className="mr-2 h-4 w-4 text-stanford-white/60" />
                     <span>Hosted by {session.host.name}</span>
                   </div>
                 </div>
                 
-                <div className="p-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
+                <div className="p-4 border-t border-stanford-red/20 flex justify-between items-center">
                   <div className="flex -space-x-2">
                     {session.participants.slice(0, 3).map((participant, index) => (
                       <Avatar key={participant.id} className="h-7 w-7 border-2 border-white dark:border-gray-900">

@@ -33,19 +33,19 @@ const CommunityFeatures = () => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md border border-gray-100 dark:border-gray-800 flex flex-col items-center text-center"
+              className="bg-[#1c1a17] p-6 rounded-lg shadow-md border border-stanford-red/20 flex flex-col items-center text-center"
             >
-              <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-stanford-red/20 rounded-full flex items-center justify-center mb-4">
                 {feature.icon}
               </div>
-              <h3 className="text-lg font-display font-bold mb-2">{feature.title}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">{feature.description}</p>
+              <h3 className="text-lg font-display font-bold mb-2 text-stanford-white">{feature.title}</h3>
+              <p className="text-stanford-white/70 text-sm">{feature.description}</p>
             </div>
           ))}
         </div>
         
         <div className="mt-10 text-center">
-          <Button size="lg" asChild>
+          <Button size="lg" asChild className="bg-stanford-red hover:bg-stanford-red/90 text-stanford-white">
             <Link href="/community">
               Explore Community Features
               <ArrowRight className="ml-2 h-4 w-4" />
