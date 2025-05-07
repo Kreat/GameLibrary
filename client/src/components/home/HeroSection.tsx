@@ -82,7 +82,7 @@ const HeroSection = () => {
           </div>
 
           {/* CTA Buttons */}
-          {/* <div className="flex flex-wrap gap-8 justify-center animate-fade-in delay-500">
+          <div className="flex flex-wrap gap-8 justify-center animate-fade-in delay-500">
             <Button
               size="lg"
               variant="default"
@@ -97,7 +97,7 @@ const HeroSection = () => {
               buttonClassNames="gradient-bg-accent text-slateNight font-bold px-10 py-7 h-auto rounded-full shadow-lg transition-all hover:shadow-xl hover:scale-105 text-lg btn-glow"
               id="createSessionTrigger"
             />
-          </div> */}
+          </div>
         </div>
       </div>
     </section>
