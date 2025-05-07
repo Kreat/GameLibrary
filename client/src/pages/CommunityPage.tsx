@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords } from "lucide-react";
+import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords, Trophy } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
 import { SimpleDialog } from "@/components/community/SimpleDialog";
+import LeaderboardPage from "@/pages/LeaderboardPage";
 
 const categories = [
   {
@@ -309,7 +310,7 @@ const CommunityPage = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Community Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="w-full grid grid-cols-3 mb-6">
+          <TabsList className="w-full grid grid-cols-4 mb-6">
             <TabsTrigger value="forums" className="flex items-center gap-1.5">
               <MessageSquare className="h-4 w-4" />
               Discussions
@@ -321,6 +322,10 @@ const CommunityPage = () => {
             <TabsTrigger value="members" className="flex items-center gap-1.5">
               <Users className="h-4 w-4" />
               Friends
+            </TabsTrigger>
+            <TabsTrigger value="leaderboard" className="flex items-center gap-1.5">
+              <Trophy className="h-4 w-4" />
+              Leaderboard
             </TabsTrigger>
           </TabsList>
           
