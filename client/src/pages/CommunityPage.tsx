@@ -769,6 +769,11 @@ const CommunityPage = () => {
               </div>
             </div>
           </TabsContent>
+          
+          {/* Leaderboard Tab Content */}
+          <TabsContent value="leaderboard">
+            <LeaderboardPage />
+          </TabsContent>
         </Tabs>
       </div>
       
