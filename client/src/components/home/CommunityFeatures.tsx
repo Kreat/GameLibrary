@@ -22,11 +22,11 @@ const CommunityFeatures = () => {
   ];
 
   return (
-    <section className="py-12 bg-gray-50 dark:bg-gray-800">
+    <section className="py-12 bg-stanford-black text-stanford-white">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-2xl md:text-3xl font-display font-bold">Join Our Community</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Connect with fellow gamers and discover new experiences</p>
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-stanford-white">Join Our Community</h2>
+          <p className="text-stanford-white/80 mt-2">Connect with fellow gamers and discover new experiences</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

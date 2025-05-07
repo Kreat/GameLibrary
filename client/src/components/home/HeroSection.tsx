@@ -9,13 +9,13 @@ const HeroSection = () => {
   const { user } = useAuth();
 
   return (
-    <section className="relative bg-slateNight text-white overflow-hidden">
+    <section className="relative bg-stanford-black text-stanford-white overflow-hidden">
       {/* Background with animated gradient overlay */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1553481187-be93c21490a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80')] opacity-20 bg-cover bg-center"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-slateNight/90 via-slateNight/80 to-transparent"></div>
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1553481187-be93c21490a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80')] opacity-10 bg-cover bg-center"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-stanford-black/90 via-stanford-black/80 to-transparent"></div>
 
       {/* Animated dots pattern overlay */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle,_#FFD45C_1px,_transparent_1px)] bg-[length:24px_24px] opacity-10"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle,_#8C1515_1px,_transparent_1px)] bg-[length:24px_24px] opacity-10"></div>
 
       <div className="container mx-auto px-4 py-24 relative">
         <div className="max-w-4xl mx-auto text-center">
