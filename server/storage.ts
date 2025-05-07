@@ -15,18 +15,9 @@ import {
 // modify the interface with any CRUD methods
 // you might need
 
-import { 
-  User, InsertUser,
-  Game, InsertGame,
-  Session, InsertSession,
-  SessionParticipant, InsertSessionParticipant,
-  UserAvailability, InsertUserAvailability,
-  ForumCategory, InsertForumCategory,
-  ForumThread, InsertForumThread,
-  ForumPost, InsertForumPost,
-  ChatMessage, InsertChatMessage,
-  UserStats, InsertUserStats,
-  SessionReview, InsertSessionReview
+import {
+  type UserStats, type InsertUserStats, 
+  type SessionReview, type InsertSessionReview
 } from "@shared/schema";
 
 export interface IStorage {

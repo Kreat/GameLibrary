@@ -15,6 +15,7 @@ import CommunityPage from "@/pages/CommunityPage";
 import ProfilePage from "@/pages/ProfilePage";
 import CreateSessionPage from "@/pages/CreateSessionPage";
 import JoinSessionPage from "@/pages/JoinSessionPage";
+import LeaderboardPage from "@/pages/LeaderboardPage";
 import AuthPage from "@/pages/AuthPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
@@ -36,6 +37,7 @@ function Router() {
           <Route path="/sessions" component={SessionsPage} />
           <Route path="/chat" component={ChatPage} />
           <Route path="/community" component={CommunityPage} />
+          <Route path="/leaderboard" component={LeaderboardPage} />
           <ProtectedRoute path="/profile" component={ProfilePage} />
           <ProtectedRoute
             path="/create-session"
