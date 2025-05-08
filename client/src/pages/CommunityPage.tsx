@@ -268,12 +268,12 @@ const CommunityPage = () => {
       )}
       
       {/* Community Banner */}
-      <div className="bg-gradient-to-r from-primary to-purple-900 text-white py-12">
+      <div className="bg-gradient-to-r from-stanfordRed to-stanfordGreen text-white py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
-            <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Gaming Community</h1>
+            <h1 className="text-3xl md:text-4xl font-display font-bold mb-4">Community Forum</h1>
             <p className="text-lg mb-6 text-primary-foreground/80">
-              Connect with fellow gamers, share experiences, and become part of our tabletop community.
+              Connect with fellow gamers, share experiences, and become part of our gaming community.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button

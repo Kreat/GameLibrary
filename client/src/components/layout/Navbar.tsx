@@ -4,12 +4,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useNavigation } from "@/hooks/use-navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Dices, Bell, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -41,9 +36,10 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/games", label: "Games" },
+    { href: "/chat", label: "Chat" },
     { href: "/sessions", label: "Find Sessions" },
-    { href: "/community", label: "Community" },
+    { href: "/community", label: "Forum" },
+    { href: "/games", label: "Games Library" },
   ];
 
   const isActive = (path: string) => {
@@ -65,7 +61,7 @@ const Navbar = () => {
               }}
               className="flex items-center space-x-2 animate-fade-in cursor-pointer"
             >
-              <div className="w-10 h-10 gradient-bg-primary rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
+              <div className="w-10 h-10 bg-gradient-to-r from-glowRed to-stanfordRed rounded-xl flex items-center justify-center shadow-md" style={{ transform: 'rotate(15deg)' }}>
                 <Dices className="h-6 w-6 text-slateNight" />
               </div>
               <span className="text-2xl font-display font-bold gradient-text">
@@ -171,13 +167,13 @@ const Navbar = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="md:hidden hover:bg-meeple/10 dark:hover:bg-meeple/20 animate-fade-in delay-500"
+                  className="md:hidden hover:bg-stanfordRed/10 dark:hover:bg-stanfordRed/20 animate-fade-in delay-500"
                   aria-label="Open mobile menu"
                 >
-                  <Menu className="h-5 w-5 text-meeple" />
+                  <Menu className="h-5 w-5 text-stanfordRed" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="bg-background/95 dark:bg-slateNight/95 backdrop-blur-md border-l border-meeple/20">
+              <SheetContent side="right" className="bg-background/95 dark:bg-slateNight/95 backdrop-blur-md border-l border-stanfordRed/20">
                 <div className="mt-8 flex flex-col space-y-5">
                   <button 
                     onClick={() => {

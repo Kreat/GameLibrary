@@ -1,6 +1,6 @@
 import {
   users, games, sessions, sessionParticipants, userAvailability,
-  forumCategories, forumThreads, forumPosts, chatMessages,
+  forumCategories, forumThreads, forumPosts, chatMessages, contentReports,
   type User, type InsertUser,
   type Game, type InsertGame,
   type Session, type InsertSession,
@@ -17,7 +17,8 @@ import {
 
 import {
   type UserStats, type InsertUserStats, 
-  type SessionReview, type InsertSessionReview
+  type SessionReview, type InsertSessionReview,
+  type ContentReport, type InsertContentReport
 } from "@shared/schema";
 
 export interface IStorage {
@@ -27,6 +28,7 @@ export interface IStorage {
   getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserRole(userId: number, role: string): Promise<User | undefined>;
   
   // Game methods
   getAllGames(): Promise<Game[]>;
@@ -78,6 +80,15 @@ export interface IStorage {
   getTopHosts(limit?: number): Promise<(UserStats & { user: User })[]>;
   getTopPlayers(limit?: number): Promise<(UserStats & { user: User })[]>;
   createSessionReview(review: InsertSessionReview): Promise<SessionReview>;
+  
+  // Admin and moderation methods
+  getAdmins(): Promise<User[]>;
+  getModerators(): Promise<User[]>;
+  getAllContentReports(): Promise<ContentReport[]>;
+  getPendingContentReports(): Promise<ContentReport[]>;
+  getContentReport(id: number): Promise<ContentReport | undefined>;
+  createContentReport(report: InsertContentReport): Promise<ContentReport>;
+  updateContentReportStatus(reportId: number, status: string, actionTaken?: string, adminId?: number): Promise<ContentReport | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -103,6 +114,9 @@ export class MemStorage implements IStorage {
   private postIdCounter: number;
   private messageIdCounter: number;
 
+  private contentReports: Map<number, ContentReport>;
+  private contentReportIdCounter: number;
+
   constructor() {
     this.users = new Map();
     this.games = new Map();
@@ -115,6 +129,7 @@ export class MemStorage implements IStorage {
     this.chatMessages = new Map();
     this.userStats = new Map();
     this.sessionReviews = new Map();
+    this.contentReports = new Map();
     
     this.userIdCounter = 1;
     this.gameIdCounter = 1;
@@ -125,6 +140,7 @@ export class MemStorage implements IStorage {
     this.threadIdCounter = 1;
     this.postIdCounter = 1;
     this.messageIdCounter = 1;
+    this.contentReportIdCounter = 1;
     
     // Initialize with sample data
     this.initSampleData();

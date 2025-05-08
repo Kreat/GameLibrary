@@ -16,11 +16,22 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        // Stanford Color Palette
-        stanfordRed: "#8C1515",  // Stanford Red
-        coolGray: "#4D4F53",     // Cool Gray
-        stanfordBlack: "#2E2D29", // Stanford Black
-        stanfordWhite: "#FFFFFF", // Stanford White
+        slateNight:    "#262D40",
+        
+        meeple:        "#FFFFFF", // duplicate of stanfordWhite in case there are any files that still contain meeple
+        stanfordWhite: "#FFFFFF",
+                
+        boardRed:      "#9E1B32", // rose-800, duplicate
+        stanfordRed:   "#9E1B32", // rose-800
+        glowRed:       "#D21F56", // rose-600
+        
+        mintToken:     "#047857", // emerald-600, duplicate
+        stanfordGreen: "#047857", // emerald-600
+        
+        coolGray:      "#4D4F53", // idk if this is ever used
+        
+        stanfordBlack: "#2E2D29", // idk if this is ever used
+        
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

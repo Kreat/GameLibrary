@@ -13,6 +13,7 @@ export const users = pgTable("users", {
   location: text("location"),
   favoriteGames: text("favorite_games"),
   photoUrl: text("photo_url"),
+  role: text("role").default("user"), // Values: "user", "admin", "moderator"
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   firebaseUid: text("firebase_uid").unique(),
@@ -27,6 +28,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   location: true,
   favoriteGames: true,
   photoUrl: true,
+  role: true,
   firebaseUid: true,
 });
 
@@ -297,3 +299,30 @@ export type UserStats = typeof userStats.$inferSelect;
 
 export type InsertSessionReview = z.infer<typeof insertSessionReviewSchema>;
 export type SessionReview = typeof sessionReviews.$inferSelect;
+
+// Content Reports Table - For reporting inappropriate content
+export const contentReports = pgTable("content_reports", {
+  id: serial("id").primaryKey(),
+  reporterId: integer("reporter_id").references(() => users.id).notNull(),
+  contentType: text("content_type").notNull(), // "forum_post", "forum_thread", "chat_message", "user_profile", etc.
+  contentId: integer("content_id").notNull(), // ID of the reported content
+  reason: text("reason").notNull(), // Why was this content reported
+  status: text("status").default("pending"), // "pending", "reviewed", "rejected", "actioned"
+  actionTaken: text("action_taken"), // What action was taken by the admin
+  adminId: integer("admin_id").references(() => users.id), // Admin who handled the report
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertContentReportSchema = createInsertSchema(contentReports).pick({
+  reporterId: true,
+  contentType: true,
+  contentId: true,
+  reason: true,
+  status: true,
+  actionTaken: true,
+  adminId: true,
+});
+
+export type InsertContentReport = z.infer<typeof insertContentReportSchema>;
+export type ContentReport = typeof contentReports.$inferSelect;

@@ -20,7 +20,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 py-24 relative">
         <div className="max-w-4xl mx-auto text-center">
           {/* Animated title */}
-          <h1 className="text-6xl md:text-7xl font-display font-bold mb-8 animate-fade-in gradient-text">
+          <h1 className="text-6xl md:text-7xl font-display font-bold mb-8 animate-fade-in gradient-text-home">
             GameHub
           </h1>
           <p className="text-xl md:text-2xl mb-12 text-white/90 font-medium animate-fade-in delay-100">
@@ -29,12 +29,12 @@ const HeroSection = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {/* Card 1*/}
-            <Link href="/sessions" className="no-underline">
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-meeple/30 card-hover animate-fade-in delay-200 cursor-pointer transition-all hover:shadow-lg hover:border-meeple/50">
-                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-meeple to-amber-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+            <Link href="/chat" className="no-underline">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-stanfordRed card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-glowRed group">
+                <div className="mb-4 w-16 h-16 bg-stanfordRed group-hover:bg-glowRed transition-colors duration-450 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                   <Users className="h-8 w-8 text-slateNight" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-meeple">
+                <h3 className="text-xl font-bold mb-2 text-stanfordRed group-hover:text-glowRed transition-colors duration-400">
                   Find Players
                 </h3>
                 <p className="text-white/80">
@@ -52,11 +52,11 @@ const HeroSection = () => {
               }
               className="no-underline"
             >
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-boardRed/30 card-hover animate-fade-in delay-300 cursor-pointer transition-all hover:shadow-lg hover:border-boardRed/50">
-                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-boardRed to-rose-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-stanfordRed card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-glowRed group">
+                <div className="mb-4 w-16 h-16 bg-stanfordRed group-hover:bg-glowRed transition-colors duration-450 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                   <CalendarDays className="h-8 w-8 text-slateNight" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-boardRed">
+                <h3 className="text-xl font-bold mb-2 text-stanfordRed group-hover:text-glowRed transition-colors duration-400">
                   Host a Game
                 </h3>
                 <p className="text-white/80">
@@ -67,11 +67,13 @@ const HeroSection = () => {
 
             {/* Card 3 */}
             <Link href="/chat" className="no-underline">
-              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-mintToken/30 card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-mintToken/50">
-                <div className="mb-4 w-16 h-16 bg-gradient-to-br from-mintToken to-teal-400 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
+              <div className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-stanfordRed card-hover animate-fade-in delay-400 cursor-pointer transition-all hover:shadow-lg hover:border-glowRed group">
+                {/* NOTE: I prefer gradient over solid red, but I can't get the hover to work right*/}
+                {/* <div className="mb-4 w-16 h-16 bg-gradient-to-br from-stanfordRed to-glowRed group-hover:from-glowRed group-hover:to-glowRed rounded-2xl flex items-center justify-center mx-auto shadow-lg"> */}
+                 <div className="mb-4 w-16 h-16 bg-stanfordRed group-hover:bg-glowRed transition-colors duration-450 rounded-2xl flex items-center justify-center mx-auto shadow-lg">
                   <MessagesSquare className="h-8 w-8 text-slateNight" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-mintToken">
+                <h3 className="text-xl font-bold mb-2 text-stanfordRed group-hover:text-glowRed transition-colors duration-400">
                   Discover People
                 </h3>
                 <p className="text-white/80">

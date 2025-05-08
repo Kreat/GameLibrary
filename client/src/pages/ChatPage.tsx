@@ -36,7 +36,7 @@ export default function ChatPage() {
       <div className="container mx-auto py-8">
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-glowRed bg-clip-text text-transparent">
               Global Chat
             </h1>
             <Button variant="outline" onClick={() => setLocation("/")}>
