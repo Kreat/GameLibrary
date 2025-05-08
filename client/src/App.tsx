@@ -17,6 +17,7 @@ import CreateSessionPage from "@/pages/CreateSessionPage";
 import JoinSessionPage from "@/pages/JoinSessionPage";
 import LeaderboardPage from "@/pages/LeaderboardPage";
 import AuthPage from "@/pages/AuthPage";
+import AdminPage from "@/pages/AdminPage";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useNavigation } from "@/hooks/use-navigation";
@@ -42,6 +43,10 @@ function Router() {
           <ProtectedRoute
             path="/create-session"
             component={CreateSessionPage}
+          />
+          <ProtectedRoute
+            path="/admin"
+            component={AdminPage}
           />
           <Route path="/join/:id" component={JoinSessionPage} />
           <Route component={NotFound} />

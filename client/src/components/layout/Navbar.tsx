@@ -137,6 +137,19 @@ const Navbar = () => {
                     <span className="h-2 w-2 rounded-full bg-mintToken"></span>
                     Profile
                   </DropdownMenuItem>
+                  {user && (user.role === "admin" || user.role === "moderator") && (
+                    <DropdownMenuItem 
+                      onClick={() => {
+                        window.scrollTo(0, 0); 
+                        handleNavigationStart();
+                        setLocation('/admin');
+                      }}
+                      className="hover:bg-yellow-500/10 dark:hover:bg-yellow-500/20 cursor-pointer flex items-center gap-2"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-yellow-500"></span>
+                      Admin Panel
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem 
                     onClick={handleSignOut} 
                     className="hover:bg-boardRed/10 dark:hover:bg-boardRed/20 cursor-pointer flex items-center gap-2"
@@ -215,6 +228,24 @@ const Navbar = () => {
                       {link.label}
                     </button>
                   ))}
+                  
+                  {user && (user.role === "admin" || user.role === "moderator") && (
+                    <button
+                      onClick={() => {
+                        window.scrollTo(0, 0);
+                        setMobileMenuOpen(false);
+                        handleNavigationStart();
+                        setLocation('/admin');
+                      }}
+                      className={`${
+                        isActive('/admin')
+                          ? "text-yellow-500 dark:text-yellow-400 font-semibold"
+                          : "text-foreground dark:text-white/80 hover:text-yellow-500 dark:hover:text-yellow-400"
+                      } px-4 py-3 text-lg font-medium transition-colors rounded-lg cursor-pointer text-left ${isActive('/admin') ? "bg-yellow-500/10 dark:bg-yellow-500/20" : "hover:bg-yellow-500/5 dark:hover:bg-yellow-500/10"}`}
+                    >
+                      Admin Panel
+                    </button>
+                  )}
                   
                   {!user && (
                     <Button
