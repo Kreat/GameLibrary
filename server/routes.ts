@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { setupAuth } from "./auth";
-import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema, insertSessionReviewSchema } from "@shared/schema";
+import { insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema, insertSessionReviewSchema, insertContentReportSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
@@ -529,6 +529,175 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.error("Error creating chat message:", error);
       res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  // Admin Routes
+  // Middleware to check if user is an admin
+  const isAdmin = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "You must be logged in" });
+    }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+
+    next();
+  };
+
+  // Middleware to check if user is a moderator or admin
+  const isModerator = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "You must be logged in" });
+    }
+
+    if (req.user.role !== "admin" && req.user.role !== "moderator") {
+      return res.status(403).json({ message: "Moderator access required" });
+    }
+
+    next();
+  };
+
+  // Get all admins
+  app.get("/api/admin/admins", isAdmin, async (req, res) => {
+    try {
+      const admins = await storage.getAdmins();
+      res.json(admins);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+      res.status(500).json({ message: "Failed to fetch admins" });
+    }
+  });
+
+  // Get all moderators (includes admins)
+  app.get("/api/admin/moderators", isAdmin, async (req, res) => {
+    try {
+      const moderators = await storage.getModerators();
+      res.json(moderators);
+    } catch (error) {
+      console.error("Error fetching moderators:", error);
+      res.status(500).json({ message: "Failed to fetch moderators" });
+    }
+  });
+
+  // Update user role
+  app.patch("/api/admin/users/:userId/role", isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { role } = req.body;
+
+      // Validate role
+      if (!["user", "moderator", "admin"].includes(role)) {
+        return res.status(400).json({ message: "Invalid role" });
+      }
+
+      const updatedUser = await storage.updateUserRole(userId, role);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ message: "Failed to update user role" });
+    }
+  });
+
+  // Content Reports API
+  // Get all reports
+  app.get("/api/admin/content-reports", isModerator, async (req, res) => {
+    try {
+      const reports = await storage.getAllContentReports();
+      res.json(reports);
+    } catch (error) {
+      console.error("Error fetching content reports:", error);
+      res.status(500).json({ message: "Failed to fetch content reports" });
+    }
+  });
+
+  // Get pending reports
+  app.get("/api/admin/content-reports/pending", isModerator, async (req, res) => {
+    try {
+      const reports = await storage.getPendingContentReports();
+      res.json(reports);
+    } catch (error) {
+      console.error("Error fetching pending reports:", error);
+      res.status(500).json({ message: "Failed to fetch pending reports" });
+    }
+  });
+
+  // Get specific report
+  app.get("/api/admin/content-reports/:id", isModerator, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const report = await storage.getContentReport(id);
+      
+      if (!report) {
+        return res.status(404).json({ message: "Report not found" });
+      }
+      
+      res.json(report);
+    } catch (error) {
+      console.error("Error fetching content report:", error);
+      res.status(500).json({ message: "Failed to fetch content report" });
+    }
+  });
+
+  // Create a content report
+  app.post("/api/content-reports", async (req, res) => {
+    try {
+      // Ensure user is authenticated
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "You must be logged in to report content" });
+      }
+      
+      // Validate the report data
+      const validatedData = insertContentReportSchema.parse({
+        ...req.body,
+        reporterId: req.user.id,
+        status: "pending"
+      });
+      
+      const newReport = await storage.createContentReport(validatedData);
+      res.status(201).json(newReport);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid report data", errors: error.errors });
+      }
+      
+      console.error("Error creating content report:", error);
+      res.status(500).json({ message: "Failed to submit report" });
+    }
+  });
+
+  // Update content report status
+  app.patch("/api/admin/content-reports/:id", isModerator, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status, actionTaken } = req.body;
+      
+      // Validate status
+      if (!["pending", "reviewed", "rejected", "actioned"].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      
+      const updatedReport = await storage.updateContentReportStatus(
+        id, 
+        status, 
+        actionTaken, 
+        req.user.id
+      );
+      
+      if (!updatedReport) {
+        return res.status(404).json({ message: "Report not found" });
+      }
+      
+      res.json(updatedReport);
+    } catch (error) {
+      console.error("Error updating content report:", error);
+      res.status(500).json({ message: "Failed to update report" });
     }
   });
 
