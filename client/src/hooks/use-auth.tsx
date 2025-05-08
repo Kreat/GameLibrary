@@ -13,6 +13,7 @@ type User = {
   favoriteGames: string | null;
   photoUrl: string | null;
   firebaseUid: string | null;
+  role: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -54,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     favoriteGames: "Catan, D&D 5e, Gloomhaven, Magic: The Gathering",
     photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamehub",
     firebaseUid: "demo-user-123",
+    role: "admin", // Setting as admin for demo purposes
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
