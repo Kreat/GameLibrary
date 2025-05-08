@@ -47,14 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Create a mock user for demonstration purposes
   const mockUser: User = {
     id: 1,
-    username: "demo_player",
-    email: "demo@gamehub.com",
-    displayName: "Demo Player",
-    bio: "Enthusiastic board game player and RPG fan.",
-    location: "Seattle, WA",
+    username: "kwonk",
+    email: "kwonk@stanford.edu",
+    displayName: "Kevin",
+    bio: "Stanford student and tabletop gaming enthusiast.",
+    location: "Stanford, CA",
     favoriteGames: "Catan, D&D 5e, Gloomhaven, Magic: The Gathering",
     photoUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamehub",
-    firebaseUid: "demo-user-123",
+    firebaseUid: "stanford-user-123",
     role: "admin", // Setting as admin for demo purposes
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

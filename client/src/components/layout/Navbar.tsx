@@ -228,23 +228,7 @@ const Navbar = () => {
                     </button>
                   ))}
                   
-                  {user && (user.role === "admin" || user.role === "moderator") && (
-                    <button
-                      onClick={() => {
-                        window.scrollTo(0, 0);
-                        setMobileMenuOpen(false);
-                        handleNavigationStart();
-                        setLocation('/admin');
-                      }}
-                      className={`${
-                        isActive('/admin')
-                          ? "text-yellow-500 dark:text-yellow-400 font-semibold"
-                          : "text-foreground dark:text-white/80 hover:text-yellow-500 dark:hover:text-yellow-400"
-                      } px-4 py-3 text-lg font-medium transition-colors rounded-lg cursor-pointer text-left ${isActive('/admin') ? "bg-yellow-500/10 dark:bg-yellow-500/20" : "hover:bg-yellow-500/5 dark:hover:bg-yellow-500/10"}`}
-                    >
-                      Admin Panel
-                    </button>
-                  )}
+                  {/* Admin panel is now only accessible through the profile dropdown menu */}
                   
                   {!user && (
                     <Button
