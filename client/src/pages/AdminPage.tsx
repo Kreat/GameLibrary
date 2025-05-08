@@ -1,86 +1,93 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
-import { Loader2, ShieldAlert, UserCog, Flag } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { useLocation } from "wouter";
+import { useLocation, useRouter } from "wouter";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
 import UserRoleManagement from "@/components/admin/UserRoleManagement";
 import ContentReportManagement from "@/components/admin/ContentReportManagement";
+import { Shield, Users, Flag, AlertCircle } from "lucide-react";
 
-export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState("users");
-  const { toast } = useToast();
+const AdminPage = () => {
   const { user } = useAuth();
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
+  const [activeTab, setActiveTab] = useState("users");
 
-  // Redirect if not admin
-  if (user && user.role !== "admin" && user.role !== "moderator") {
-    toast({
-      title: "Access Denied",
-      description: "You don't have permission to access the admin dashboard.",
-      variant: "destructive",
-    });
+  // Redirect if not admin or moderator
+  if (!user || (user.role !== "admin" && user.role !== "moderator")) {
     navigate("/");
     return null;
   }
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-border" />
-      </div>
-    );
-  }
-
   return (
-    <div className="container py-10">
-      <div className="flex items-center mb-6">
-        <ShieldAlert className="h-6 w-6 mr-2 text-primary" />
-        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+    <div className="container max-w-7xl mx-auto px-4 py-8">
+      <div className="flex items-center gap-2 mb-6">
+        <Shield className="h-6 w-6 text-yellow-500" />
+        <h1 className="text-2xl font-bold">Admin Panel</h1>
       </div>
 
-      <Tabs defaultValue="users" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="users" className="flex items-center">
-            <UserCog className="h-4 w-4 mr-2" />
-            User Management
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2 md:w-auto md:inline-flex">
+          <TabsTrigger value="users" className="flex items-center gap-1">
+            <Users className="h-4 w-4" />
+            <span className="hidden md:inline">User Management</span>
+            <span className="md:hidden">Users</span>
           </TabsTrigger>
-          <TabsTrigger value="reports" className="flex items-center">
-            <Flag className="h-4 w-4 mr-2" />
-            Content Reports
+          <TabsTrigger value="reports" className="flex items-center gap-1">
+            <Flag className="h-4 w-4" />
+            <span className="hidden md:inline">Content Reports</span>
+            <span className="md:hidden">Reports</span>
           </TabsTrigger>
         </TabsList>
-
+        
         <TabsContent value="users" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>User Role Management</CardTitle>
-              <CardDescription>
-                Assign roles to users. Admins have full access to the system, moderators can manage content reports.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <UserRoleManagement />
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold">User Role Management</h2>
+              <p className="text-muted-foreground mt-1">
+                Update user roles to manage permission levels across the platform.
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-card rounded-lg border shadow-sm p-4">
+            <UserRoleManagement />
+          </div>
         </TabsContent>
-
+        
         <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Content Reports</CardTitle>
-              <CardDescription>
-                Review and take action on reported content.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ContentReportManagement />
-            </CardContent>
-          </Card>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold">Content Reports</h2>
+              <p className="text-muted-foreground mt-1">
+                Review and take action on reported content across the platform.
+              </p>
+            </div>
+          </div>
+          
+          <div className="bg-card rounded-lg border shadow-sm p-4">
+            <ContentReportManagement />
+          </div>
         </TabsContent>
       </Tabs>
+      
+      {/* Admin permissions notice */}
+      <div className="mt-8 p-4 bg-muted rounded-md border border-border flex items-start gap-3">
+        <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+        <div>
+          <h3 className="font-medium">Admin Access Level: {user?.role}</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            {user?.role === "admin" 
+              ? "You have full administrative privileges and can perform all actions." 
+              : "You have moderation privileges but some actions may be restricted to admins only."}
+          </p>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default AdminPage;

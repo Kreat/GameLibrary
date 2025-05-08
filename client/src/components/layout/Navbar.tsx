@@ -36,10 +36,9 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/chat", label: "Chat" },
+    { href: "/games", label: "Games" },
     { href: "/sessions", label: "Find Sessions" },
-    { href: "/community", label: "Forum" },
-    { href: "/games", label: "Games Library" },
+    { href: "/community", label: "Community" },
   ];
 
   const isActive = (path: string) => {

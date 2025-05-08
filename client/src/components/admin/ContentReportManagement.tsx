@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import { useState, useEffect } from "react";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
   Select,
@@ -15,337 +16,411 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
+import { 
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { 
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2, AlertTriangle, Search, Flag, Check, X } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
-import { formatDistanceToNow } from "date-fns";
+import {
+  Loader2,
+  Search,
+  AlertTriangle,
+  Eye,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from "lucide-react";
 
-// Report type from server
-interface ContentReport {
+type ContentReport = {
   id: number;
-  reporterId: number;
+  createdAt: string;
+  reporterName: string;
   contentType: string;
   contentId: number;
   reason: string;
-  details: string | null;
+  details: string;
   status: string;
-  createdAt: string;
-  reviewedAt: string | null;
-  reviewerId: number | null;
   actionTaken: string | null;
-  reporter?: {
-    id: number;
-    username: string;
-    displayName: string | null;
-  };
-}
+};
 
-export default function ContentReportManagement() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("pending");
-  const [selectedReport, setSelectedReport] = useState<ContentReport | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [actionTaken, setActionTaken] = useState("");
-  const [newStatus, setNewStatus] = useState("");
+const ContentReportManagement = () => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [reports, setReports] = useState<ContentReport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedReport, setSelectedReport] = useState<ContentReport | null>(null);
+  const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [actionText, setActionText] = useState("");
+  const [processingAction, setProcessingAction] = useState(false);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
 
-  // Fetch all content reports
-  const { data: reports, isLoading } = useQuery<ContentReport[]>({
-    queryKey: ["/api/admin/content-reports"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/content-reports");
-      if (!res.ok) {
-        throw new Error("Failed to fetch content reports");
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        setLoading(true);
+        setLoadingError(null);
+        const response = await apiRequest("GET", "/api/admin/reports");
+        if (!response.ok) {
+          throw new Error("Failed to fetch content reports");
+        }
+        const data = await response.json();
+        setReports(data);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+        setLoadingError("Failed to load content reports. Please try again later.");
+      } finally {
+        setLoading(false);
       }
-      return res.json();
-    }
-  });
+    };
 
-  // Fetch pending content reports
-  const { data: pendingReports, isLoading: isPendingLoading } = useQuery<ContentReport[]>({
-    queryKey: ["/api/admin/content-reports/pending"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/content-reports/pending");
-      if (!res.ok) {
-        throw new Error("Failed to fetch pending reports");
-      }
-      return res.json();
-    }
-  });
+    fetchReports();
+  }, []);
 
-  // Update report status mutation
-  const updateReportMutation = useMutation({
-    mutationFn: async ({ reportId, status, actionTaken }: { reportId: number, status: string, actionTaken?: string }) => {
-      const res = await apiRequest("PATCH", `/api/admin/content-reports/${reportId}`, { 
-        status, 
-        actionTaken 
+  const handleActionSubmit = async (reportId: number, status: string) => {
+    try {
+      setProcessingAction(true);
+      const response = await apiRequest("PATCH", `/api/admin/reports/${reportId}/status`, {
+        status,
+        actionTaken: actionText
       });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message || "Failed to update report status");
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update report status");
       }
-      return await res.json();
-    },
-    onSuccess: () => {
+      
+      // Update local state
+      setReports(reports.map(report => 
+        report.id === reportId ? { ...report, status, actionTaken: actionText } : report
+      ));
+      
       toast({
         title: "Report updated",
-        description: "The report status has been updated successfully.",
+        description: `Report has been marked as ${status}`,
         variant: "default",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content-reports"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/content-reports/pending"] });
-      setIsDialogOpen(false);
-      setSelectedReport(null);
-      setActionTaken("");
-      setNewStatus("");
-    },
-    onError: (error: Error) => {
+
+      setActionDialogOpen(false);
+      setActionText("");
+    } catch (error) {
+      console.error("Error updating report:", error);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Update failed",
+        description: error instanceof Error ? error.message : "Failed to update report status",
         variant: "destructive",
       });
+    } finally {
+      setProcessingAction(false);
     }
-  });
-
-  // Get the appropriate reports based on active tab
-  const getFilteredReports = () => {
-    let filteredData = [];
-    
-    if (activeTab === "pending") {
-      filteredData = pendingReports || [];
-    } else {
-      filteredData = reports?.filter(report => 
-        activeTab === "all" || report.status === activeTab
-      ) || [];
-    }
-
-    // Apply search filter
-    if (searchQuery) {
-      return filteredData.filter(report => 
-        report.reason.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (report.details && report.details.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        report.contentType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (report.reporter && report.reporter.username.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-    
-    return filteredData;
   };
 
-  // Handle report action
-  const handleReportAction = (report: ContentReport, status: string) => {
+  const openActionDialog = (report: ContentReport) => {
     setSelectedReport(report);
-    setNewStatus(status);
-    setActionTaken("");
-    setIsDialogOpen(true);
+    setActionText(report.actionTaken || "");
+    setActionDialogOpen(true);
   };
 
-  // Submit action
-  const submitAction = () => {
-    if (!selectedReport || !newStatus) return;
-    
-    updateReportMutation.mutate({ 
-      reportId: selectedReport.id, 
-      status: newStatus,
-      actionTaken: actionTaken || undefined
-    });
-  };
-
-  // Get status badge style
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "reviewed":
-        return "bg-blue-100 text-blue-800";
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+            <AlertCircle className="h-3 w-3" />
+            Pending
+          </span>
+        );
+      case "resolved":
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+            <CheckCircle className="h-3 w-3" />
+            Resolved
+          </span>
+        );
       case "rejected":
-        return "bg-gray-100 text-gray-800";
-      case "actioned":
-        return "bg-green-100 text-green-800";
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
+            <XCircle className="h-3 w-3" />
+            Rejected
+          </span>
+        );
       default:
-        return "bg-gray-100 text-gray-800";
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300">
+            {status}
+          </span>
+        );
     }
   };
 
-  if (isLoading && isPendingLoading) {
+  const filteredReports = reports.filter(report => {
+    const searchLower = searchQuery.toLowerCase();
     return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      report.reporterName.toLowerCase().includes(searchLower) ||
+      report.contentType.toLowerCase().includes(searchLower) ||
+      report.reason.toLowerCase().includes(searchLower) ||
+      report.details.toLowerCase().includes(searchLower) ||
+      report.status.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const sortedReports = [...filteredReports].sort((a, b) => {
+    // Sort by status (pending first)
+    if (a.status === "pending" && b.status !== "pending") return -1;
+    if (a.status !== "pending" && b.status === "pending") return 1;
+    
+    // Then by date (newest first)
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-meeple" />
+        <span className="ml-2">Loading content reports...</span>
       </div>
     );
   }
 
-  const filteredReports = getFilteredReports();
+  if (loadingError) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 text-center">
+        <AlertTriangle className="h-8 w-8 text-boardRed mb-2" />
+        <p className="text-boardRed font-medium">{loadingError}</p>
+        <Button 
+          variant="outline" 
+          className="mt-4"
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      <Tabs defaultValue="pending" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="pending" className="flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            Pending
-          </TabsTrigger>
-          <TabsTrigger value="all">All Reports</TabsTrigger>
-          <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
-          <TabsTrigger value="actioned">Actioned</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
-        </TabsList>
-
-        <div className="flex items-center space-x-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
+      <div className="flex items-center space-x-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search reports..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-sm"
+            className="pl-8"
           />
         </div>
-        
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Reported By</TableHead>
-              <TableHead>Content Type</TableHead>
-              <TableHead>Reason</TableHead>
-              <TableHead>Reported</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredReports.length > 0 ? (
-              filteredReports.map((report) => (
-                <TableRow key={report.id}>
-                  <TableCell>{report.id}</TableCell>
-                  <TableCell>{report.reporter?.username || report.reporterId}</TableCell>
-                  <TableCell className="capitalize">{report.contentType}</TableCell>
-                  <TableCell>{report.reason}</TableCell>
-                  <TableCell>{formatDistanceToNow(new Date(report.createdAt), { addSuffix: true })}</TableCell>
-                  <TableCell>
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(report.status)}`}>
-                      {report.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
+      </div>
+
+      {sortedReports.length > 0 ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {sortedReports.map((report) => (
+            <Card key={report.id} className={`
+              ${report.status === "pending" ? "border-yellow-300 dark:border-yellow-800" : ""}
+              ${report.status === "resolved" ? "border-green-300 dark:border-green-800" : ""}
+              ${report.status === "rejected" ? "border-red-300 dark:border-red-800" : ""}
+            `}>
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-base">
+                      {report.contentType} Report #{report.id}
+                    </CardTitle>
+                    <CardDescription>
+                      Reported by {report.reporterName} on {new Date(report.createdAt).toLocaleDateString()}
+                    </CardDescription>
+                  </div>
+                  {getStatusBadge(report.status)}
+                </div>
+              </CardHeader>
+              <CardContent className="pb-2">
+                <div className="space-y-1">
+                  <div className="font-medium text-sm text-foreground">Reason:</div>
+                  <div className="text-sm text-muted-foreground">{report.reason}</div>
+                </div>
+                
+                <div className="space-y-1 mt-3">
+                  <div className="font-medium text-sm text-foreground">Details:</div>
+                  <div className="text-sm text-muted-foreground max-h-20 overflow-y-auto">{report.details}</div>
+                </div>
+
+                {report.actionTaken && (
+                  <div className="space-y-1 mt-3 p-2 bg-muted rounded-md">
+                    <div className="font-medium text-xs text-foreground">Action taken:</div>
+                    <div className="text-xs text-muted-foreground">{report.actionTaken}</div>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="pt-0">
+                <div className="flex w-full justify-between">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => {}}
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    View Content
+                  </Button>
+                  {report.status === "pending" && (
+                    <div className="space-x-1">
                       <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleReportAction(report, "actioned")}
-                        disabled={updateReportMutation.isPending || report.status === "actioned"}
+                        variant="ghost" 
+                        size="sm"
+                        className="text-xs bg-red-100 hover:bg-red-200 text-red-800 dark:bg-red-900 dark:hover:bg-red-800 dark:text-red-300"
+                        onClick={() => openActionDialog(report)}
                       >
-                        <Check className="h-4 w-4 mr-1" />
-                        Action
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => handleReportAction(report, "rejected")}
-                        disabled={updateReportMutation.isPending || report.status === "rejected"}
-                      >
-                        <X className="h-4 w-4 mr-1" />
+                        <XCircle className="h-3 w-3 mr-1" />
                         Reject
                       </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="text-xs bg-green-100 hover:bg-green-200 text-green-800 dark:bg-green-900 dark:hover:bg-green-800 dark:text-green-300"
+                        onClick={() => openActionDialog(report)}
+                      >
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Resolve
+                      </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={7} className="text-center py-6 text-muted-foreground">
-                  {searchQuery 
-                    ? "No reports match your search." 
-                    : activeTab === "pending" 
-                      ? "No pending reports found." 
-                      : "No reports found."}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </Tabs>
+                  )}
+                  {report.status !== "pending" && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs"
+                      onClick={() => openActionDialog(report)}
+                    >
+                      Edit action
+                    </Button>
+                  )}
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center p-8 bg-muted rounded-md">
+          <p className="text-muted-foreground">No content reports found.</p>
+        </div>
+      )}
 
-      {/* Report action dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {newStatus === "actioned" ? "Take Action on Report" : "Reject Report"}
+              {selectedReport?.status === "pending" ? "Take Action on Report" : "Edit Action"}
             </DialogTitle>
             <DialogDescription>
-              {newStatus === "actioned" 
-                ? "Describe what action you're taking to address this report." 
-                : "Explain why you're rejecting this report."}
+              {selectedReport?.status === "pending" 
+                ? "Decide whether to resolve or reject this report and provide details about the action taken."
+                : "Update the action taken for this report."}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="border rounded-md p-4 bg-muted/50">
-              <div className="text-sm font-medium">Report Details</div>
-              <div className="mt-2 space-y-2">
-                <div>
-                  <span className="text-muted-foreground text-sm">Type:</span>{" "}
-                  <span className="capitalize">{selectedReport?.contentType}</span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground text-sm">Reason:</span>{" "}
-                  {selectedReport?.reason}
-                </div>
-                {selectedReport?.details && (
-                  <div>
-                    <span className="text-muted-foreground text-sm">Details:</span>{" "}
-                    {selectedReport.details}
+
+          <div className="space-y-4 py-2">
+            {selectedReport?.status === "pending" && (
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  className={`justify-center py-6 ${
+                    selectedReport?.status === "resolved" ? "border-green-500 bg-green-50 dark:bg-green-900/20" : ""
+                  }`}
+                  onClick={() => setSelectedReport(prev => prev ? { ...prev, status: "resolved" } : null)}
+                >
+                  <div className="flex flex-col items-center">
+                    <CheckCircle className={`h-8 w-8 mb-1 ${
+                      selectedReport?.status === "resolved" ? "text-green-500" : "text-muted-foreground"
+                    }`} />
+                    <span className={selectedReport?.status === "resolved" ? "text-green-600 font-medium" : ""}>
+                      Resolve Report
+                    </span>
                   </div>
-                )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className={`justify-center py-6 ${
+                    selectedReport?.status === "rejected" ? "border-red-500 bg-red-50 dark:bg-red-900/20" : ""
+                  }`}
+                  onClick={() => setSelectedReport(prev => prev ? { ...prev, status: "rejected" } : null)}
+                >
+                  <div className="flex flex-col items-center">
+                    <XCircle className={`h-8 w-8 mb-1 ${
+                      selectedReport?.status === "rejected" ? "text-red-500" : "text-muted-foreground"
+                    }`} />
+                    <span className={selectedReport?.status === "rejected" ? "text-red-600 font-medium" : ""}>
+                      Reject Report
+                    </span>
+                  </div>
+                </Button>
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                {newStatus === "actioned" ? "Action taken" : "Reason for rejection"}
+            )}
+            
+            <div className="space-y-2">
+              <label htmlFor="action" className="text-sm font-medium">
+                Action taken:
               </label>
               <Textarea
-                value={actionTaken}
-                onChange={(e) => setActionTaken(e.target.value)}
-                rows={3}
-                placeholder={
-                  newStatus === "actioned"
-                    ? "Describe the action you've taken..."
-                    : "Explain why this report is being rejected..."
-                }
+                id="action"
+                placeholder="Describe what action was taken..."
+                value={actionText}
+                onChange={(e) => setActionText(e.target.value)}
+                rows={4}
               />
             </div>
           </div>
+
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setActionDialogOpen(false)}
+              disabled={processingAction}
+            >
               Cancel
             </Button>
-            <Button 
-              onClick={submitAction}
-              disabled={updateReportMutation.isPending}
+            <Button
+              onClick={() => {
+                if (selectedReport) {
+                  const status = selectedReport.status === "pending" ? "resolved" : selectedReport.status;
+                  handleActionSubmit(selectedReport.id, status);
+                }
+              }}
+              disabled={processingAction || !selectedReport || !actionText.trim()}
+              className={`
+                ${selectedReport?.status === "resolved" ? "bg-green-600 hover:bg-green-700" : ""}
+                ${selectedReport?.status === "rejected" ? "bg-red-600 hover:bg-red-700" : ""}
+              `}
             >
-              {updateReportMutation.isPending && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              {processingAction ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                selectedReport?.status === "pending" 
+                  ? "Submit Action" 
+                  : "Update Action"
               )}
-              {newStatus === "actioned" ? "Confirm Action" : "Confirm Rejection"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
   );
-}
+};
+
+export default ContentReportManagement;
