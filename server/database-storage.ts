@@ -3,7 +3,7 @@ import { db } from "./db";
 import {
   users, games, sessions, sessionParticipants, userAvailability,
   forumCategories, forumThreads, forumPosts, chatMessages,
-  userStats, sessionReviews,
+  userStats, sessionReviews, contentReports,
   type User, type InsertUser,
   type Game, type InsertGame,
   type Session, type InsertSession,
@@ -14,7 +14,8 @@ import {
   type ForumPost, type InsertForumPost,
   type ChatMessage, type InsertChatMessage,
   type UserStats, type InsertUserStats,
-  type SessionReview, type InsertSessionReview
+  type SessionReview, type InsertSessionReview,
+  type ContentReport, type InsertContentReport
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
@@ -48,11 +49,25 @@ export class DatabaseStorage implements IStorage {
       location: insertUser.location ?? null,
       favoriteGames: insertUser.favoriteGames ?? null,
       photoUrl: insertUser.photoUrl ?? null,
-      firebaseUid: insertUser.firebaseUid ?? null
+      firebaseUid: insertUser.firebaseUid ?? null,
+      role: insertUser.role ?? "user" // Default role is "user"
     };
     
     const [user] = await db.insert(users).values(userWithNulls).returning();
     return user;
+  }
+  
+  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        role,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    return updatedUser;
   }
 
   // Game methods
@@ -578,5 +593,78 @@ export class DatabaseStorage implements IStorage {
     }
     
     return newReview;
+  }
+
+  // Admin and moderation methods
+  async getAdmins(): Promise<User[]> {
+    return await db.select()
+      .from(users)
+      .where(eq(users.role, "admin"));
+  }
+
+  async getModerators(): Promise<User[]> {
+    return await db.select()
+      .from(users)
+      .where(or(
+        eq(users.role, "admin"),
+        eq(users.role, "moderator")
+      ));
+  }
+
+  async getAllContentReports(): Promise<ContentReport[]> {
+    return await db.select().from(contentReports);
+  }
+
+  async getPendingContentReports(): Promise<ContentReport[]> {
+    return await db.select()
+      .from(contentReports)
+      .where(eq(contentReports.status, "pending"))
+      .orderBy(contentReports.createdAt);
+  }
+
+  async getContentReport(id: number): Promise<ContentReport | undefined> {
+    const [report] = await db.select()
+      .from(contentReports)
+      .where(eq(contentReports.id, id));
+    
+    return report;
+  }
+
+  async createContentReport(report: InsertContentReport): Promise<ContentReport> {
+    // Ensure null values are properly set for optional fields
+    const reportWithNulls = {
+      ...report,
+      status: report.status ?? "pending",
+      actionTaken: report.actionTaken ?? null,
+      adminId: report.adminId ?? null
+    };
+    
+    const [newReport] = await db.insert(contentReports)
+      .values(reportWithNulls)
+      .returning();
+    
+    return newReport;
+  }
+
+  async updateContentReportStatus(
+    reportId: number, 
+    status: string, 
+    actionTaken?: string, 
+    adminId?: number
+  ): Promise<ContentReport | undefined> {
+    const report = await this.getContentReport(reportId);
+    if (!report) return undefined;
+    
+    const [updatedReport] = await db.update(contentReports)
+      .set({
+        status,
+        actionTaken: actionTaken ?? report.actionTaken,
+        adminId: adminId ?? report.adminId,
+        updatedAt: new Date()
+      })
+      .where(eq(contentReports.id, reportId))
+      .returning();
+    
+    return updatedReport;
   }
 }

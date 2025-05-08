@@ -735,6 +735,86 @@ export class MemStorage implements IStorage {
     
     return newReview;
   }
+
+  // User role management
+  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+    const user = await this.getUser(userId);
+    if (!user) return undefined;
+
+    const updatedUser = {
+      ...user,
+      role,
+      updatedAt: new Date()
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  // Admin and moderation methods
+  async getAdmins(): Promise<User[]> {
+    return Array.from(this.users.values()).filter(user => user.role === "admin");
+  }
+
+  async getModerators(): Promise<User[]> {
+    return Array.from(this.users.values()).filter(user => 
+      user.role === "moderator" || user.role === "admin"
+    );
+  }
+
+  async getAllContentReports(): Promise<ContentReport[]> {
+    return Array.from(this.contentReports.values());
+  }
+
+  async getPendingContentReports(): Promise<ContentReport[]> {
+    return Array.from(this.contentReports.values())
+      .filter(report => report.status === "pending")
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  }
+
+  async getContentReport(id: number): Promise<ContentReport | undefined> {
+    return this.contentReports.get(id);
+  }
+
+  async createContentReport(report: InsertContentReport): Promise<ContentReport> {
+    const id = this.contentReportIdCounter++;
+    const createdAt = new Date();
+    const updatedAt = new Date();
+    
+    const newReport: ContentReport = {
+      ...report,
+      id,
+      createdAt,
+      updatedAt,
+      status: report.status || "pending",
+      actionTaken: report.actionTaken || null,
+      adminId: report.adminId || null
+    };
+    
+    this.contentReports.set(id, newReport);
+    return newReport;
+  }
+
+  async updateContentReportStatus(
+    reportId: number, 
+    status: string, 
+    actionTaken?: string, 
+    adminId?: number
+  ): Promise<ContentReport | undefined> {
+    const report = await this.getContentReport(reportId);
+    if (!report) return undefined;
+    
+    const updatedReport: ContentReport = {
+      ...report,
+      status,
+      actionTaken: actionTaken || report.actionTaken,
+      adminId: adminId || report.adminId,
+      updatedAt: new Date()
+    };
+    
+    this.contentReports.set(reportId, updatedReport);
+    return updatedReport;
+  }
 }
 
 import { DatabaseStorage } from './database-storage';
