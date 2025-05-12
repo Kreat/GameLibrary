@@ -18,6 +18,12 @@ import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 // Form validation schemas
 const loginSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string()
+    .email("Please enter a valid email")
+    .refine(
+      (email) => email.endsWith('@stanford.edu'),
+      { message: "Only Stanford email addresses (@stanford.edu) are allowed" }
+    ),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -97,6 +103,7 @@ export default function AuthPage() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
     },
   });
@@ -162,13 +169,16 @@ export default function AuthPage() {
 
   // Form submission handlers
   const onLoginSubmit = (data: LoginFormValues) => {
+    // No need for transformation now that we have all fields
     loginMutation.mutate(data);
+    setLocation("/"); // Direct to home page after successful login
   };
 
   const onRegisterSubmit = (data: RegisterFormValues) => {
     // Remove confirmPassword before sending to API
     const { confirmPassword, ...registerData } = data;
-    registerMutation.mutate(registerData);
+    authRegisterMutation.mutate(registerData);
+    setLocation("/"); // Direct to home page after successful registration
   };
 
   return (
@@ -203,6 +213,19 @@ export default function AuthPage() {
                           <FormLabel>Username</FormLabel>
                           <FormControl>
                             <Input placeholder="yourusername" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={loginForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stanford Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="you@stanford.edu" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

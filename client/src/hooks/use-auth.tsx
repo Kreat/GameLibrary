@@ -107,14 +107,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Register mutation
   const registerMutation = useMutation<User, Error, RegisterData>({
     mutationFn: async (credentials: RegisterData) => {
+      // For demo - validate Stanford email
+      if (!credentials.email.endsWith('@stanford.edu')) {
+        throw new Error("Only Stanford email addresses are allowed.");
+      }
+      
       const res = await apiRequest("POST", "/api/register", credentials);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Registration failed");
       }
-      return await res.json();
+      // For demo, return mock user but with the provided username and email
+      return {
+        ...mockUser,
+        username: credentials.username,
+        email: credentials.email,
+        displayName: credentials.displayName || credentials.username,
+      };
     },
     onSuccess: (user) => {
+      // Update our local state
+      setCurrentUser(user);
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Registration successful",
