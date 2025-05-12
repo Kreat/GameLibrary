@@ -130,32 +130,8 @@ export default function AuthPage() {
     },
   });
 
-  // Login Mutation
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginFormValues) => {
-      const response = await apiRequest("POST", "/api/login", data);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to login");
-      }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(["/api/user"], data);
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${data.username}!`,
-      });
-      setLocation("/");
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  // Use the loginMutation from AuthContext
+  const { loginMutation, registerMutation: authRegisterMutation } = useAuth();
 
   // Register Mutation
   const registerMutation = useMutation({

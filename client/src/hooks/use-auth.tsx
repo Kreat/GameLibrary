@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { useQuery, useMutation, UseMutationResult } from "@tanstack/react-query";
 import { apiRequest, getQueryFn, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +20,7 @@ type User = {
 
 type LoginData = {
   username: string;
+  email: string;
   password: string;
 };
 
@@ -60,24 +61,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     updatedAt: new Date().toISOString(),
   };
   
-  // Instead of querying, use our mock user directly for demonstration
+  // Create state for our user so we can toggle it on/off for demonstration
+  const [currentUser, setCurrentUser] = useState<User | null>(mockUser);
+  
+  // For demo purposes
   const { 
-    data: user = mockUser, 
+    data: user = currentUser, 
     error = null,
     isLoading = false
-  } = { data: mockUser } as const;
+  } = { data: currentUser } as const;
 
   // Login mutation
   const loginMutation = useMutation<User, Error, LoginData>({
     mutationFn: async (credentials: LoginData) => {
+      // For demo - validate Stanford email
+      if (!credentials.email.endsWith('@stanford.edu')) {
+        throw new Error("Only Stanford email addresses are allowed.");
+      }
+      
       const res = await apiRequest("POST", "/api/login", credentials);
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Login failed");
       }
-      return await res.json();
+      return mockUser; // For demo purposes, return mock user
     },
     onSuccess: (user) => {
+      // Update our local state
+      setCurrentUser(user);
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Login successful",
@@ -122,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Logout mutation
   const logoutMutation = useMutation<void, Error, void>({
     mutationFn: async () => {
+      // For demo purposes, simulate a successful API call
       const res = await apiRequest("POST", "/api/logout");
       if (!res.ok) {
         const errorData = await res.json();
@@ -129,6 +141,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
     onSuccess: () => {
+      // Clear our local state 
+      setCurrentUser(null);
       queryClient.setQueryData(["/api/user"], null);
       toast({
         title: "Logged out",

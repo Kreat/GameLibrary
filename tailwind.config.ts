@@ -23,7 +23,7 @@ export default {
                 
         boardRed:      "#9E1B32", // rose-800, duplicate
         stanfordRed:   "#9E1B32", // rose-800
-        glowRed:       "#D21F56", // rose-600
+        glowRed:       "#f43f5e", // rose-600
         
         mintToken:     "#047857", // emerald-600, duplicate
         stanfordGreen: "#047857", // emerald-600
