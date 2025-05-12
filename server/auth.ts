@@ -22,6 +22,7 @@ declare global {
       favoriteGames: string | null;
       photoUrl: string | null;
       firebaseUid: string | null;
+      role: string | null;
       createdAt: Date;
       updatedAt: Date;
     }
