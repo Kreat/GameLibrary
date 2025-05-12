@@ -28,6 +28,7 @@ export interface IStorage {
   getUserByFirebaseUid(firebaseUid: string): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(userId: number, userData: Partial<User>): Promise<User | undefined>;
   updateUserRole(userId: number, role: string): Promise<User | undefined>;
   
   // Game methods
@@ -765,19 +766,32 @@ export class MemStorage implements IStorage {
     return result;
   }
 
-  // User role management
-  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+  // Update user profile
+  async updateUser(userId: number, userData: Partial<User>): Promise<User | undefined> {
     const user = await this.getUser(userId);
     if (!user) return undefined;
 
+    // Create updated user with new data
     const updatedUser = {
       ...user,
-      role,
-      updatedAt: new Date()
+      ...userData,
+      // Ensure these fields aren't overwritten
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      password: user.password,
+      role: userData.role !== undefined ? userData.role : user.role,
+      createdAt: user.createdAt,
+      updatedAt: new Date(),
     };
-    
+
     this.users.set(userId, updatedUser);
     return updatedUser;
+  }
+
+  // User role management
+  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+    return this.updateUser(userId, { role });
   }
 
   // Admin and moderation methods

@@ -52,6 +52,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
+  
+  // Update user profile
+  app.patch("/api/users/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      // Get current user from session
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const currentUser = req.user as Express.User;
+      
+      // Only allow users to update their own profile, unless they are admin
+      if (currentUser.id !== id && currentUser.role !== "admin") {
+        return res.status(403).json({ message: "Not authorized to update this user" });
+      }
+      
+      // Only allow updating certain fields
+      const allowedFields = ["displayName", "bio", "location", "favoriteGames", "photoUrl"];
+      const updateData: Partial<User> = {};
+      
+      for (const field of allowedFields) {
+        if (field in req.body) {
+          updateData[field as keyof Partial<User>] = req.body[field];
+        }
+      }
+      
+      const updatedUser = await storage.updateUser(id, updateData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
 
   app.post("/api/users", async (req, res) => {
     try {
