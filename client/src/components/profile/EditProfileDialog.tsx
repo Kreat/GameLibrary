@@ -63,8 +63,11 @@ export function EditProfileDialog({ user, open, onOpenChange }: EditProfileDialo
 
   const updateProfileMutation = useMutation({
     mutationFn: async (values: ProfileFormValues) => {
+      console.log("Submitting profile update with values:", values);
       const response = await apiRequest("PATCH", `/api/users/${user.id}`, values);
-      return await response.json();
+      const data = await response.json();
+      console.log("Profile update response:", data);
+      return data;
     },
     onSuccess: (updatedUser) => {
       // Update the user in the cache

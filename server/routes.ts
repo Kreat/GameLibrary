@@ -57,6 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/users/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      console.log(`[Profile Update] Updating user ${id} with data:`, req.body);
       
       /* 
        * Temporarily disabling auth check for profile updates

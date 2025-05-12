@@ -63,16 +63,24 @@ export class DatabaseStorage implements IStorage {
       id, username, email, password, createdAt, firebaseUid, ...allowedUpdates
     } = userData;
 
-    const [updatedUser] = await db
-      .update(users)
-      .set({ 
-        ...allowedUpdates,
-        updatedAt: new Date()
-      })
-      .where(eq(users.id, userId))
-      .returning();
-    
-    return updatedUser;
+    console.log(`[DB] Updating user ${userId} with data:`, allowedUpdates);
+
+    try {
+      const [updatedUser] = await db
+        .update(users)
+        .set({ 
+          ...allowedUpdates,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, userId))
+        .returning();
+      
+      console.log(`[DB] Update result:`, updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.error(`[DB] Error updating user ${userId}:`, error);
+      throw error;
+    }
   }
   
   async updateUserRole(userId: number, role: string): Promise<User | undefined> {
