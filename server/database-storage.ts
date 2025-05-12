@@ -57,17 +57,26 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
   
-  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+  async updateUser(userId: number, userData: Partial<User>): Promise<User | undefined> {
+    // Don't allow updating sensitive fields
+    const {
+      id, username, email, password, createdAt, firebaseUid, ...allowedUpdates
+    } = userData;
+
     const [updatedUser] = await db
       .update(users)
       .set({ 
-        role,
+        ...allowedUpdates,
         updatedAt: new Date()
       })
       .where(eq(users.id, userId))
       .returning();
     
     return updatedUser;
+  }
+  
+  async updateUserRole(userId: number, role: string): Promise<User | undefined> {
+    return this.updateUser(userId, { role });
   }
 
   // Game methods

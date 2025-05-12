@@ -19,6 +19,7 @@ export default function ProfilePage() {
   const [, navigate] = useLocation();
   const { user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("profile");
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   
   // Fetch user data
   const { data: profile, isLoading: isLoadingProfile, error: profileError } = useQuery<User>({
@@ -118,16 +119,24 @@ export default function ProfilePage() {
               </div>
               
               {currentUser && currentUser.id === parseInt(userId) && (
-                <Button
-                  variant="outline"
-                  className="w-full mt-4"
-                  onClick={() => {
-                    // TODO: Implement Edit Profile functionality
-                    alert('Edit profile functionality coming soon!');
-                  }}
-                >
-                  Edit Profile
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    className="w-full mt-4"
+                    onClick={() => setIsEditProfileOpen(true)}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Edit Profile
+                  </Button>
+                  
+                  {profile && (
+                    <EditProfileDialog
+                      user={profile}
+                      open={isEditProfileOpen}
+                      onOpenChange={setIsEditProfileOpen}
+                    />
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
