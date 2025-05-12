@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, User as UserIcon, Calendar, MapPin, Gamepad2, Mail } from "lucide-react";
 import UserStatsCard from "@/components/reputation/UserStatsCard";
 import { User } from "@shared/schema";
+import { Container } from "@/components/ui/container";
 
 export default function ProfilePage() {
   const { userId } = useParams<{ userId: string }>();

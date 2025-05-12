@@ -594,6 +594,38 @@ export class DatabaseStorage implements IStorage {
     
     return newReview;
   }
+  
+  async getRecentReviewsForUser(userId: number, limit: number = 5): Promise<Array<SessionReview & { reviewer: { username: string; displayName: string | null } }>> {
+    // Get reviews for this user, sorted by newest first
+    const reviews = await db.select()
+      .from(sessionReviews)
+      .where(eq(sessionReviews.targetId, userId))
+      .orderBy(desc(sessionReviews.createdAt))
+      .limit(limit);
+    
+    // Add reviewer information to each review
+    const result = [];
+    for (const review of reviews) {
+      const [reviewer] = await db.select({
+        username: users.username,
+        displayName: users.displayName
+      })
+      .from(users)
+      .where(eq(users.id, review.reviewerId));
+      
+      if (reviewer) {
+        result.push({
+          ...review,
+          reviewer: {
+            username: reviewer.username,
+            displayName: reviewer.displayName
+          }
+        });
+      }
+    }
+    
+    return result;
+  }
 
   // Admin and moderation methods
   async getAdmins(): Promise<User[]> {
