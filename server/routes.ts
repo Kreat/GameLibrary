@@ -428,6 +428,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Combined endpoint for leaderboard data
+  app.get("/api/user-stats/top", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const topHosts = await storage.getTopHosts(limit);
+      const topPlayers = await storage.getTopPlayers(limit);
+      
+      res.json({
+        topHosts,
+        topPlayers
+      });
+    } catch (error) {
+      console.error("Error fetching leaderboard data:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard data" });
+    }
+  });
+  
   app.get("/api/user-stats/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
@@ -438,6 +455,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(stats);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+  
+  // Get user stats with recent reviews
+  app.get("/api/users/:userId/stats", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      // Get user stats
+      const userStats = await storage.getUserStats(userId);
+      if (!userStats) {
+        // If no stats exist yet, return default values
+        return res.json({
+          sessionsHosted: 0,
+          sessionsJoined: 0,
+          reputation: 0,
+          gamesPlayed: 0,
+          hostRating: 0,
+          playerRating: 0,
+          reviewsReceived: 0,
+          recentReviews: [],
+        });
+      }
+      
+      // Get recent reviews for this user (last 5)
+      const recentReviews = await storage.getRecentReviewsForUser(userId, 5);
+      
+      // Format and return the response
+      res.json({
+        ...userStats,
+        recentReviews,
+      });
     } catch (error) {
       console.error("Error fetching user stats:", error);
       res.status(500).json({ message: "Failed to fetch user stats" });

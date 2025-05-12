@@ -80,6 +80,7 @@ export interface IStorage {
   getTopHosts(limit?: number): Promise<(UserStats & { user: User })[]>;
   getTopPlayers(limit?: number): Promise<(UserStats & { user: User })[]>;
   createSessionReview(review: InsertSessionReview): Promise<SessionReview>;
+  getRecentReviewsForUser(userId: number, limit?: number): Promise<Array<SessionReview & { reviewer: { username: string; displayName: string | null } }>>;
   
   // Admin and moderation methods
   getAdmins(): Promise<User[]>;
@@ -734,6 +735,34 @@ export class MemStorage implements IStorage {
     }
     
     return newReview;
+  }
+  
+  async getRecentReviewsForUser(userId: number, limit: number = 5): Promise<Array<SessionReview & { reviewer: { username: string; displayName: string | null } }>> {
+    // Get all reviews for this user
+    const reviews = Array.from(this.sessionReviews.values())
+      .filter(review => review.targetId === userId)
+      .sort((a, b) => {
+        // Sort by createdAt in descending order (newest first)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      })
+      .slice(0, limit);
+    
+    // Add reviewer information
+    const result = [];
+    for (const review of reviews) {
+      const reviewer = await this.getUser(review.reviewerId);
+      if (reviewer) {
+        result.push({
+          ...review,
+          reviewer: {
+            username: reviewer.username,
+            displayName: reviewer.displayName
+          }
+        });
+      }
+    }
+    
+    return result;
   }
 
   // User role management

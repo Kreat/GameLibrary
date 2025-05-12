@@ -39,7 +39,7 @@ function Router() {
           <Route path="/chat" component={ChatPage} />
           <Route path="/community" component={CommunityPage} />
           <Route path="/leaderboard" component={LeaderboardPage} />
-          <ProtectedRoute path="/profile" component={ProfilePage} />
+          <ProtectedRoute path="/profile/:userId" component={ProfilePage} />
           <ProtectedRoute
             path="/create-session"
             component={CreateSessionPage}
