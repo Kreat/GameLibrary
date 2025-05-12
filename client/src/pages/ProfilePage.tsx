@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, User as UserIcon, Calendar, MapPin, Gamepad2, Mail } from "lucide-react";
+import { Loader2, User as UserIcon, Calendar, MapPin, Gamepad2, Mail, Edit, Award } from "lucide-react";
 import UserStatsCard from "@/components/reputation/UserStatsCard";
 import { User } from "@shared/schema";
 import { Container } from "@/components/ui/container";

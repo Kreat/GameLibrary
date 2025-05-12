@@ -756,6 +756,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User Stats and Reputation API Routes
+  
+  // Get user stats by user ID
+  app.get("/api/users/:userId/stats", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      if (isNaN(userId)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+      }
+      
+      // Get user stats
+      const userStats = await storage.getUserStats(userId);
+      
+      if (!userStats) {
+        return res.status(404).json({ message: "User stats not found" });
+      }
+      
+      // Get recent reviews for this user
+      const recentReviews = await storage.getRecentReviewsForUser(userId);
+      
+      res.json({
+        ...userStats,
+        recentReviews
+      });
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+      res.status(500).json({ message: "Failed to fetch user stats" });
+    }
+  });
+  
+  // Get top users for leaderboard
+  app.get("/api/user-stats/top", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      
+      if (isNaN(limit) || limit < 1 || limit > 50) {
+        return res.status(400).json({ message: "Invalid limit parameter" });
+      }
+      
+      // Get top hosts and players
+      const topHosts = await storage.getTopHosts(limit);
+      const topPlayers = await storage.getTopPlayers(limit);
+      
+      res.json({
+        topHosts,
+        topPlayers
+      });
+    } catch (error) {
+      console.error("Error fetching top users:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard data" });
+    }
+  });
+  
+  // Submit a session review
+  app.post("/api/session-reviews", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "You must be logged in to submit reviews" });
+    }
+    
+    try {
+      const { sessionId, targetId, rating, content, isHostReview } = req.body;
+      
+      // Basic validation
+      if (!sessionId || !targetId || !rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ message: "Invalid review data" });
+      }
+      
+      // Create the review
+      const review = await storage.createSessionReview({
+        sessionId,
+        reviewerId: req.user!.id,
+        targetId,
+        rating,
+        content,
+        isHostReview
+      });
+      
+      res.status(201).json(review);
+    } catch (error) {
+      console.error("Error creating session review:", error);
+      res.status(500).json({ message: "Failed to submit review" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
