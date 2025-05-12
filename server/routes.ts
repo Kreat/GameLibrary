@@ -757,35 +757,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // User Stats and Reputation API Routes
-  
-  // Get user stats by user ID
-  app.get("/api/users/:userId/stats", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId);
-      
-      if (isNaN(userId)) {
-        return res.status(400).json({ message: "Invalid user ID" });
-      }
-      
-      // Get user stats
-      const userStats = await storage.getUserStats(userId);
-      
-      if (!userStats) {
-        return res.status(404).json({ message: "User stats not found" });
-      }
-      
-      // Get recent reviews for this user
-      const recentReviews = await storage.getRecentReviewsForUser(userId);
-      
-      res.json({
-        ...userStats,
-        recentReviews
-      });
-    } catch (error) {
-      console.error("Error fetching user stats:", error);
-      res.status(500).json({ message: "Failed to fetch user stats" });
-    }
-  });
+  // The user stats endpoint is already defined above
   
   // Get top users for leaderboard
   app.get("/api/user-stats/top", async (req, res) => {

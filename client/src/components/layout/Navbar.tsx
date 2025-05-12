@@ -129,7 +129,7 @@ const Navbar = () => {
                     onClick={() => {
                       window.scrollTo(0, 0); 
                       handleNavigationStart();
-                      setLocation('/profile');
+                      setLocation(`/profile/${user.id}`);
                     }}
                     className="hover:bg-meeple/10 dark:hover:bg-meeple/20 cursor-pointer flex items-center gap-2"
                   >
