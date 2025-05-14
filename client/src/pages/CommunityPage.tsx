@@ -312,16 +312,16 @@ const CommunityPage = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Community Norms Banner */}
-        <div className="mb-6 bg-gradient-to-r from-slate-900 to-slateNight rounded-lg p-4 shadow-md">
+        <div className="mb-6 bg-gradient-to-r from-stanfordRed/90 to-slateNight rounded-lg p-5 shadow-md border border-meeple/20">
           <div className="flex flex-col sm:flex-row justify-between items-center">
             <div className="flex items-center mb-4 sm:mb-0">
-              <Shield className="h-5 w-5 text-meeple mr-2" />
+              <Shield className="h-5 w-5 text-mintToken mr-2" />
               <span className="text-white text-sm">Our community is guided by shared norms to ensure a positive experience for everyone.</span>
             </div>
             <Button 
               variant="outline" 
               size="sm" 
-              className="bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white"
+              className="bg-transparent/10 backdrop-blur-sm text-white border-mintToken/50 hover:bg-mintToken/20 hover:text-white"
               onClick={() => {
                 window.scrollTo(0, 0);
                 handleNavigationStart(); // Use the navigation hook
