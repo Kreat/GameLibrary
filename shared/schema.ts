@@ -105,6 +105,9 @@ export const insertSessionSchema = createInsertSchema(sessions).pick({
   maxPlayers: true,
   currentPlayers: true,
   experienceLevel: true,
+  isBeginnerFriendly: true,
+  hostPhotoUrl: true,
+  hostName: true,
   hostData: true,
   participantsData: true,
 });

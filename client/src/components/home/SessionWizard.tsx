@@ -22,7 +22,8 @@ const stepOneSchema = z.object({
   description: z.string().min(10, { message: "Description must be at least 10 characters" }),
   minPlayers: z.string().min(1, { message: "Please select minimum players" }),
   maxPlayers: z.string().min(1, { message: "Please select maximum players" }),
-  experienceLevel: z.enum(["beginner", "intermediate", "advanced"])
+  experienceLevel: z.enum(["beginner", "intermediate", "advanced"]),
+  isBeginnerFriendly: z.boolean().default(false)
 });
 
 type StepOneValues = z.infer<typeof stepOneSchema>;
@@ -60,7 +61,8 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
       description: "",
       minPlayers: "2",
       maxPlayers: "4",
-      experienceLevel: "beginner"
+      experienceLevel: "beginner",
+      isBeginnerFriendly: false
     }
   });
   
@@ -343,7 +345,39 @@ const SessionWizard = ({ onSessionCreated }: SessionWizardProps) => {
                     )}
                   />
                   
-                  <Button type="submit" className="w-full bg-stanford-red hover:bg-stanford-red/90 text-stanford-white">Continue to Schedule</Button>
+                  <FormField
+                    control={stepOneForm.control}
+                    name="isBeginnerFriendly"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4 p-4 border border-green-600/30 rounded-md bg-green-500/10">
+                        <FormControl>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="isBeginnerFriendly"
+                              checked={field.value}
+                              onChange={field.onChange}
+                              className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-600"
+                            />
+                            <label 
+                              htmlFor="isBeginnerFriendly" 
+                              className="text-sm font-medium cursor-pointer flex items-center"
+                            >
+                              <span className="text-green-600 mr-2">✓</span>
+                              Mark this session as beginner-friendly
+                            </label>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="text-xs text-muted-foreground mt-1 ml-4">
+                    Beginner-friendly sessions are highlighted in the game listings and signal that newcomers are welcome.
+                  </div>
+                  
+                  <Button type="submit" className="w-full bg-stanford-red hover:bg-stanford-red/90 text-stanford-white mt-6">Continue to Schedule</Button>
                 </form>
               </Form>
             )}
