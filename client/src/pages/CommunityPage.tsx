@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useNavigation } from "@/hooks/use-navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -320,7 +321,9 @@ const CommunityPage = () => {
               size="sm" 
               className="bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white"
               onClick={() => {
-                window.location.href = "/community-norms";
+                window.scrollTo(0, 0);
+                handleNavigationStart(); // Use the navigation hook
+                setLocation('/community-norms');
               }}
             >
               View Community Norms

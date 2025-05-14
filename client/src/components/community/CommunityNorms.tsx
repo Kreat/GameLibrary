@@ -1,4 +1,5 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useNavigation } from "@/hooks/use-navigation";
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Clock, Calendar, Shield, MessageCircle, Users, ThumbsUp, AlertTriangle, Info } from "lucide-react";
 
 export function CommunityNorms() {
+  const [location, setLocation] = useLocation();
+  const { handleNavigationStart } = useNavigation();
   return (
     <div className="space-y-6">
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
@@ -150,8 +153,16 @@ export function CommunityNorms() {
               These norms are enforced through our reputation system, automated safeguards, and community moderation. Repeated violations may result in temporary restrictions.
             </p>
             
-            <Button variant="outline" asChild>
-              <Link href="/community">Back to Community</Link>
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                window.scrollTo(0, 0);
+                handleNavigationStart();
+                setLocation('/community');
+              }}
+              className="transition-all hover:bg-primary/10"
+            >
+              Back to Community
             </Button>
           </div>
         </div>

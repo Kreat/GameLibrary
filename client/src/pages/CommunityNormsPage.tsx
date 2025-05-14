@@ -11,25 +11,39 @@ export default function CommunityNormsPage() {
   }, []);
 
   return (
-    <Container className="py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-8">
-        <div className="text-center mb-10">
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-4">
-            GameHub Community Norms
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Our guidelines for creating a positive, reliable, and inclusive gaming community
-          </p>
-        </div>
-        
-        <CommunityNorms />
-        
-        <div className="grid md:grid-cols-2 gap-6 mt-10">
-          <WhyNormsCard />
-          <HowNormsWorkCard />
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
+      <div className="bg-gradient-to-r from-stanfordRed to-stanfordGreen text-white py-14">
+        <Container>
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="font-display text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
+              Community Norms
+            </h1>
+            <p className="text-primary-foreground/80 text-lg md:text-xl max-w-2xl mx-auto animate-fade-in opacity-90">
+              Our guidelines for creating a positive, reliable, and inclusive gaming community
+            </p>
+          </div>
+        </Container>
       </div>
-    </Container>
+      
+      <Container className="py-10 px-4">
+        <div className="max-w-4xl mx-auto space-y-10">
+          <div className="bg-gradient-to-br from-card/80 to-card rounded-xl shadow-lg border border-primary/5 overflow-hidden animate-fade-up">
+            <div className="p-6 md:p-8">
+              <CommunityNorms />
+            </div>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-6 mt-12">
+            <div className="animate-fade-up" style={{ animationDelay: "100ms" }}>
+              <WhyNormsCard />
+            </div>
+            <div className="animate-fade-up" style={{ animationDelay: "200ms" }}>
+              <HowNormsWorkCard />
+            </div>
+          </div>
+        </div>
+      </Container>
+    </div>
   );
 }
 
