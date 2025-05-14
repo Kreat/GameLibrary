@@ -28,7 +28,15 @@ export function HostEligibilityCheck({
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = useState(false);
   
-  const { data: userStats, isLoading } = useQuery({
+  interface UserStats {
+    sessionsJoined: number;
+    sessionsHosted: number;
+    reliability: number;
+    // Other potential stats fields
+    [key: string]: any;
+  }
+  
+  const { data: userStats, isLoading } = useQuery<UserStats>({
     queryKey: [`/api/users/${user?.id}/stats`],
     enabled: !!user?.id,
   });
