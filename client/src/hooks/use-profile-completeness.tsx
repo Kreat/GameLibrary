@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { User } from "@shared/schema";
 
 interface ProfileCompletenessResult {
   isProfileComplete: boolean;
@@ -37,7 +36,7 @@ export function useProfileCompleteness(): ProfileCompletenessResult {
 }
 
 // Helper function to check which required fields are missing
-function checkRequiredFields(user: User): string[] {
+function checkRequiredFields(user: any): string[] {
   const missing: string[] = [];
 
   // Check required fields based on community norms
