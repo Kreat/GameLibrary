@@ -15,7 +15,7 @@ export function CommunityNorms() {
   const { handleNavigationStart } = useNavigation();
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+      <div className="rounded-lg border bg-card/80 backdrop-blur-sm text-card-foreground shadow-md p-6 transition-all">
         <div className="mb-4">
           <h2 className="text-2xl font-semibold mb-2">Our Community Norms</h2>
           <p className="text-muted-foreground">
@@ -27,7 +27,7 @@ export function CommunityNorms() {
         
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-1">
-            <AccordionTrigger className="text-lg">
+            <AccordionTrigger className="text-lg transition-all hover:bg-muted/30 px-4 py-2 rounded-md -mx-4 -my-2">
               <div className="flex items-center gap-2">
                 <Shield className="h-5 w-5 text-red-500" />
                 <span>Reliability & Accountability</span>
@@ -67,7 +67,7 @@ export function CommunityNorms() {
           </AccordionItem>
           
           <AccordionItem value="item-2">
-            <AccordionTrigger className="text-lg">
+            <AccordionTrigger className="text-lg transition-all hover:bg-muted/30 px-4 py-2 rounded-md -mx-4 -my-2">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-blue-500" />
                 <span>Inclusivity & Respect</span>
@@ -107,7 +107,7 @@ export function CommunityNorms() {
           </AccordionItem>
           
           <AccordionItem value="item-3">
-            <AccordionTrigger className="text-lg">
+            <AccordionTrigger className="text-lg transition-all hover:bg-muted/30 px-4 py-2 rounded-md -mx-4 -my-2">
               <div className="flex items-center gap-2">
                 <MessageCircle className="h-5 w-5 text-green-500" />
                 <span>Communication Standards</span>
@@ -149,9 +149,12 @@ export function CommunityNorms() {
         
         <div className="mt-8 pt-6 border-t">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
-            <p className="text-sm text-muted-foreground max-w-xl">
-              These norms are enforced through our reputation system, automated safeguards, and community moderation. Repeated violations may result in temporary restrictions.
-            </p>
+            <div className="flex items-start gap-2">
+              <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-muted-foreground max-w-xl">
+                These norms are enforced through our reputation system, automated safeguards, and community moderation. Repeated violations may result in temporary restrictions.
+              </p>
+            </div>
             
             <Button 
               variant="outline" 
@@ -160,8 +163,9 @@ export function CommunityNorms() {
                 handleNavigationStart();
                 setLocation('/community');
               }}
-              className="transition-all hover:bg-primary/10"
+              className="transition-all hover:bg-primary/10 flex items-center gap-2"
             >
+              <MessageSquare className="h-4 w-4" />
               Back to Community
             </Button>
           </div>

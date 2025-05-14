@@ -198,6 +198,8 @@ const sampleGames = [
 const CommunityPage = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [location, setLocation] = useLocation();
+  const { handleNavigationStart } = useNavigation();
   const [activeTab, setActiveTab] = useState("forums");
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
