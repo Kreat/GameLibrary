@@ -16,6 +16,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import CreateSessionPage from "@/pages/CreateSessionPage";
 import JoinSessionPage from "@/pages/JoinSessionPage";
 import LeaderboardPage from "@/pages/LeaderboardPage";
+import CommunityNormsPage from "@/pages/CommunityNormsPage";
 import AuthPage from "@/pages/AuthPage";
 import AdminPage from "@/pages/AdminPage";
 import { AuthProvider } from "@/hooks/use-auth";
@@ -39,6 +40,7 @@ function Router() {
           <Route path="/chat" component={ChatPage} />
           <Route path="/community" component={CommunityPage} />
           <Route path="/leaderboard" component={LeaderboardPage} />
+          <Route path="/community-norms" component={CommunityNormsPage} />
           <ProtectedRoute path="/profile/:userId" component={ProfilePage} />
           <ProtectedRoute
             path="/create-session"

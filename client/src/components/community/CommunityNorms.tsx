@@ -1,158 +1,161 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Info, Shield, Users, Calendar, Star, MessageSquare } from "lucide-react";
+import { Link } from "wouter";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Clock, Calendar, Shield, MessageCircle, Users, ThumbsUp, AlertTriangle, Info } from "lucide-react";
 
 export function CommunityNorms() {
-  const [normsContent, setNormsContent] = useState<string | null>(null);
-
-  // Fetch norms markdown file 
-  useEffect(() => {
-    fetch('/docs/norms.md')
-      .then(response => {
-        if (response.ok) {
-          return response.text();
-        }
-        throw new Error('Failed to load community norms');
-      })
-      .then(text => {
-        setNormsContent(text);
-      })
-      .catch(error => {
-        console.error("Error loading norms:", error);
-      });
-  }, []);
-
   return (
-    <Card className="w-full shadow-md">
-      <CardHeader className="bg-primary/5">
-        <div className="flex items-center gap-2">
-          <Shield className="h-5 w-5 text-primary" />
-          <CardTitle>Community Norms</CardTitle>
+    <div className="space-y-6">
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div className="mb-4">
+          <h2 className="text-2xl font-semibold mb-2">Our Community Norms</h2>
+          <p className="text-muted-foreground">
+            These guidelines help ensure GameHub is a reliable, accountable, and welcoming place for everyone.
+          </p>
         </div>
-        <CardDescription>
-          These guidelines help us maintain a positive, reliable, and inclusive gaming community
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="pt-6">
-        <Tabs defaultValue="summary">
-          <TabsList className="mb-4">
-            <TabsTrigger value="summary">Summary</TabsTrigger>
-            <TabsTrigger value="full">Full Guidelines</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="summary">
-            <div className="grid gap-4 md:grid-cols-2">
-              <NormSummaryCard 
-                icon={<Calendar className="h-5 w-5 text-amber-500" />}
-                title="Reliability & Accountability"
-                description="We value players who honor their commitments"
-                items={[
-                  "Complete your profile before posting",
-                  "72-hour RSVP lock",
-                  "24-hour host-cancellation rule"
-                ]}
-              />
-              
-              <NormSummaryCard 
-                icon={<Users className="h-5 w-5 text-blue-500" />}
-                title="Inclusivity & Tone"
-                description="GameHub is welcoming to all players"
-                items={[
-                  "Inclusive language / no gate-keeping",
-                  "Attend two sessions before hosting"
-                ]}
-              />
-              
-              <NormSummaryCard 
-                icon={<Star className="h-5 w-5 text-green-500" />}
-                title="Reputation & Feedback"
-                description="Building trust through consistent behavior"
-                items={[
-                  "One-click post-game feedback",
-                  "Beginner-friendly tag for sessions"
-                ]}
-              />
-              
-              <NormSummaryCard 
-                icon={<MessageSquare className="h-5 w-5 text-purple-500" />}
-                title="Spam & Spoilers"
-                description="Keeping our community content valuable"
-                items={[
-                  "No multichannel spam",
-                  "Spoiler-only threads"
-                ]}
-              />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="full">
-            {normsContent ? (
-              <div className="prose prose-slate dark:prose-invert max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: renderMarkdownToHTML(normsContent) }} />
-              </div>
-            ) : (
-              <div className="flex items-center justify-center p-8 text-muted-foreground">
-                <Info className="h-4 w-4 mr-2" />
-                <span>Loading community norms...</span>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
-  );
-}
-
-// Helper function to convert markdown to simple HTML
-function renderMarkdownToHTML(markdown: string): string {
-  // Very basic markdown to HTML conversion for demonstration
-  // In a real implementation, use a proper markdown library
-  let html = markdown
-    .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-    .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-    .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n\n/g, '<br /><br />');
-  
-  return html;
-}
-
-// Summary card component
-function NormSummaryCard({ icon, title, description, items }: { 
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  items: string[];
-}) {
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-center gap-2">
-          {icon}
-          <CardTitle className="text-base">{title}</CardTitle>
-        </div>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
+        
+        <Separator className="my-6" />
+        
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="items">
-            <AccordionTrigger className="text-sm font-medium">
-              View Norms
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-lg">
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-red-500" />
+                <span>Reliability & Accountability</span>
+              </div>
             </AccordionTrigger>
-            <AccordionContent>
-              <ul className="list-disc pl-5 space-y-2 text-sm">
-                {items.map((item, i) => (
-                  <li key={i}>{item}</li>
-                ))}
-              </ul>
+            <AccordionContent className="space-y-4 pb-6">
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Complete your profile
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Before hosting or joining sessions, complete your profile with accurate availability, games you play, and skill level. This helps others know who they're gaming with.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <Clock className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Honor your RSVP commitments
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Once you commit to a game session, you're expected to attend. RSVPs are locked 72 hours before the session, and no-shows affect your reliability rating.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <AlertTriangle className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Host cancellation policy
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Hosts must provide at least 24 hours notice if canceling a session. Last-minute cancellations impact your hosting score and ability to create future sessions.
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="text-lg">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5 text-blue-500" />
+                <span>Inclusivity & Respect</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-6">
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Welcoming to all skill levels
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Indicate if your session is beginner-friendly. If hosting an advanced session, clearly state the expected experience level to set proper expectations.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <ThumbsUp className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Patience and courtesy
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Be patient with new players, avoid harsh criticism, and focus on constructive feedback. Remember that everyone was a beginner once.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <Info className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Zero tolerance for harassment
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Any form of harassment, discriminatory language, or intentional exclusion will result in immediate action from moderators.
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="text-lg">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5 text-green-500" />
+                <span>Communication Standards</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="space-y-4 pb-6">
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <MessageCircle className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Give session feedback
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  After sessions, provide constructive feedback to help hosts and players improve. Focus on specific behaviors rather than personal judgments.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <AlertTriangle className="h-4 w-4 mr-2 text-muted-foreground" />
+                  No multichannel spam
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  Don't post the same content in multiple forums or channels. Keep conversations relevant to their specific topics.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="font-semibold flex items-center">
+                  <Shield className="h-4 w-4 mr-2 text-muted-foreground" />
+                  Spoiler-free discussions
+                </h4>
+                <p className="text-muted-foreground text-sm">
+                  For narrative games, use spoiler warnings and dedicated spoiler threads to avoid ruining the experience for others.
+                </p>
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </CardContent>
-    </Card>
+        
+        <div className="mt-8 pt-6 border-t">
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+            <p className="text-sm text-muted-foreground max-w-xl">
+              These norms are enforced through our reputation system, automated safeguards, and community moderation. Repeated violations may result in temporary restrictions.
+            </p>
+            
+            <Button variant="outline" asChild>
+              <Link href="/community">Back to Community</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
