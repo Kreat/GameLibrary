@@ -312,10 +312,10 @@ const CommunityPage = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Community Norms Banner */}
-        <div className="mb-6 bg-gradient-to-r from-stanfordRed/90 to-slateNight rounded-lg p-5 shadow-md border border-meeple/20">
+        <div className="mb-6 bg-gradient-to-r from-slateNight via-stanfordRed/40 to-slateNight rounded-lg p-5 shadow-md border border-meeple/10">
           <div className="flex flex-col sm:flex-row justify-between items-center">
             <div className="flex items-center mb-4 sm:mb-0">
-              <Shield className="h-5 w-5 text-mintToken mr-2" />
+              <Shield className="h-5 w-5 text-mintToken/90 mr-2" />
               <span className="text-white text-sm">Our community is guided by shared norms to ensure a positive experience for everyone.</span>
             </div>
             <Button 
