@@ -44,7 +44,7 @@ export function SpoilerThreadDetection({
   }
   
   return (
-    <Alert variant="warning" className="mb-4">
+    <Alert variant="default" className="mb-4">
       <EyeOff className="h-4 w-4" />
       <AlertTitle>Potential Spoiler Content Detected</AlertTitle>
       <AlertDescription>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AlertTriangle, Info, MessageSquare } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -31,15 +31,17 @@ export function SpamDetectionAlert({
     if (a === b) return 1;
     
     // Simple Jaccard similarity - count overlapping words
-    const wordsA = new Set(a.split(/\s+/));
-    const wordsB = new Set(b.split(/\s+/));
+    const wordsAArray = a.split(/\s+/);
+    const wordsBArray = b.split(/\s+/);
+    const wordsA = new Set(wordsAArray);
+    const wordsB = new Set(wordsBArray);
     
     let intersection = 0;
-    for (const word of wordsA) {
+    wordsAArray.forEach(word => {
       if (wordsB.has(word)) {
         intersection++;
       }
-    }
+    });
     
     return intersection / (wordsA.size + wordsB.size - intersection);
   };
@@ -63,7 +65,7 @@ export function SpamDetectionAlert({
   }
   
   return (
-    <Alert variant={isHighlySimilar ? "destructive" : "warning"} className="mb-4">
+    <Alert variant={isHighlySimilar ? "destructive" : "default"} className="mb-4">
       <AlertTriangle className="h-4 w-4" />
       <AlertTitle className="flex items-center justify-between">
         <span>Possible Duplicate Content</span>

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords, Trophy } from "lucide-react";
+import { MessageSquare, Users, Search, Filter, MessageCircle, Share2, ThumbsUp, Plus, Gamepad, FileText, Swords, Trophy, Shield } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ThreadViewDialog } from "@/components/community/ThreadViewDialog";
@@ -308,6 +308,26 @@ const CommunityPage = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        {/* Community Norms Banner */}
+        <div className="mb-6 bg-gradient-to-r from-slate-900 to-slateNight rounded-lg p-4 shadow-md">
+          <div className="flex flex-col sm:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 sm:mb-0">
+              <Shield className="h-5 w-5 text-meeple mr-2" />
+              <span className="text-white text-sm">Our community is guided by shared norms to ensure a positive experience for everyone.</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-transparent text-white border-white/30 hover:bg-white/10 hover:text-white"
+              onClick={() => {
+                window.location.href = "/community-norms";
+              }}
+            >
+              View Community Norms
+            </Button>
+          </div>
+        </div>
+        
         {/* Community Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
           <TabsList className="w-full grid grid-cols-4 mb-6">
