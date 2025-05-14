@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Clock, Calendar, Shield, MessageCircle, Users, ThumbsUp, AlertTriangle, Info } from "lucide-react";
+import { Clock, Calendar, Shield, MessageCircle, MessageSquare, Users, ThumbsUp, AlertTriangle, Info } from "lucide-react";
 
 export function CommunityNorms() {
   const [location, setLocation] = useLocation();
