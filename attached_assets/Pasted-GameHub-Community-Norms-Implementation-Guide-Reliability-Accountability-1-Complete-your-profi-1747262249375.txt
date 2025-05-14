@@ -1,0 +1,91 @@
+GameHub Community Norms & Implementation Guide
+
+Reliability & Accountability
+	1.	Complete your profile before posting
+Why it matters – People play more reliably when other players feel “human.”
+How – Show an un-skippable “Finish Profile” wizard. Hide the Host a Game button until Display Name, Pronouns, Preferred Game Types, Time-Zone are filled.
+	2.	72-hour RSVP lock
+Why – Late cancellations waste host prep time.
+How – A Cloud Function checks now > session.start – 72h; if a player backs out after that window, mark noShowStrike: true in their attendance record.
+	3.	24-hour host-cancellation rule
+Why – Balances power: hosts must respect players’ schedules too.
+How – Same function as above; if a host deletes a session inside 24 h, subtract reputation points.
+Inclusivity & Tone
+	4.	Inclusive language / no gate-keeping
+Why – Board-game spaces can feel “dudebro” and push out casual or under-represented gamers.
+How – Publish a short Code of Conduct; surface it next to every chat input. On first three infractions, show a toaster reminder; afterwards, temp-mute.
+	5.	Attend two sessions before hosting
+Why – New hosts learn etiquette by observing; reduces spam games.
+How – Firestore rule: users.sessionsAttended ≥ 2 required to create /sessions docs.
+Reputation & Feedback
+	6.	One-click post-game feedback
+Why – Lightweight ratings feed the reputation engine.
+How – After session.endTime, pop a modal with 👍 / 😐 / 👎; nightly Cloud Scheduler aggregates scores.
+	7.	Beginner-friendly tag
+Why – Signals that newcomers are welcome; lowers intimidation barrier.
+How – Radio button in Session Wizard; render a green “Beginner-friendly” chip on each Session Card.
+Spam & Spoilers
+	8.	No multichannel spam
+Why – Prevents “Big Bad Wolf” spamming every room with the same promo.
+How – Text-similarity function; posting identical content in > 2 rooms triggers a 12-hour read-only cooldown.
+	9.	Spoiler-only threads
+Why – Protects narrative games for players who haven’t finished a story arc.
+How – If a user types “spoiler,” automatically start a new threaded comment labeled #spoiler.
+Community Engagement
+	10.	Weekly conversation seed
+Why – Combats “empty-room” syndrome; keeps chatter alive during cold-start.
+How – Cron job posts a Monday poll (e.g., “Which hidden-gem filler game should we spotlight?”) in #lounge.
+Quick Product Tweaks
+	•	First-time UX – Seed each new account with three clearly-labeled “Demo” sessions so the dashboard never looks empty.
+	•	Calendar friction – Attach an .ics file and “Add to Google Calendar” link in every RSVP confirmation email.
+	•	Mobile navigation – Replace the collapsing sidebar with a fixed bottom-tab bar (Feed · Host · Calendar · Profile).
+	•	Accessibility – Meeple-gold text on white fails WCAG-AA; darken to #D4A200 or place gold on slate-night background.
+	•	Admin safety net – Soft-delete sessions by moving them to sessions_deleted; allow restore from Admin UI.
+	•	Growth loop – After a player marks a session “Great,” pop a share-sheet pre-filled with a referral link.
+Roll-Out Checklist
+	1.	Publish this document as /docs/norms.md in the repo and link it inside the Profile Wizard.
+	2.	Stage new rules in a dev Firebase project; test spam, late-cancel, and spoiler flows.
+	3.	Announce with an in-app banner: “New reliability rules start [date] → read more.”
+	4.	Export all rule violations to BigQuery for the first month to fine-tune thresholds.
+Source: design constraints, risk analysis, and technical plan summarized from your project proposal 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Below is a set of “house rules” + design tweaks that will help GameHub feel lively, safe, and reliable as you scale from a handful of testers to your “> 15 WAU” Zone-2 target. I’ve grouped them by what norm, why it matters, and a concrete implementation hook so you can drop each item straight into policy copy, UI nudges, or Firebase rules.
+#	Norm to impose	Why it matters	How to bake it into the product
+1	Fill-out-your-profile before posting — require display-name, pronouns, preferred game types, & timezone	Makes it easier for strangers to feel like people and reduces flake-rate (social accountability)	On first login show an un-skippable “Complete profile” wizard; block the “Host Game” button until fields are set
+2	“72-hour RSVP lock”—players must commit or decline ≥ 72 h before game time, otherwise wait-listed players auto-promote	Hosts hate last-minute no-shows; reliability is what differentiates you from a random Discord ping	Cloud Function checks now > session.start-72h; if user cancels after that window add noShowStrike: true in attendance sub-doc
+3	Cancellation grace rule for hosts—host must cancel ≥ 24 h prior or take a reputation hit	Prevents hosts from abusing power & setting a norm of respect for players’ time	Same Cloud Function pattern; decrement host’s reputationScore (see Risk Analysis table in the PDF) 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)
+4	Inclusive language / no gate-keeping—explicitly ban “real gamer” tests, skill shaming, slurs	Board-game spaces skew “dudebro” (PDF p. 7) ➜ can drive out casuals & under-represented gamers 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)	Add a short Code of Conduct link next to every chat box; toasted reminder the first three times a user starts typing a message containing flagged terms
+5	Host onboarding norm—new hosts must attend ≥ 2 sessions as players before they can create their own	Lets them absorb etiquette & logistics before running events; soft antidote to spammy one-off GMs	Firestore rule: users.sessionsAttended >= 2 required for create on /sessions
+6	“One-click feedback” after each session: 👍 Great / 😐 Okay / 👎 No-show	Quietly builds your reputation engine with almost no friction	Modal pops when a user next visits /app after session.endTime; votes aggregate nightly via Cloud Scheduler
+7	Thread-only spoilers—if a game has spoiler content, discussions must stay inside a threaded comment and be tagged #spoiler	Protects narrative games & keeps main feed safe for newcomers	Add a thread starter template pre-filled with a spoiler warning whenever user types “spoiler” in a Session chat
+8	Beginner-friendly tag—sessions can be labeled “open-table / teaching game” vs. “expert”	Lowers intimidation barrier, widens funnel of casuals	Radio buttons in Session Wizard → surface as green “Beginner-friendly” chip on <SessionCard>
+9	No multichannel spam—same promo message in > 2 rooms triggers a cooldown	Mitigates “Big Bad Wolf” scenario (PDF p. 8) 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)	Text-similarity Cloud Function; violator gets 12-h read-only state
+10	Weekly “conversation seed” prompt—auto-posted Monday to keep chatter alive during cold-start	Fights empty-room syndrome the PDF observed (“silence is daunting”) 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)	Cron Cloud Function posts a poll (“Which hidden-gem filler game should we spotlight?”) to #lounge
+Other product tweaks worth shipping soon
+Area	Improvement	Quick implementation hint
+First-time UX	Pre-seed the dashboard with three dummy upcoming sessions (clearly tagged “Demo”) so new users immediately see how things work.	seedDemo=true query param in /app for new accounts ➜ Firestore onCreate trigger populates demo docs
+Calendar friction	Auto-attach a .ics export + Add-to-Google link in the RSVP confirmation email.	Re-use your existing export-ics.ts API route; call it in the onCreate Firestore trigger for RSVPs
+Mobile nav	The current sidebar collapses awkwardly < 375 px. Replace with a bottom-tab bar (Feed • Host • Calendar • Profile).	Tailwind fixed bottom-0 w-full + Headless UI Tab.Group
+Accessibility	Color contrast of meeple-gold text on white fails WCAG AA. Darken to #D4A200 or use slate-night background behind gold text.	Tailwind theme update + automated @axe-core/react tests in npm run test
+Admin controls	Add soft-delete for sessions: move to sessions_deleted so you can restore mistakes.	Firestore Security Rule denies read to regular users; admin UI toggle restores doc
+Growth loop	After a player marks a session “Great”, pop a share dialog with pre-filled “Join me on GameHub” link.	Simple React share sheet using navigator.share() on mobile
+How to roll these out
+	1.	Publish the norms doc in /docs/norms.md; link it in the profile wizard & in every modal that references reputation.
+	2.	Stage in dev ➜ seed a test Firestore project and run through hostile-actor cases (spam, late cancellations).
+	3.	Announce in-app with a dismissible banner: “New reliability rules start May 20 — see what’s new →”.
+	4.	Monitor: create a “Norms exceptions” BigQuery export of every rule violation for the first month so you can tune thresholds.
+Adopting these norms early gives you clear expectations, lightweight enforcement, and positive-sum feedback loops—all ingredients for a sustainable game-matching community. Let me know if you’d like the exact Firebase rules or Cloud Function snippets for any item above! 278 Project Proposal-2.pdf](file-service://file-Uy6ycY8HGwnJGepjinS9Pp)
+

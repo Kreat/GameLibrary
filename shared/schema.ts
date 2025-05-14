@@ -78,6 +78,9 @@ export const sessions = pgTable("sessions", {
   maxPlayers: integer("max_players").notNull(),
   currentPlayers: integer("current_players").notNull().default(1),
   experienceLevel: text("experience_level").notNull(), // beginner, intermediate, advanced
+  isBeginnerFriendly: boolean("is_beginner_friendly").notNull().default(false),
+  hostPhotoUrl: text("host_photo_url"),
+  hostName: text("host_name"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   hostData: json("host_data"),
