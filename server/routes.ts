@@ -21,33 +21,6 @@ import {
   insertContentReportSchema,
 } from "@shared/schema";
 
-async function validateCityZip(
-  city: string,
-  zipCode: string
-): Promise<boolean> {
-  const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${encodeURIComponent(
-    city
-  )}|postal_code:${zipCode}|administrative_area:CA|country:US&key=${apiKey}`;
-
-  try {
-    const response = await axios.get(url);
-    const results = response.data.results;
-
-    return results.some((result: any) =>
-      result.address_components.some(
-        (component: any) =>
-          component.types.includes("administrative_area_level_1") &&
-          (component.short_name === "CA" ||
-            component.long_name === "California")
-      )
-    );
-  } catch (error) {
-    console.error("Geocoding API error:", error);
-    return false;
-  }
-}
-
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
@@ -127,8 +100,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "location",
         "favoriteGames",
         "photoUrl",
-        "city",
-        "zipCode",
       ];
       const updateData: Partial<User> = {};
 

@@ -29,13 +29,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 import axios from "axios";
+import { MapPin } from "lucide-react";
 // Profile update schema
 const profileSchema = z.object({
   displayName: z.string().nullable().optional(),
   bio: z.string().nullable().optional(),
   location: z.string().nullable().optional(),
-  city: z.string().nullable().optional(),
-  zipCode: z.string().nullable().optional(),
   favoriteGames: z.string().nullable().optional(),
   photoUrl: z.string().nullable().optional(),
 });
@@ -55,8 +54,6 @@ export function EditProfileDialog({
 }: EditProfileDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [zipCode, setZipCode] = useState(user.zipCode || "");
-  const [city, setCity] = useState(user.city || "");
 
   const queryClient = useQueryClient();
 
@@ -66,39 +63,10 @@ export function EditProfileDialog({
       displayName: user.displayName || "",
       bio: user.bio || "",
       location: user.location || "",
-      city: user.city || "",
-      zipCode: user.zipCode || "",
       favoriteGames: user.favoriteGames || "",
       photoUrl: user.photoUrl || "",
     },
   });
-
-  useEffect(() => {
-    const fetchCityFromZip = async () => {
-      if (zipCode.length === 5) {
-        const apiKey = process.env.REACT_APP_GOOGLE_GEOCODING_API_KEY;
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?components=postal_code:${zipCode}|country:US&key=${apiKey}`;
-
-        try {
-          const response = await axios.get(url);
-          const results = response.data.results;
-
-          const cityComponent = results[0]?.address_components.find(
-            (component: any) => component.types.includes("locality")
-          );
-
-          if (cityComponent) {
-            setCity(cityComponent.long_name);
-            form.setValue("city", cityComponent.long_name); // Update react-hook-form value
-          }
-        } catch (error) {
-          console.error("Error fetching city from ZIP code:", error);
-        }
-      }
-    };
-
-    fetchCityFromZip();
-  }, [zipCode, form]);
 
   const updateProfileMutation = useMutation({
     mutationFn: async (values: ProfileFormValues) => {
@@ -136,6 +104,57 @@ export function EditProfileDialog({
     },
   });
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "Geolocation not supported",
+        description: "Your browser does not support geolocation.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+      const { latitude, longitude } = position.coords;
+      const apiKey = import.meta.env.VITE_GOOGLE_GEOCODING_API_KEY;
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+
+      try {
+        const response = await axios.get(url);
+        const results = response.data.results;
+        const addressComponents = results[0]?.address_components;
+        const cityComponent = addressComponents?.find((c: any) =>
+          c.types.includes("locality")
+        );
+        const postalCodeComponent = addressComponents?.find((c: any) =>
+          c.types.includes("postal_code")
+        );
+
+        if (cityComponent && postalCodeComponent) {
+          const formattedLocation = `${cityComponent.long_name}, ${postalCodeComponent.long_name}`;
+          form.setValue("location", formattedLocation);
+          toast({
+            title: "Location set",
+            description: `Detected: ${formattedLocation}`,
+          });
+        } else {
+          toast({
+            title: "Location not found",
+            description: "Could not detect your location.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        console.error("Geolocation error:", error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch location data.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
   function onSubmit(values: ProfileFormValues) {
     setIsSubmitting(true);
     updateProfileMutation.mutate(values);
@@ -143,7 +162,7 @@ export function EditProfileDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-background/95 dark:bg-slateNight/95 backdrop-blur-md">
+      <DialogContent className="sm:max-w-[500px] max-h-[80vh] overflow-y-auto bg-background/95 dark:bg-slateNight/95 backdrop-blur-md">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>
@@ -217,45 +236,6 @@ export function EditProfileDialog({
               />
               <FormField
                 control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., Palo Alto"
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="zipCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Zip Code</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g., 94301"
-                        {...field}
-                        value={zipCode}
-                        onChange={(e) => {
-                          field.onChange(e); // keep form state in sync
-                          setZipCode(e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="favoriteGames"
                 render={({ field }) => (
                   <FormItem>
@@ -294,7 +274,14 @@ export function EditProfileDialog({
                 </FormItem>
               )}
             />
-
+            <Button
+              type="button"
+              variant="secondary"
+              className="flex items-center gap-2"
+              onClick={handleUseMyLocation}
+            >
+              <MapPin size={16} /> Use My Location
+            </Button>
             <DialogFooter className="mt-6">
               <Button
                 type="button"
