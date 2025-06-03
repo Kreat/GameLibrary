@@ -1,19 +1,62 @@
+import dotenv from "dotenv";
+dotenv.config();
+import axios from "axios";
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { setupAuth } from "./auth";
-import { User, insertUserSchema, insertGameSchema, insertSessionSchema, insertSessionParticipantSchema, insertUserAvailabilitySchema, insertForumCategorySchema, insertForumThreadSchema, insertForumPostSchema, insertChatMessageSchema, insertSessionReviewSchema, insertContentReportSchema } from "@shared/schema";
+import {
+  User,
+  insertUserSchema,
+  insertGameSchema,
+  insertSessionSchema,
+  insertSessionParticipantSchema,
+  insertUserAvailabilitySchema,
+  insertForumCategorySchema,
+  insertForumThreadSchema,
+  insertForumPostSchema,
+  insertChatMessageSchema,
+  insertSessionReviewSchema,
+  insertContentReportSchema,
+} from "@shared/schema";
+
+async function validateCityZip(
+  city: string,
+  zipCode: string
+): Promise<boolean> {
+  const apiKey = process.env.GOOGLE_GEOCODING_API_KEY;
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${encodeURIComponent(
+    city
+  )}|postal_code:${zipCode}|administrative_area:CA|country:US&key=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+    const results = response.data.results;
+
+    return results.some((result: any) =>
+      result.address_components.some(
+        (component: any) =>
+          component.types.includes("administrative_area_level_1") &&
+          (component.short_name === "CA" ||
+            component.long_name === "California")
+      )
+    );
+  } catch (error) {
+    console.error("Geocoding API error:", error);
+    return false;
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
-  
+
   // Add a health check route for debugging
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
-  
+
   // Check username availability
   app.get("/api/check-username/:username", async (req, res) => {
     try {
@@ -22,10 +65,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ available: !existingUser });
     } catch (error) {
       console.error("Error checking username availability:", error);
-      res.status(500).json({ message: "Failed to check username availability" });
+      res
+        .status(500)
+        .json({ message: "Failed to check username availability" });
     }
   });
-  
+
   // User Routes
   app.get("/api/users", async (req, res) => {
     try {
@@ -41,25 +86,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const user = await storage.getUser(id);
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
-  
+
   // Update user profile
   app.patch("/api/users/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       console.log(`[Profile Update] Updating user ${id} with data:`, req.body);
-      
-      /* 
+
+      /*
        * Temporarily disabling auth check for profile updates
        * In a production app, we would keep these checks
        */
@@ -67,31 +112,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // if (!req.isAuthenticated()) {
       //   return res.status(401).json({ message: "Not authenticated" });
       // }
-      
+
       // const currentUser = req.user as Express.User;
-      
+
       // Only allow users to update their own profile, unless they are admin
       // if (currentUser.id !== id && currentUser.role !== "admin") {
       //   return res.status(403).json({ message: "Not authorized to update this user" });
       // }
-      
-      
+
       // Only allow updating certain fields
-      const allowedFields = ["displayName", "bio", "location", "favoriteGames", "photoUrl"];
+      const allowedFields = [
+        "displayName",
+        "bio",
+        "location",
+        "favoriteGames",
+        "photoUrl",
+        "city",
+        "zipCode",
+      ];
       const updateData: Partial<User> = {};
-      
+
       for (const field of allowedFields) {
         if (field in req.body) {
           updateData[field as keyof Partial<User>] = req.body[field];
         }
       }
-      
+
       const updatedUser = await storage.updateUser(id, updateData);
-      
+
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       res.json(updatedUser);
     } catch (error) {
       console.error("Error updating user:", error);
@@ -106,9 +158,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newUser);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid user data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid user data", errors: error.errors });
       }
-      
+
       console.error("Error creating user:", error);
       res.status(500).json({ message: "Failed to create user" });
     }
@@ -118,11 +172,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { firebaseUid } = req.params;
       const user = await storage.getUserByFirebaseUid(firebaseUid);
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       res.json(user);
     } catch (error) {
       console.error("Error fetching user by Firebase UID:", error);
@@ -145,11 +199,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const game = await storage.getGame(id);
-      
+
       if (!game) {
         return res.status(404).json({ message: "Game not found" });
       }
-      
+
       res.json(game);
     } catch (error) {
       console.error("Error fetching game:", error);
@@ -164,9 +218,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newGame);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid game data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid game data", errors: error.errors });
       }
-      
+
       console.error("Error creating game:", error);
       res.status(500).json({ message: "Failed to create game" });
     }
@@ -198,11 +254,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const session = await storage.getSession(id);
-      
+
       if (!session) {
         return res.status(404).json({ message: "Session not found" });
       }
-      
+
       res.json(session);
     } catch (error) {
       console.error("Error fetching session:", error);
@@ -217,9 +273,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newSession);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid session data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid session data", errors: error.errors });
       }
-      
+
       console.error("Error creating session:", error);
       res.status(500).json({ message: "Failed to create session" });
     }
@@ -265,37 +323,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid data", errors: error.errors });
       }
-      
+
       console.error("Error adding session participant:", error);
       res.status(500).json({ message: "Failed to add participant" });
     }
   });
 
-  app.delete("/api/session-participants/:sessionId/:userId", async (req, res) => {
-    try {
-      const sessionId = parseInt(req.params.sessionId);
-      const userId = parseInt(req.params.userId);
-      
-      await storage.removeSessionParticipant(sessionId, userId);
-      res.status(204).send();
-    } catch (error) {
-      console.error("Error removing session participant:", error);
-      res.status(500).json({ message: "Failed to remove participant" });
+  app.delete(
+    "/api/session-participants/:sessionId/:userId",
+    async (req, res) => {
+      try {
+        const sessionId = parseInt(req.params.sessionId);
+        const userId = parseInt(req.params.userId);
+
+        await storage.removeSessionParticipant(sessionId, userId);
+        res.status(204).send();
+      } catch (error) {
+        console.error("Error removing session participant:", error);
+        res.status(500).json({ message: "Failed to remove participant" });
+      }
     }
-  });
+  );
 
   // User Availability Routes
   app.get("/api/user-availability/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const availability = await storage.getUserAvailability(userId);
-      
+
       if (!availability) {
         return res.status(404).json({ message: "Availability not found" });
       }
-      
+
       res.json(availability);
     } catch (error) {
       console.error("Error fetching user availability:", error);
@@ -310,9 +373,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(result);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid data", errors: error.errors });
       }
-      
+
       console.error("Error updating user availability:", error);
       res.status(500).json({ message: "Failed to update availability" });
     }
@@ -331,11 +396,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/forum-threads", async (req, res) => {
     try {
-      const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
-      const threads = categoryId 
+      const categoryId = req.query.categoryId
+        ? parseInt(req.query.categoryId as string)
+        : undefined;
+      const threads = categoryId
         ? await storage.getForumThreadsByCategory(categoryId)
         : await storage.getAllForumThreads();
-      
+
       res.json(threads);
     } catch (error) {
       console.error("Error fetching forum threads:", error);
@@ -347,11 +414,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const thread = await storage.getForumThread(id);
-      
+
       if (!thread) {
         return res.status(404).json({ message: "Thread not found" });
       }
-      
+
       res.json(thread);
     } catch (error) {
       console.error("Error fetching forum thread:", error);
@@ -366,9 +433,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newThread);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid thread data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid thread data", errors: error.errors });
       }
-      
+
       console.error("Error creating forum thread:", error);
       res.status(500).json({ message: "Failed to create thread" });
     }
@@ -392,9 +461,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newPost);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid post data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid post data", errors: error.errors });
       }
-      
+
       console.error("Error creating forum post:", error);
       res.status(500).json({ message: "Failed to create post" });
     }
@@ -411,46 +482,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to match sessions" });
     }
   });
-  
+
   // Password Reset Request
   app.post("/api/request-password-reset", async (req, res) => {
     try {
       const { email } = req.body;
-      
+
       // In a real app, we would:
       // 1. Check if the email exists in our database
       // 2. Generate a unique token
       // 3. Save the token to the database with an expiration time
       // 4. Send an email with the reset link containing the token
-      
+
       // For this demo, we'll just return a success message regardless of whether
       // the email exists or not (for security, don't reveal if an email exists)
-      res.json({ success: true, message: "If an account with that email exists, a password reset link has been sent." });
+      res.json({
+        success: true,
+        message:
+          "If an account with that email exists, a password reset link has been sent.",
+      });
     } catch (error) {
       console.error("Error requesting password reset:", error);
-      res.status(500).json({ message: "Failed to process password reset request" });
+      res
+        .status(500)
+        .json({ message: "Failed to process password reset request" });
     }
   });
-  
+
   // Password Reset with Token
   app.post("/api/reset-password", async (req, res) => {
     try {
       const { token, password } = req.body;
-      
+
       // In a real app, we would:
       // 1. Verify the token exists and hasn't expired
       // 2. Find the user associated with the token
       // 3. Update the user's password
       // 4. Delete the used token
-      
+
       // For this demo, we'll just return a success message
-      res.json({ success: true, message: "Password has been reset successfully" });
+      res.json({
+        success: true,
+        message: "Password has been reset successfully",
+      });
     } catch (error) {
       console.error("Error resetting password:", error);
       res.status(500).json({ message: "Failed to reset password" });
     }
   });
-  
+
   // Leaderboard Routes
   app.get("/api/leaderboard/top-hosts", async (req, res) => {
     try {
@@ -462,7 +542,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch leaderboard data" });
     }
   });
-  
+
   app.get("/api/leaderboard/top-players", async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
@@ -473,40 +553,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch leaderboard data" });
     }
   });
-  
+
   // Combined endpoint for leaderboard data
   app.get("/api/user-stats/top", async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
       const topHosts = await storage.getTopHosts(limit);
       const topPlayers = await storage.getTopPlayers(limit);
-      
+
       res.json({
         topHosts,
-        topPlayers
+        topPlayers,
       });
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
       res.status(500).json({ message: "Failed to fetch leaderboard data" });
     }
   });
-  
+
   app.get("/api/user-stats/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const stats = await storage.getUserStats(userId);
-      
+
       if (!stats) {
         return res.status(404).json({ message: "User stats not found" });
       }
-      
+
       res.json(stats);
     } catch (error) {
       console.error("Error fetching user stats:", error);
       res.status(500).json({ message: "Failed to fetch user stats" });
     }
   });
-  
+
   // Get user stats with recent reviews
   app.get("/api/users/:userId/stats", async (req, res) => {
     try {
@@ -514,7 +594,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (isNaN(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
       }
-      
+
       // Get user stats
       const userStats = await storage.getUserStats(userId);
       if (!userStats) {
@@ -530,10 +610,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           recentReviews: [],
         });
       }
-      
+
       // Get recent reviews for this user (last 5)
       const recentReviews = await storage.getRecentReviewsForUser(userId, 5);
-      
+
       // Format and return the response
       res.json({
         ...userStats,
@@ -544,73 +624,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch user stats" });
     }
   });
-  
+
   app.post("/api/session-reviews", async (req, res) => {
     try {
       // Ensure user is authenticated
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "You must be logged in to submit reviews" });
+        return res
+          .status(401)
+          .json({ message: "You must be logged in to submit reviews" });
       }
-      
+
       // Validate the review data
       const validatedData = insertSessionReviewSchema.parse({
         ...req.body,
-        reviewerId: req.user.id
+        reviewerId: req.user.id,
       });
-      
+
       const newReview = await storage.createSessionReview(validatedData);
       res.status(201).json(newReview);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid review data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid review data", errors: error.errors });
       }
-      
+
       console.error("Error creating session review:", error);
       res.status(500).json({ message: "Failed to submit review" });
     }
   });
-  
+
   // Chat Message Routes
   app.get("/api/messages", async (req, res) => {
     try {
       const messages = await storage.getAllChatMessages();
-      
+
       // Join the sender information for each message
-      const messagesWithSenders = await Promise.all(messages.map(async (message) => {
-        const sender = await storage.getUser(message.senderId);
-        return {
-          ...message,
-          sender: sender ? {
-            id: sender.id,
-            username: sender.username,
-            displayName: sender.displayName,
-            photoUrl: sender.photoUrl
-          } : null
-        };
-      }));
-      
+      const messagesWithSenders = await Promise.all(
+        messages.map(async (message) => {
+          const sender = await storage.getUser(message.senderId);
+          return {
+            ...message,
+            sender: sender
+              ? {
+                  id: sender.id,
+                  username: sender.username,
+                  displayName: sender.displayName,
+                  photoUrl: sender.photoUrl,
+                }
+              : null,
+          };
+        })
+      );
+
       res.json(messagesWithSenders);
     } catch (error) {
       console.error("Error fetching chat messages:", error);
       res.status(500).json({ message: "Failed to fetch chat messages" });
     }
   });
-  
+
   app.post("/api/messages", async (req, res) => {
     try {
       // Ensure user is authenticated
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "You must be logged in to send messages" });
+        return res
+          .status(401)
+          .json({ message: "You must be logged in to send messages" });
       }
-      
+
       // Create message with authenticated user ID
       const validatedData = insertChatMessageSchema.parse({
         ...req.body,
-        senderId: req.user.id
+        senderId: req.user.id,
       });
-      
+
       const newMessage = await storage.createChatMessage(validatedData);
-      
+
       // Add sender information to the response
       const messageWithSender = {
         ...newMessage,
@@ -618,16 +708,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: req.user.id,
           username: req.user.username,
           displayName: req.user.displayName,
-          photoUrl: req.user.photoUrl
-        }
+          photoUrl: req.user.photoUrl,
+        },
       };
-      
+
       res.status(201).json(messageWithSender);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid message data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid message data", errors: error.errors });
       }
-      
+
       console.error("Error creating chat message:", error);
       res.status(500).json({ message: "Failed to send message" });
     }
@@ -694,11 +786,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const updatedUser = await storage.updateUserRole(userId, role);
-      
+
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
-      
+
       res.json(updatedUser);
     } catch (error) {
       console.error("Error updating user role:", error);
@@ -719,26 +811,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get pending reports
-  app.get("/api/admin/content-reports/pending", isModerator, async (req, res) => {
-    try {
-      const reports = await storage.getPendingContentReports();
-      res.json(reports);
-    } catch (error) {
-      console.error("Error fetching pending reports:", error);
-      res.status(500).json({ message: "Failed to fetch pending reports" });
+  app.get(
+    "/api/admin/content-reports/pending",
+    isModerator,
+    async (req, res) => {
+      try {
+        const reports = await storage.getPendingContentReports();
+        res.json(reports);
+      } catch (error) {
+        console.error("Error fetching pending reports:", error);
+        res.status(500).json({ message: "Failed to fetch pending reports" });
+      }
     }
-  });
+  );
 
   // Get specific report
   app.get("/api/admin/content-reports/:id", isModerator, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const report = await storage.getContentReport(id);
-      
+
       if (!report) {
         return res.status(404).json({ message: "Report not found" });
       }
-      
+
       res.json(report);
     } catch (error) {
       console.error("Error fetching content report:", error);
@@ -751,23 +847,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Ensure user is authenticated
       if (!req.isAuthenticated()) {
-        return res.status(401).json({ message: "You must be logged in to report content" });
+        return res
+          .status(401)
+          .json({ message: "You must be logged in to report content" });
       }
-      
+
       // Validate the report data
       const validatedData = insertContentReportSchema.parse({
         ...req.body,
         reporterId: req.user.id,
-        status: "pending"
+        status: "pending",
       });
-      
+
       const newReport = await storage.createContentReport(validatedData);
       res.status(201).json(newReport);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid report data", errors: error.errors });
+        return res
+          .status(400)
+          .json({ message: "Invalid report data", errors: error.errors });
       }
-      
+
       console.error("Error creating content report:", error);
       res.status(500).json({ message: "Failed to submit report" });
     }
@@ -778,23 +878,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const id = parseInt(req.params.id);
       const { status, actionTaken } = req.body;
-      
+
       // Validate status
       if (!["pending", "reviewed", "rejected", "actioned"].includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
       }
-      
+
       const updatedReport = await storage.updateContentReportStatus(
-        id, 
-        status, 
-        actionTaken, 
+        id,
+        status,
+        actionTaken,
         req.user.id
       );
-      
+
       if (!updatedReport) {
         return res.status(404).json({ message: "Report not found" });
       }
-      
+
       res.json(updatedReport);
     } catch (error) {
       console.error("Error updating content report:", error);
@@ -804,44 +904,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // User Stats and Reputation API Routes
   // The user stats endpoint is already defined above
-  
+
   // Get top users for leaderboard
   app.get("/api/user-stats/top", async (req, res) => {
     try {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-      
+
       if (isNaN(limit) || limit < 1 || limit > 50) {
         return res.status(400).json({ message: "Invalid limit parameter" });
       }
-      
+
       // Get top hosts and players
       const topHosts = await storage.getTopHosts(limit);
       const topPlayers = await storage.getTopPlayers(limit);
-      
+
       res.json({
         topHosts,
-        topPlayers
+        topPlayers,
       });
     } catch (error) {
       console.error("Error fetching top users:", error);
       res.status(500).json({ message: "Failed to fetch leaderboard data" });
     }
   });
-  
+
   // Submit a session review
   app.post("/api/session-reviews", async (req, res) => {
     if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "You must be logged in to submit reviews" });
+      return res
+        .status(401)
+        .json({ message: "You must be logged in to submit reviews" });
     }
-    
+
     try {
       const { sessionId, targetId, rating, content, isHostReview } = req.body;
-      
+
       // Basic validation
       if (!sessionId || !targetId || !rating || rating < 1 || rating > 5) {
         return res.status(400).json({ message: "Invalid review data" });
       }
-      
+
       // Create the review
       const review = await storage.createSessionReview({
         sessionId,
@@ -849,9 +951,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         targetId,
         rating,
         content,
-        isHostReview
+        isHostReview,
       });
-      
+
       res.status(201).json(review);
     } catch (error) {
       console.error("Error creating session review:", error);

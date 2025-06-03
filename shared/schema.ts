@@ -1,4 +1,13 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, uuid } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  serial,
+  integer,
+  boolean,
+  timestamp,
+  json,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -17,6 +26,8 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   firebaseUid: text("firebase_uid").unique(),
+  city: text("city"),
+  zipCode: text("zip_code"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -30,6 +41,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   photoUrl: true,
   role: true,
   firebaseUid: true,
+  city: true,
+  zipCode: true,
 });
 
 // Games Table
@@ -66,7 +79,9 @@ export const sessions = pgTable("sessions", {
   gameId: integer("game_id").references(() => games.id),
   gameType: text("game_type").notNull(),
   gameName: text("game_name").notNull(),
-  hostId: integer("host_id").references(() => users.id).notNull(),
+  hostId: integer("host_id")
+    .references(() => users.id)
+    .notNull(),
   location: text("location").notNull(),
   address: text("address"),
   locationNotes: text("location_notes"),
@@ -115,13 +130,19 @@ export const insertSessionSchema = createInsertSchema(sessions).pick({
 // Session Participants Junction Table
 export const sessionParticipants = pgTable("session_participants", {
   id: serial("id").primaryKey(),
-  sessionId: integer("session_id").references(() => sessions.id).notNull(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  sessionId: integer("session_id")
+    .references(() => sessions.id)
+    .notNull(),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
   isHost: boolean("is_host").default(false),
   joinedAt: timestamp("joined_at").notNull().defaultNow(),
 });
 
-export const insertSessionParticipantSchema = createInsertSchema(sessionParticipants).pick({
+export const insertSessionParticipantSchema = createInsertSchema(
+  sessionParticipants
+).pick({
   sessionId: true,
   userId: true,
   isHost: true,
@@ -130,7 +151,9 @@ export const insertSessionParticipantSchema = createInsertSchema(sessionParticip
 // User Availability Table
 export const userAvailability = pgTable("user_availability", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull(),
   weekdayMorning: boolean("weekday_morning").default(false),
   weekdayAfternoon: boolean("weekday_afternoon").default(false),
   weekdayEvening: boolean("weekday_evening").default(false),
@@ -141,7 +164,9 @@ export const userAvailability = pgTable("user_availability", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const insertUserAvailabilitySchema = createInsertSchema(userAvailability).pick({
+export const insertUserAvailabilitySchema = createInsertSchema(
+  userAvailability
+).pick({
   userId: true,
   weekdayMorning: true,
   weekdayAfternoon: true,
@@ -163,7 +188,9 @@ export const forumCategories = pgTable("forum_categories", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const insertForumCategorySchema = createInsertSchema(forumCategories).pick({
+export const insertForumCategorySchema = createInsertSchema(
+  forumCategories
+).pick({
   name: true,
   description: true,
   slug: true,
@@ -175,8 +202,12 @@ export const insertForumCategorySchema = createInsertSchema(forumCategories).pic
 export const forumThreads = pgTable("forum_threads", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  categoryId: integer("category_id").references(() => forumCategories.id).notNull(),
-  authorId: integer("author_id").references(() => users.id).notNull(),
+  categoryId: integer("category_id")
+    .references(() => forumCategories.id)
+    .notNull(),
+  authorId: integer("author_id")
+    .references(() => users.id)
+    .notNull(),
   views: integer("views").default(0),
   isPinned: boolean("is_pinned").default(false),
   isLocked: boolean("is_locked").default(false),
@@ -198,8 +229,12 @@ export const insertForumThreadSchema = createInsertSchema(forumThreads).pick({
 // Forum Posts Table
 export const forumPosts = pgTable("forum_posts", {
   id: serial("id").primaryKey(),
-  threadId: integer("thread_id").references(() => forumThreads.id).notNull(),
-  authorId: integer("author_id").references(() => users.id).notNull(),
+  threadId: integer("thread_id")
+    .references(() => forumThreads.id)
+    .notNull(),
+  authorId: integer("author_id")
+    .references(() => users.id)
+    .notNull(),
   content: text("content").notNull(),
   likes: integer("likes").default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -221,10 +256,14 @@ export type Game = typeof games.$inferSelect;
 export type InsertSession = z.infer<typeof insertSessionSchema>;
 export type Session = typeof sessions.$inferSelect;
 
-export type InsertSessionParticipant = z.infer<typeof insertSessionParticipantSchema>;
+export type InsertSessionParticipant = z.infer<
+  typeof insertSessionParticipantSchema
+>;
 export type SessionParticipant = typeof sessionParticipants.$inferSelect;
 
-export type InsertUserAvailability = z.infer<typeof insertUserAvailabilitySchema>;
+export type InsertUserAvailability = z.infer<
+  typeof insertUserAvailabilitySchema
+>;
 export type UserAvailability = typeof userAvailability.$inferSelect;
 
 export type InsertForumCategory = z.infer<typeof insertForumCategorySchema>;
@@ -241,7 +280,9 @@ export const chatMessages = pgTable("chat_messages", {
   id: serial("id").primaryKey(),
   messageId: text("message_id").notNull().unique(),
   content: text("content").notNull(),
-  senderId: integer("sender_id").references(() => users.id).notNull(),
+  senderId: integer("sender_id")
+    .references(() => users.id)
+    .notNull(),
   timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
@@ -257,7 +298,10 @@ export type ChatMessage = typeof chatMessages.$inferSelect;
 // User Stats Table
 export const userStats = pgTable("user_stats", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  userId: integer("user_id")
+    .references(() => users.id)
+    .notNull()
+    .unique(),
   sessionsHosted: integer("sessions_hosted").notNull().default(0),
   sessionsJoined: integer("sessions_joined").notNull().default(0),
   reputation: integer("reputation").notNull().default(0),
@@ -282,16 +326,24 @@ export const insertUserStatsSchema = createInsertSchema(userStats).pick({
 // Session Reviews Table
 export const sessionReviews = pgTable("session_reviews", {
   id: serial("id").primaryKey(),
-  sessionId: integer("session_id").references(() => sessions.id).notNull(),
-  reviewerId: integer("reviewer_id").references(() => users.id).notNull(),
-  targetId: integer("target_id").references(() => users.id).notNull(),
+  sessionId: integer("session_id")
+    .references(() => sessions.id)
+    .notNull(),
+  reviewerId: integer("reviewer_id")
+    .references(() => users.id)
+    .notNull(),
+  targetId: integer("target_id")
+    .references(() => users.id)
+    .notNull(),
   rating: integer("rating").notNull(), // 1-5 stars
   content: text("content"),
   isHostReview: boolean("is_host_review").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const insertSessionReviewSchema = createInsertSchema(sessionReviews).pick({
+export const insertSessionReviewSchema = createInsertSchema(
+  sessionReviews
+).pick({
   sessionId: true,
   reviewerId: true,
   targetId: true,
@@ -309,7 +361,9 @@ export type SessionReview = typeof sessionReviews.$inferSelect;
 // Content Reports Table - For reporting inappropriate content
 export const contentReports = pgTable("content_reports", {
   id: serial("id").primaryKey(),
-  reporterId: integer("reporter_id").references(() => users.id).notNull(),
+  reporterId: integer("reporter_id")
+    .references(() => users.id)
+    .notNull(),
   contentType: text("content_type").notNull(), // "forum_post", "forum_thread", "chat_message", "user_profile", etc.
   contentId: integer("content_id").notNull(), // ID of the reported content
   reason: text("reason").notNull(), // Why was this content reported
@@ -320,7 +374,9 @@ export const contentReports = pgTable("content_reports", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
-export const insertContentReportSchema = createInsertSchema(contentReports).pick({
+export const insertContentReportSchema = createInsertSchema(
+  contentReports
+).pick({
   reporterId: true,
   contentType: true,
   contentId: true,
